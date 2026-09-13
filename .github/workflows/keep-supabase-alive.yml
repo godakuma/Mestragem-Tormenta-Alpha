@@ -16,11 +16,11 @@ jobs:
         run: |
           echo "🌐 Pingando Supabase Database..."
           response=$(curl -s -o /dev/null -w "%{http_code}" \
-            -X GET "${SUPABASE_URL}/rest/v1/" \
+            -X GET "${SUPABASE_URL}/rest/v1/mesas?select=pin&limit=1" \
             -H "apikey: ${SUPABASE_ANON_KEY}" \
             -H "Authorization: Bearer ${SUPABASE_ANON_KEY}")
           
-          if [ "$response" -eq 200 ]; then
+          if [ "$response" -eq 200 ] || [ "$response" -eq 206 ]; then
             echo "✅ HTTP $response — Supabase está ativo!"
           else
             echo "⚠️ HTTP $response — Verifique as configurações."
