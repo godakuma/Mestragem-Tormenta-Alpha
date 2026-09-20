@@ -3027,8 +3027,6 @@
         const atributoBase = ehCurto ? (forca + bonusF1 + bonusF2) : (pdf + bonusP1 + bonusP2);
         const atributoStr = ehCurto ? 'F' : 'PdF';
         const bfaAuto = ehCurto ? bfaF : bfaP;
-        // B1, B2 e BFA do ataque só entram se seus checkboxes estiverem marcados.
-        // Se o ataque não tiver b1/b2/bfa customizados, usa os valores automáticos do atributo.
         const b1Auto = ehCurto ? bonusF1 : bonusP1;
         const b2Auto = ehCurto ? bonusF2 : bonusP2;
         const usarB1 = ataque.chkB1 !== false;
@@ -4190,7 +4188,6 @@
         atualizarIndicadoresAtributosSub(index);
         configurarEventosStatusSub(index);
         renderizarBaralhoSub(index);
-        // Ofícios da sub-ficha
         const testesContainer = document.getElementById(`subficha-testesContainer-${index}`);
         if (testesContainer) {
             let oficiosDiv = document.getElementById(`subficha-oficios-${index}`);
@@ -4642,11 +4639,33 @@
     
     function rolarTesteAtributo(nomeTeste, attr, isSub = false, subIndex = null) { rolarAtributoComBonus(attr, isSub, subIndex); }
     
+    // ============================================================
+    // TESTES DE PERÍCIA — REGRAS
+    // ============================================================
+
+    /**
+     * Regra GERAL (padrão, sem regra alternativa ativa):
+     *   1d6 <= atributo + B1 + mod.dificuldade + bônus da linha − penalidade da linha
+     *   6 = falha automática.
+     *   Fácil: treinado = sucesso automático; não treinado = −1
+     *   Médio: treinado = +1; não treinado = −3
+     *   Difícil: treinado = −2; não treinado = falha automática
+     *   Impossível: treinado = −6; não treinado = falha automática
+     */
     function rolarTestePericiaGeral(nomeTeste, attr, isTreinado, dificuldade, isSub = false, subIndex = null) {
         animarDado();
         let valorAttr, nomePersonagem, ehSecreta = isGM && document.getElementById('chkSecretRoll')?.checked === true, resultadoElement;
-        if (isSub && subIndex !== null) { const sub = subFichas[subIndex]; if (!sub) return; valorAttr = getValorAtributoSub(sub, attr); nomePersonagem = sub.nome || 'Sub-ficha'; resultadoElement = document.getElementById(`subficha-teste-resultado-${subIndex}-${nomeTeste.replace(/\s/g, '')}`); ehSecreta = false; }
-        else { valorAttr = getValorAtributo(attr); nomePersonagem = document.getElementById('nomePersonagem').value || currentUserName || 'Jogador'; resultadoElement = document.getElementById(`teste-resultado-${nomeTeste.replace(/\s/g, '')}`); }
+        if (isSub && subIndex !== null) {
+            const sub = subFichas[subIndex]; if (!sub) return;
+            valorAttr = getValorAtributoSub(sub, attr);
+            nomePersonagem = sub.nome || 'Sub-ficha';
+            resultadoElement = document.getElementById(`subficha-teste-resultado-${subIndex}-${nomeTeste.replace(/\s/g, '')}`);
+            ehSecreta = false;
+        } else {
+            valorAttr = getValorAtributo(attr);
+            nomePersonagem = document.getElementById('nomePersonagem').value || currentUserName || 'Jogador';
+            resultadoElement = document.getElementById(`teste-resultado-${nomeTeste.replace(/\s/g, '')}`);
+        }
         const b1Atributo = getB1Atributo(attr, isSub, subIndex);
         const bp = getBonusPenLinha(nomeTeste, isSub, subIndex);
         let modDificuldade = 0, sucessoAutomatico = false, falhaAutomatica = false;
@@ -4658,8 +4677,19 @@
         const dificuldadeNome = difNomeMap[dificuldade] || 'Médio';
         const treinadoStr = isTreinado ? ' [TREINADO]' : '';
         const b1Str = b1Atributo ? ` +${b1Atributo}(B1)` : '';
-        if (sucessoAutomatico) { const texto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste}${treinadoStr} (${dificuldadeNome}): ⭐ SUCESSO AUTOMÁTICO (treinado, teste fácil)`; addMensagem(texto, ehSecreta); if (!ehSecreta) enviarRolagemFirebase(texto, false); if (resultadoElement) { resultadoElement.textContent = '⭐ Automático'; resultadoElement.className = 'teste-resultado sucesso'; } return; }
-        if (falhaAutomatica) { const texto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste} (${dificuldadeNome}): ❌ FALHA AUTOMÁTICA (não treinado, teste difícil/impossível)`; addMensagem(texto, ehSecreta); if (!ehSecreta) enviarRolagemFirebase(texto, false); if (resultadoElement) { resultadoElement.textContent = '❌ Automático'; resultadoElement.className = 'teste-resultado falha'; } return; }
+        const prefixo = isSub ? `[${nomePersonagem}] ` : '';
+        if (sucessoAutomatico) {
+            const texto = `${prefixo}${nomeTeste}${treinadoStr} (${dificuldadeNome}): ⭐ SUCESSO AUTOMÁTICO (treinado, teste fácil)`;
+            addMensagem(texto, ehSecreta); if (!ehSecreta) enviarRolagemFirebase(texto, false);
+            if (resultadoElement) { resultadoElement.textContent = '⭐ Automático'; resultadoElement.className = 'teste-resultado sucesso'; }
+            debounceSave(); return;
+        }
+        if (falhaAutomatica) {
+            const texto = `${prefixo}${nomeTeste} (${dificuldadeNome}): ❌ FALHA AUTOMÁTICA (não treinado, teste difícil/impossível)`;
+            addMensagem(texto, ehSecreta); if (!ehSecreta) enviarRolagemFirebase(texto, false);
+            if (resultadoElement) { resultadoElement.textContent = '❌ Automático'; resultadoElement.className = 'teste-resultado falha'; }
+            debounceSave(); return;
+        }
         const alvo = valorAttr + b1Atributo + modDificuldade + bp.bonus - bp.pen;
         const dado = Math.floor(Math.random() * 6) + 1;
         const sucesso = dado !== 6 && dado <= alvo;
@@ -4667,21 +4697,33 @@
         const bonusStr = bp.bonus ? ` +${bp.bonus}(B)` : '';
         const penStr = bp.pen ? ` -${bp.pen}(P)` : '';
         const sextoStr = dado === 6 ? ' ⚠️ [6 = falha automática]' : '';
-        const resultadoTexto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste}${treinadoStr} (${dificuldadeNome}): 🎲 ${dado} | Alvo: ${valorAttr}${b1Str} ${modStr}(dif)${bonusStr}${penStr} = ${alvo} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}${sextoStr}`;
-        addMensagem(resultadoTexto, ehSecreta);
-        if (!ehSecreta) enviarRolagemFirebase(resultadoTexto, false);
+        const texto = `${prefixo}${nomeTeste}${treinadoStr} (${dificuldadeNome}): 🎲 ${dado} | Alvo: ${valorAttr}${b1Str} ${modStr}(dif)${bonusStr}${penStr} = ${alvo} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}${sextoStr}`;
+        addMensagem(texto, ehSecreta); if (!ehSecreta) enviarRolagemFirebase(texto, false);
         if (resultadoElement) { resultadoElement.textContent = `🎲 ${dado} → ${sucesso ? '✅' : '❌'} (Alvo: ${alvo})`; resultadoElement.className = 'teste-resultado'; if (sucesso) resultadoElement.classList.add('sucesso'); else resultadoElement.classList.add('falha'); }
         debounceSave();
     }
-    
+
+    /**
+     * Regra "contra dificuldade":
+     *   1d6 + atributo + treino(+4 se treinado) + bônus da linha − penalidade >= dificuldade
+     *   Dificuldades configuráveis (padrão: 8/10/14/18).
+     *   Não há sucesso/falha automática.
+     */
     function rolarTestePericiaAlternativa(nomeTeste, attr, isTreinado, dificuldade, isSub = false, subIndex = null) {
         animarDado();
         let valorAttr, nomePersonagem, ehSecreta = isGM && document.getElementById('chkSecretRoll')?.checked === true, resultadoElement;
-        if (isSub && subIndex !== null) { const sub = subFichas[subIndex]; if (!sub) return; valorAttr = getValorAtributoSub(sub, attr); nomePersonagem = sub.nome || 'Sub-ficha'; resultadoElement = document.getElementById(`subficha-teste-resultado-${subIndex}-${nomeTeste.replace(/\s/g, '')}`); ehSecreta = false; }
-        else { valorAttr = getValorAtributo(attr); nomePersonagem = document.getElementById('nomePersonagem').value || currentUserName || 'Jogador'; resultadoElement = document.getElementById(`teste-resultado-${nomeTeste.replace(/\s/g, '')}`); }
-        const bonusTeste = getBonusTeste(nomeTeste, isSub, subIndex);
+        if (isSub && subIndex !== null) {
+            const sub = subFichas[subIndex]; if (!sub) return;
+            valorAttr = getValorAtributoSub(sub, attr);
+            nomePersonagem = sub.nome || 'Sub-ficha';
+            resultadoElement = document.getElementById(`subficha-teste-resultado-${subIndex}-${nomeTeste.replace(/\s/g, '')}`);
+            ehSecreta = false;
+        } else {
+            valorAttr = getValorAtributo(attr);
+            nomePersonagem = document.getElementById('nomePersonagem').value || currentUserName || 'Jogador';
+            resultadoElement = document.getElementById(`teste-resultado-${nomeTeste.replace(/\s/g, '')}`);
+        }
         const treinoBonus = isTreinado ? 4 : 0;
-        const baseAtributo = valorAttr + bonusTeste.bonusAzul + bonusTeste.bonusVermelho;
         const bp = getBonusPenLinha(nomeTeste, isSub, subIndex);
         const cfg = regrasConfig.periciasDificuldade || { facil: 8, medio: 10, dificil: 14, impossivel: 18 };
         const difMap = { 'facil': cfg.facil ?? 8, 'medio': cfg.medio ?? 10, 'dificil': cfg.dificil ?? 14, 'impossivel': cfg.impossivel ?? 18 };
@@ -4689,58 +4731,136 @@
         const dificuldadeValor = difMap[dificuldade] ?? 10;
         const dificuldadeNome = difNomeMap[dificuldade] || 'Médio';
         const dado = Math.floor(Math.random() * 6) + 1;
-        const alvoFinal = baseAtributo + treinoBonus + bp.bonus - bp.pen;
-        const sucesso = dado !== 6 && dado + alvoFinal >= dificuldadeValor;
-        const bonusTesteStr = (bonusTeste.bonusAzul || bonusTeste.bonusVermelho) ? ` [+${bonusTeste.bonusAzul}${bonusTeste.bonusVermelho ? `+${bonusTeste.bonusVermelho}` : ''}]` : '';
+        const alvoFinal = valorAttr + treinoBonus + bp.bonus - bp.pen;
+        const total = dado + alvoFinal;
+        const sucesso = total >= dificuldadeValor;
+        const treinoStr = treinoBonus ? ` +${treinoBonus}(treino)` : '';
         const bpStr = `${bp.bonus ? ` +${bp.bonus}(B)` : ''}${bp.pen ? ` -${bp.pen}(P)` : ''}`;
-        const sextoStr = dado === 6 ? ' ⚠️ [6 = falha automática]' : '';
-        const resultadoTexto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste} (${dificuldadeNome}): 🎲 ${dado} + ${alvoFinal} [${baseAtributo}${treinoBonus ? '+4' : ''}${bonusTesteStr}${bpStr}] = ${dado + alvoFinal} | Alvo: ${dificuldadeValor} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}${sextoStr}`;
-        addMensagem(resultadoTexto, ehSecreta);
-        if (!ehSecreta) enviarRolagemFirebase(resultadoTexto, false);
-        if (resultadoElement) { resultadoElement.textContent = `🎲 ${dado} + ${alvoFinal} = ${dado + alvoFinal} → ${sucesso ? '✅' : '❌'}`; resultadoElement.className = 'teste-resultado'; if (sucesso) resultadoElement.classList.add('sucesso'); else resultadoElement.classList.add('falha'); }
+        const prefixo = isSub ? `[${nomePersonagem}] ` : '';
+        const texto = `${prefixo}${nomeTeste}${isTreinado ? ' [TREINADO]' : ''} (${dificuldadeNome}): 🎲 ${dado} + ${valorAttr}(atrib)${treinoStr}${bpStr} = ${total} vs Dificuldade ${dificuldadeValor} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}`;
+        addMensagem(texto, ehSecreta); if (!ehSecreta) enviarRolagemFirebase(texto, false);
+        if (resultadoElement) { resultadoElement.textContent = `🎲 ${dado} + ${alvoFinal} = ${total} vs ${dificuldadeValor} → ${sucesso ? '✅' : '❌'}`; resultadoElement.className = 'teste-resultado'; if (sucesso) resultadoElement.classList.add('sucesso'); else resultadoElement.classList.add('falha'); }
         debounceSave();
     }
-    
+
+    /**
+     * Regra "bônus em perícia treinada":
+     *   Mods por dificuldade (sobrescrevem os da regra geral):
+     *     Fácil:      sem perícia = H−1;  treinado = H+3
+     *     Médio:      sem perícia = H−3;  treinado = H+1
+     *     Difícil:    sem perícia = H−6;  treinado = H−2
+     *     Impossível: sem perícia = H−10; treinado = H−6
+     *   Qualquer 6 é falha.
+     */
+    function rolarTestePericiaBonusTreinada(nomeTeste, attr, isTreinado, dificuldade, isSub = false, subIndex = null) {
+        animarDado();
+        let valorAttr, nomePersonagem, ehSecreta = isGM && document.getElementById('chkSecretRoll')?.checked === true, resultadoElement;
+        if (isSub && subIndex !== null) {
+            const sub = subFichas[subIndex]; if (!sub) return;
+            valorAttr = getValorAtributoSub(sub, attr);
+            nomePersonagem = sub.nome || 'Sub-ficha';
+            resultadoElement = document.getElementById(`subficha-teste-resultado-${subIndex}-${nomeTeste.replace(/\s/g, '')}`);
+            ehSecreta = false;
+        } else {
+            valorAttr = getValorAtributo(attr);
+            nomePersonagem = document.getElementById('nomePersonagem').value || currentUserName || 'Jogador';
+            resultadoElement = document.getElementById(`teste-resultado-${nomeTeste.replace(/\s/g, '')}`);
+        }
+        const b1Atributo = getB1Atributo(attr, isSub, subIndex);
+        const bp = getBonusPenLinha(nomeTeste, isSub, subIndex);
+        let modDificuldade = 0;
+        if (dificuldade === 'facil') modDificuldade = isTreinado ? +3 : -1;
+        else if (dificuldade === 'medio') modDificuldade = isTreinado ? +1 : -3;
+        else if (dificuldade === 'dificil') modDificuldade = isTreinado ? -2 : -6;
+        else if (dificuldade === 'impossivel') modDificuldade = isTreinado ? -6 : -10;
+        const difNomeMap = { 'facil': 'Fácil', 'medio': 'Médio', 'dificil': 'Difícil', 'impossivel': 'Impossível' };
+        const dificuldadeNome = difNomeMap[dificuldade] || 'Médio';
+        const treinadoStr = isTreinado ? ' [TREINADO]' : '';
+        const b1Str = b1Atributo ? ` +${b1Atributo}(B1)` : '';
+        const alvo = valorAttr + b1Atributo + modDificuldade + bp.bonus - bp.pen;
+        const dado = Math.floor(Math.random() * 6) + 1;
+        const sucesso = dado !== 6 && dado <= alvo;
+        const modStr = modDificuldade >= 0 ? `+${modDificuldade}` : `${modDificuldade}`;
+        const bonusStr = bp.bonus ? ` +${bp.bonus}(B)` : '';
+        const penStr = bp.pen ? ` -${bp.pen}(P)` : '';
+        const sextoStr = dado === 6 ? ' ⚠️ [6 = falha automática]' : '';
+        const prefixo = isSub ? `[${nomePersonagem}] ` : '';
+        const texto = `${prefixo}${nomeTeste}${treinadoStr} (${dificuldadeNome}): 🎲 ${dado} | Alvo: ${valorAttr}${b1Str} ${modStr}(dif)${bonusStr}${penStr} = ${alvo} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}${sextoStr}`;
+        addMensagem(texto, ehSecreta); if (!ehSecreta) enviarRolagemFirebase(texto, false);
+        if (resultadoElement) { resultadoElement.textContent = `🎲 ${dado} → ${sucesso ? '✅' : '❌'} (Alvo: ${alvo})`; resultadoElement.className = 'teste-resultado'; if (sucesso) resultadoElement.classList.add('sucesso'); else resultadoElement.classList.add('falha'); }
+        debounceSave();
+    }
+
+    /**
+     * Regra "pilha de dados":
+     *   Rola (atributo + bônus da linha − penalidade + (treinado ? +4 : 0)) dados.
+     *   Cada 5 ou 6 = 1 sucesso.
+     *   Sucessos necessários: Fácil 1, Médio 3, Difícil 6, Impossível 10.
+     *   Subopção: explosão de 6 (6 gera dado extra).
+     */
     function sucessosNecessariosPorDificuldade(dificuldade) {
         const map = { facil: 1, medio: 3, dificil: 6, impossivel: 10 };
         return map[dificuldade] ?? 3;
     }
     function rolarTestePericiaPilhaDados(nomeTeste, attr, isTreinado, dificuldade, isSub = false, subIndex = null) {
+        animarDado();
         let valorAttr, nomePersonagem, ehSecreta = isGM && document.getElementById('chkSecretRoll')?.checked === true, resultadoElement;
-        if (isSub && subIndex !== null) { const sub = subFichas[subIndex]; if (!sub) return; valorAttr = getValorAtributoSub(sub, attr); nomePersonagem = sub.nome || 'Sub-ficha'; resultadoElement = document.getElementById(`subficha-teste-resultado-${subIndex}-${nomeTeste.replace(/\s/g, '')}`); ehSecreta = false; }
-        else { valorAttr = getValorAtributo(attr); nomePersonagem = document.getElementById('nomePersonagem').value || currentUserName || 'Jogador'; resultadoElement = document.getElementById(`teste-resultado-${nomeTeste.replace(/\s/g, '')}`); }
-        const qtdBonusTreinado = isTreinado ? 4 : 0;
+        if (isSub && subIndex !== null) {
+            const sub = subFichas[subIndex]; if (!sub) return;
+            valorAttr = getValorAtributoSub(sub, attr);
+            nomePersonagem = sub.nome || 'Sub-ficha';
+            resultadoElement = document.getElementById(`subficha-teste-resultado-${subIndex}-${nomeTeste.replace(/\s/g, '')}`);
+            ehSecreta = false;
+        } else {
+            valorAttr = getValorAtributo(attr);
+            nomePersonagem = document.getElementById('nomePersonagem').value || currentUserName || 'Jogador';
+            resultadoElement = document.getElementById(`teste-resultado-${nomeTeste.replace(/\s/g, '')}`);
+        }
+        const bonusTreinado = isTreinado ? 4 : 0;
         const bp = getBonusPenLinha(nomeTeste, isSub, subIndex);
         const explosao = subopcaoAtiva('periciasPilhaDados', 'explosaoSeis');
-        let qtdTotal = valorAttr + qtdBonusTreinado + bp.bonus - bp.pen;
+        let qtdTotal = valorAttr + bonusTreinado + bp.bonus - bp.pen;
         if (qtdTotal < 0) qtdTotal = 0;
-        if (qtdTotal <= 0) { const texto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste} (${qtdTotal} dados): ⚠️ Sem dados para rolar → ❌ FALHA`; addMensagem(texto, ehSecreta); if (!ehSecreta) enviarRolagemFirebase(texto, false); if (resultadoElement) { resultadoElement.textContent = '⚠️ Sem dados → ❌'; resultadoElement.className = 'teste-resultado falha'; } return; }
         const sucessosNecessarios = sucessosNecessariosPorDificuldade(dificuldade);
         const difNomeMap = { 'facil': 'Fácil', 'medio': 'Médio', 'dificil': 'Difícil', 'impossivel': 'Impossível' };
         const dificuldadeNome = difNomeMap[dificuldade] || 'Médio';
-        let sucessos = 0, dadosRolados = [], rolagensExtras = 0;
-        const maxIter = 10000; let iter = 0;
-        while (qtdTotal > 0 && iter < maxIter) {
+        const prefixo = isSub ? `[${nomePersonagem}] ` : '';
+        if (qtdTotal <= 0) {
+            const texto = `${prefixo}${nomeTeste}${isTreinado ? ' [TREINADO]' : ''} (${dificuldadeNome}): ⚠️ 0 dados → ❌ FALHA`;
+            addMensagem(texto, ehSecreta); if (!ehSecreta) enviarRolagemFirebase(texto, false);
+            if (resultadoElement) { resultadoElement.textContent = '⚠️ Sem dados → ❌'; resultadoElement.className = 'teste-resultado falha'; }
+            debounceSave(); return;
+        }
+        let sucessos = 0, dadosRolados = [], extrasPor6 = 0, iter = 0;
+        while (qtdTotal > 0 && iter < 10000) {
             const dado = Math.floor(Math.random() * 6) + 1;
             dadosRolados.push(dado);
             if (dado >= 5) sucessos++;
             qtdTotal--;
-            if (explosao && dado === 6) { qtdTotal++; rolagensExtras++; }
+            if (explosao && dado === 6) { qtdTotal++; extrasPor6++; }
             iter++;
         }
         const sucesso = sucessos >= sucessosNecessarios;
-        const treinadoStr = isTreinado ? ' [TREINADO +4 dados]' : '';
+        const resumoDados = dadosRolados.length > 30 ? `${dadosRolados.slice(0, 30).join(',')}... (+${dadosRolados.length - 30})` : dadosRolados.join(',');
         const bpStr = `${bp.bonus ? ` +${bp.bonus}(B)` : ''}${bp.pen ? ` -${bp.pen}(P)` : ''}`;
+        const treinadoStr = isTreinado ? ' [TREINADO +4 dados]' : '';
         const explosaoStr = explosao ? ' [💥 6 = dado extra]' : '';
-        const resumoDados = dadosRolados.length > 30 ? `${dadosRolados.slice(0, 30).join(',')}... (+${dadosRolados.length - 30} dados)` : dadosRolados.join(',');
-        const resultadoTexto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste}${treinadoStr} (${dificuldadeNome})${explosaoStr}: 🎲 [${valorAttr}${qtdBonusTreinado ? '+4' : ''}${bpStr} = ${dadosRolados.length} dados] ${resumoDados} → ${sucessos} sucesso(s) | Necessários: ${sucessosNecessarios}${rolagensExtras ? ` (+${rolagensExtras} extra(s) por 6)` : ''} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}`;
-        addMensagem(resultadoTexto, ehSecreta);
-        if (!ehSecreta) enviarRolagemFirebase(resultadoTexto, false);
+        const texto = `${prefixo}${nomeTeste}${treinadoStr} (${dificuldadeNome})${explosaoStr}: 🎲 [${valorAttr}${bonusTreinado ? '+4' : ''}${bpStr} = ${dadosRolados.length} dados] ${resumoDados} → ${sucessos} sucesso(s) | Necessários: ${sucessosNecessarios}${extrasPor6 ? ` (+${extrasPor6} extra(s) por 6)` : ''} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}`;
+        addMensagem(texto, ehSecreta); if (!ehSecreta) enviarRolagemFirebase(texto, false);
         if (resultadoElement) { resultadoElement.textContent = `${sucessos}/${sucessosNecessarios} sucessos → ${sucesso ? '✅' : '❌'}`; resultadoElement.className = 'teste-resultado'; if (sucesso) resultadoElement.classList.add('sucesso'); else resultadoElement.classList.add('falha'); }
         debounceSave();
     }
-    
+
+    /**
+     * Regra "pontos de esforço":
+     *   Substitui o d6 por PE (1..6).
+     *   Sem sucesso/falha automática.
+     *   Cálculo: atributo + treino(+4 se treinado) + PE + bônus da linha − penalidade >= dificuldade
+     *   Limite grátis = R + B1 + B2 + (treinado ? +4 : 0).
+     *   Excedente custa 1 PM; se PM faltar, custa 1 PV.
+     */
     function rolarTestePericiaEsforco(nomeTeste, attr, isTreinado, dificuldade, isSub = false, subIndex = null) {
+        animarDado();
         let valorAttr, nomePersonagem, ehSecreta = isGM && document.getElementById('chkSecretRoll')?.checked === true, resultadoElement;
         let peValor = 0;
         const idBase = isSub ? `subficha-` : '';
@@ -4750,8 +4870,17 @@
         if (peInput) peValor = parseInt(peInput.value) || 0;
         if (peValor > 6) peValor = 6;
         if (peValor < 0) peValor = 0;
-        if (isSub && subIndex !== null) { const sub = subFichas[subIndex]; if (!sub) return; valorAttr = getValorAtributoSub(sub, attr); nomePersonagem = sub.nome || 'Sub-ficha'; resultadoElement = document.getElementById(`subficha-teste-resultado-${subIndex}-${nomeSanitizado}`); ehSecreta = false; }
-        else { valorAttr = getValorAtributo(attr); nomePersonagem = document.getElementById('nomePersonagem').value || currentUserName || 'Jogador'; resultadoElement = document.getElementById(`teste-resultado-${nomeSanitizado}`); }
+        if (isSub && subIndex !== null) {
+            const sub = subFichas[subIndex]; if (!sub) return;
+            valorAttr = getValorAtributoSub(sub, attr);
+            nomePersonagem = sub.nome || 'Sub-ficha';
+            resultadoElement = document.getElementById(`subficha-teste-resultado-${subIndex}-${nomeSanitizado}`);
+            ehSecreta = false;
+        } else {
+            valorAttr = getValorAtributo(attr);
+            nomePersonagem = document.getElementById('nomePersonagem').value || currentUserName || 'Jogador';
+            resultadoElement = document.getElementById(`teste-resultado-${nomeSanitizado}`);
+        }
         const treinoBonus = isTreinado ? 4 : 0;
         const bp = getBonusPenLinha(nomeTeste, isSub, subIndex);
         const cfg = regrasConfig.periciasDificuldade || { facil: 8, medio: 10, dificil: 14, impossivel: 18 };
@@ -4786,18 +4915,34 @@
         const custoStr = custoPM > 0 ? ` | 💰 Custo: ${custoPM} PE extra (${gastouPM} PM${perdeuPV ? `, ${perdeuPV} PV` : ''})` : ' | 💰 Sem custo extra';
         const limiteStr = ` [Limite grátis: ${limiteGratis} = R${rBase}+B1${rB1}+B2${rB2}${isTreinado ? '+4 treino' : ''}]`;
         const bpStr = `${bp.bonus ? ` +${bp.bonus}(B)` : ''}${bp.pen ? ` -${bp.pen}(P)` : ''}`;
-        const resultadoTexto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste}${treinadoStr} (${dificuldadeNome})${limiteStr}: ⚡ ${peValor} PE | Total: ${valorAttr} + ${treinoBonus}(treino) + ${peValor}(PE)${bpStr} = ${total} vs Dificuldade ${dificuldadeValor} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}${custoStr}`;
-        addMensagem(resultadoTexto, ehSecreta);
-        if (!ehSecreta) enviarRolagemFirebase(resultadoTexto, false);
-        if (resultadoElement) { resultadoElement.textContent = `⚡ ${peValor} PE → ${sucesso ? '✅' : '❌'} (Total: ${total} vs ${dificuldadeValor})`; resultadoElement.className = 'teste-resultado'; if (sucesso) resultadoElement.classList.add('sucesso'); else resultadoElement.classList.add('falha'); }
+        const prefixo = isSub ? `[${nomePersonagem}] ` : '';
+        const texto = `${prefixo}${nomeTeste}${treinadoStr} (${dificuldadeNome})${limiteStr}: ⚡ ${peValor} PE | Total: ${valorAttr} + ${treinoBonus}(treino) + ${peValor}(PE)${bpStr} = ${total} vs ${dificuldadeValor} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}${custoStr}`;
+        addMensagem(texto, ehSecreta); if (!ehSecreta) enviarRolagemFirebase(texto, false);
+        if (resultadoElement) { resultadoElement.textContent = `⚡ ${peValor} PE → ${sucesso ? '✅' : '❌'} (${total} vs ${dificuldadeValor})`; resultadoElement.className = 'teste-resultado'; if (sucesso) resultadoElement.classList.add('sucesso'); else resultadoElement.classList.add('falha'); }
         debounceSave();
     }
-    
+
+    /**
+     * Regra "nível de sucesso":
+     *   Precisa ser bem-sucedido (1d6 <= alvo; 6 = falha).
+     *   Nível = valor do dado, limitado entre 1 e 5.
+     *   Níveis: 1 = Sucesso simples; 2 = Sucesso bom; 3 = Sucesso ótimo;
+     *           4 = Sucesso excelente; 5 = Perfeição.
+     */
     function rolarTestePericiaNivelSucesso(nomeTeste, attr, isTreinado, dificuldade, isSub = false, subIndex = null) {
         animarDado();
         let valorAttr, nomePersonagem, ehSecreta = isGM && document.getElementById('chkSecretRoll')?.checked === true, resultadoElement;
-        if (isSub && subIndex !== null) { const sub = subFichas[subIndex]; if (!sub) return; valorAttr = getValorAtributoSub(sub, attr); nomePersonagem = sub.nome || 'Sub-ficha'; resultadoElement = document.getElementById(`subficha-teste-resultado-${subIndex}-${nomeTeste.replace(/\s/g, '')}`); ehSecreta = false; }
-        else { valorAttr = getValorAtributo(attr); nomePersonagem = document.getElementById('nomePersonagem').value || currentUserName || 'Jogador'; resultadoElement = document.getElementById(`teste-resultado-${nomeTeste.replace(/\s/g, '')}`); }
+        if (isSub && subIndex !== null) {
+            const sub = subFichas[subIndex]; if (!sub) return;
+            valorAttr = getValorAtributoSub(sub, attr);
+            nomePersonagem = sub.nome || 'Sub-ficha';
+            resultadoElement = document.getElementById(`subficha-teste-resultado-${subIndex}-${nomeTeste.replace(/\s/g, '')}`);
+            ehSecreta = false;
+        } else {
+            valorAttr = getValorAtributo(attr);
+            nomePersonagem = document.getElementById('nomePersonagem').value || currentUserName || 'Jogador';
+            resultadoElement = document.getElementById(`teste-resultado-${nomeTeste.replace(/\s/g, '')}`);
+        }
         const b1Atributo = getB1Atributo(attr, isSub, subIndex);
         const bp = getBonusPenLinha(nomeTeste, isSub, subIndex);
         let modDificuldade = 0, sucessoAutomatico = false, falhaAutomatica = false;
@@ -4809,6 +4954,19 @@
         const dificuldadeNome = difNomeMap[dificuldade] || 'Médio';
         const treinadoStr = isTreinado ? ' [TREINADO]' : '';
         const b1Str = b1Atributo ? ` +${b1Atributo}(B1)` : '';
+        const prefixo = isSub ? `[${nomePersonagem}] ` : '';
+        if (sucessoAutomatico) {
+            const texto = `${prefixo}${nomeTeste}${treinadoStr} (${dificuldadeNome}): ⭐ SUCESSO AUTOMÁTICO | Nível: 1 (Sucesso simples)`;
+            addMensagem(texto, ehSecreta); if (!ehSecreta) enviarRolagemFirebase(texto, false);
+            if (resultadoElement) { resultadoElement.textContent = '⭐ Automático (Nível 1)'; resultadoElement.className = 'teste-resultado sucesso'; }
+            debounceSave(); return;
+        }
+        if (falhaAutomatica) {
+            const texto = `${prefixo}${nomeTeste} (${dificuldadeNome}): ❌ FALHA AUTOMÁTICA | Nível: 0 (Falha)`;
+            addMensagem(texto, ehSecreta); if (!ehSecreta) enviarRolagemFirebase(texto, false);
+            if (resultadoElement) { resultadoElement.textContent = '❌ Automático (Nível 0)'; resultadoElement.className = 'teste-resultado falha'; }
+            debounceSave(); return;
+        }
         const alvo = valorAttr + b1Atributo + modDificuldade + bp.bonus - bp.pen;
         const dado = Math.floor(Math.random() * 6) + 1;
         const sucesso = dado !== 6 && dado <= alvo;
@@ -4817,6 +4975,7 @@
             nivelSucesso = dado;
             const nivelMax = Math.min(5, alvo);
             if (nivelSucesso > nivelMax) nivelSucesso = nivelMax;
+            if (nivelSucesso < 1) nivelSucesso = 1;
         }
         const niveisDesc = { 0: 'FALHA', 1: 'Sucesso simples', 2: 'Sucesso bom', 3: 'Sucesso ótimo', 4: 'Sucesso excelente', 5: 'Perfeição' };
         const nivelDesc = niveisDesc[nivelSucesso] || '';
@@ -4824,13 +4983,15 @@
         const bonusStr = bp.bonus ? ` +${bp.bonus}(B)` : '';
         const penStr = bp.pen ? ` -${bp.pen}(P)` : '';
         const sextoStr = dado === 6 ? ' ⚠️ [6 = falha automática]' : '';
-        const resultadoTexto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste}${treinadoStr} (${dificuldadeNome}): 🎲 ${dado} | Alvo: ${valorAttr}${b1Str} ${modStr}(dif)${bonusStr}${penStr} = ${alvo} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'} | Nível de Sucesso: ${nivelSucesso} (${nivelDesc})${sextoStr}`;
-        addMensagem(resultadoTexto, ehSecreta);
-        if (!ehSecreta) enviarRolagemFirebase(resultadoTexto, false);
+        const texto = `${prefixo}${nomeTeste}${treinadoStr} (${dificuldadeNome}): 🎲 ${dado} | Alvo: ${valorAttr}${b1Str} ${modStr}(dif)${bonusStr}${penStr} = ${alvo} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'} | Nível de Sucesso: ${nivelSucesso} (${nivelDesc})${sextoStr}`;
+        addMensagem(texto, ehSecreta); if (!ehSecreta) enviarRolagemFirebase(texto, false);
         if (resultadoElement) { resultadoElement.textContent = `🎲 ${dado} → Nível ${nivelSucesso} (${nivelDesc})`; resultadoElement.className = 'teste-resultado'; if (sucesso) resultadoElement.classList.add('sucesso'); else resultadoElement.classList.add('falha'); }
         debounceSave();
     }
     
+    // ============================================================
+    // BARALHO DE PERÍCIAS COM CARTAS
+    // ============================================================
     const NAIPES = ['♠', '♥', '♦', '♣'];
     const VALORES = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
     
@@ -6133,8 +6294,7 @@
     window.getSupabase = () => supabase;
     window.getVisualizandoId = () => visualizandoId;
     console.log('✅ Sistema Tormenta Alpha migrado para Supabase');
-    console.log('✅ Correções: cores creme removidas; magias com checkboxes de atributos + valor livre + dados; B1/B2/BFA em F e PdF');
+    console.log('✅ Testes de perícia corrigidos: contra dificuldade, bônus treinada, pilha dados, esforço, nível de sucesso');
 </script>
 </body>
-</html>
 </html>
