@@ -5175,7 +5175,7 @@
             const resultId = isSub ? `subficha-teste-resultado-${subIndex}-${nomeSanitizado}` : `teste-resultado-${nomeSanitizado}`;
             const rollId = isSub ? `subficha-teste-roll-${subIndex}-${idx}` : `teste-roll-${idx}`;
             const isAtributo = ATRIBUTOS_BASE.some(a => a.nome === teste.nome);
-            const attrDisplay = isAtributo ? '' : `(${teste.attr})`;
+            const attrDisplay = (isAtributo || /\([^)]+\)/.test(teste.nome)) ? '' : `(${teste.attr})`;
             
             let camposBonusPen = '';
             if (!isAtributo) {
