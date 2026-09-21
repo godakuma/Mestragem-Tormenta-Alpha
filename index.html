@@ -742,6 +742,9 @@
     .defesa-bloco .defesa-campos .campo.atributo-checkbox { background: var(--fundo-bonus); border: 1px solid var(--primaria); }
     .defesa-bloco .defesa-campos .campo.atributo-checkbox label { color: var(--primaria); }
     .defesa-bloco .defesa-campos .campo.atributo-checkbox input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--primaria); }
+    .defesa-bloco .defesa-campos .campo.bfd-campo { background: rgba(138, 122, 74, 0.12); border: 1px solid var(--dourado); }
+    .defesa-bloco .defesa-campos .campo.bfd-campo label { color: var(--dourado); }
+    .defesa-bloco .defesa-campos .campo.bfd-campo .atributo-auto { border-color: var(--dourado); color: var(--dourado); background: var(--fundo-painel-claro); }
     .defesa-bloco .defesa-roll-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--borda-clara); }
     .defesa-bloco .defesa-roll-row .qtd-dados { display: flex; align-items: center; gap: 4px; }
     .defesa-bloco .defesa-roll-row .qtd-dados label { font-size: 10px; color: var(--texto-medio); font-weight: bold; }
@@ -1434,7 +1437,6 @@
 
     function deveMostrarImpossivel() { return regraAtiva('periciasBonusTreinada'); }
 
-    // Função auxiliar para re-renderizar ofícios (ficha principal e subfichas)
     function reRenderizarOficios() {
         if (!visualizandoId) return;
         const oficiosPrincipaisDiv = document.getElementById('oficiosPrincipais');
@@ -3262,13 +3264,22 @@
             rTotal = parseInt(document.getElementById('resistencia').value) || 0;
             nomePersonagem = document.getElementById('nomePersonagem').value || currentUserName || 'Jogador';
         }
-        const habilidadeTotal = habilidade + bonusH1 + bonusH2;
+        // CORREÇÃO 1: B1 e B2 de H só entram se os checkboxes estiverem marcados
+        let habilidadeTotal;
+        if (isSub && subIndex !== null) {
+            const sub = subFichas[subIndex];
+            const chkH1 = document.getElementById(`subficha-chkBonusHabilidade-${subIndex}`)?.checked !== false;
+            const chkH2 = document.getElementById(`subficha-chkBonusHabilidade2-${subIndex}`)?.checked !== false;
+            habilidadeTotal = habilidade + (chkH1 ? bonusH1 : 0) + (chkH2 ? bonusH2 : 0);
+        } else {
+            const chkH1 = document.getElementById('chkBonusHabilidade')?.checked !== false;
+            const chkH2 = document.getElementById('chkBonusHabilidade2')?.checked !== false;
+            habilidadeTotal = habilidade + (chkH1 ? bonusH1 : 0) + (chkH2 ? bonusH2 : 0);
+        }
         const ehCurto = tipo === 'curto';
         const atributoBase = ehCurto ? (forca + bonusF1 + bonusF2) : (pdf + bonusP1 + bonusP2);
         const atributoStr = ehCurto ? 'F' : 'PdF';
         const bfaAuto = ehCurto ? bfaF : bfaP;
-        // B1, B2 e BFA do ataque só entram se seus checkboxes estiverem marcados.
-        // Se o ataque não tiver b1/b2/bfa customizados, usa os valores automáticos do atributo.
         const b1Auto = ehCurto ? bonusF1 : bonusP1;
         const b2Auto = ehCurto ? bonusF2 : bonusP2;
         const usarB1 = ataque.chkB1 !== false;
@@ -3636,7 +3647,17 @@
             rTotal = parseInt(document.getElementById('resistencia').value) || 0;
             nomePersonagem = document.getElementById('nomePersonagem').value || currentUserName || 'Jogador';
         }
-        const habilidadeTotal = habilidade + bonusH1 + bonusH2;
+        // CORREÇÃO 1: B1 e B2 de H só entram se os checkboxes estiverem marcados
+        let habilidadeTotal;
+        if (isSub && subIndex !== null) {
+            const chkH1 = document.getElementById(`subficha-chkBonusHabilidade-${subIndex}`)?.checked !== false;
+            const chkH2 = document.getElementById(`subficha-chkBonusHabilidade2-${subIndex}`)?.checked !== false;
+            habilidadeTotal = habilidade + (chkH1 ? bonusH1 : 0) + (chkH2 ? bonusH2 : 0);
+        } else {
+            const chkH1 = document.getElementById('chkBonusHabilidade')?.checked !== false;
+            const chkH2 = document.getElementById('chkBonusHabilidade2')?.checked !== false;
+            habilidadeTotal = habilidade + (chkH1 ? bonusH1 : 0) + (chkH2 ? bonusH2 : 0);
+        }
         const armaduraTotal = armadura + bonusA1 + bonusA2;
         const incluirH = defesa.incluirH !== false;
         const incluirA = defesa.incluirA !== false;
@@ -3651,7 +3672,6 @@
         const resultEl = document.getElementById(resultId);
         const hStr = incluirH ? `+${hUsado}(H)` : '';
         const aStr = incluirA ? `+${aUsada}(A)` : '';
-        const bfdUsado = parseInt(defesa.bfd) || bfd;
 
         const regraAtivaCombate = ['combateTesteAtaque', 'combatePilhaDados', 'combateCartas', 'combatePontosEsforco', 'combateSemPV'].find(r => regraAtiva(r)) || null;
 
@@ -3662,9 +3682,9 @@
                 let nivelSucesso = 0, criticoNivel = false;
                 if (dadoDefesa <= hUsado) { nivelSucesso = dadoDefesa; if (dadoDefesa === hUsado) criticoNivel = true; }
                 const armaduraDobrada = criticoNivel ? aUsada * 2 : aUsada;
-                const fd = armaduraDobrada + nivelSucesso + bfdUsado;
+                const fd = armaduraDobrada + nivelSucesso + bfd;
                 const criticoStr = criticoNivel ? ' ⚡ [ACERTO CRÍTICO!]' : '';
-                const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}] (nível de sucesso): 🎲 ${dadoDefesa} vs H${hUsado} → Nível ${nivelSucesso}${criticoStr} | FD = ${armaduraDobrada}(A) + ${nivelSucesso}(nível) + ${bfdUsado}(BFD) = ${fd}`;
+                const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}] (nível de sucesso): 🎲 ${dadoDefesa} vs H${hUsado} → Nível ${nivelSucesso}${criticoStr} | FD = ${armaduraDobrada}(A) + ${nivelSucesso}(nível) + ${bfd}(BFD) = ${fd}`;
                 addMensagem(texto, ehSecreta);
                 if (!ehSecreta) enviarRolagemFirebase(texto, false);
                 if (resultEl) { resultEl.textContent = `🎲 ${dadoDefesa} → Nível ${nivelSucesso} | FD: ${fd}`; resultEl.className = 'resultado-defesa sucesso'; }
@@ -3674,9 +3694,9 @@
             let dados = [], soma = 0, criticos = 0;
             for (let i = 0; i < qtdDados; i++) { const d = criticoAutomatico ? 6 : Math.floor(Math.random() * 6) + 1; dados.push(d); soma += d; if (criticoAprimorado ? d >= 5 : d === 6) criticos++; }
             const armaduraDobrada = criticos > 0 ? aUsada * 2 : aUsada;
-            const fd = soma + armaduraDobrada + hUsado + bfdUsado;
+            const fd = soma + armaduraDobrada + hUsado + bfd;
             const criticoStr = criticos > 0 ? ` (${criticos} crítico${criticos > 1 ? 's' : ''}!)` : '';
-            const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}]: 🎲 ${dados.join('+')} ${aStr} ${hStr} +${bfdUsado}(BFD) = ${fd}${criticoStr}`;
+            const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}]: 🎲 ${dados.join('+')} ${aStr} ${hStr} +${bfd}(BFD) = ${fd}${criticoStr}`;
             addMensagem(texto, ehSecreta);
             if (!ehSecreta) enviarRolagemFirebase(texto, false);
             if (resultEl) { resultEl.textContent = `🎲 ${dados.join('+')} = ${fd}`; resultEl.className = 'resultado-defesa sucesso'; }
@@ -3691,8 +3711,8 @@
                 const qtd = Math.max(0, aUsada);
                 let dados = [], soma = 0;
                 for (let i = 0; i < qtd; i++) { const d = Math.floor(Math.random() * 6) + 1; dados.push(d); soma += d; }
-                const fd = soma + bfdUsado;
-                const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}] (pilha - dados por ponto): 🎲 ${dados.join('+')} (${qtd}d) + ${bfdUsado}(BFD) = ${fd}`;
+                const fd = soma + bfd;
+                const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}] (pilha - dados por ponto): 🎲 ${dados.join('+')} (${qtd}d) + ${bfd}(BFD) = ${fd}`;
                 addMensagem(texto, ehSecreta);
                 if (!ehSecreta) enviarRolagemFirebase(texto, false);
                 if (resultEl) { resultEl.textContent = `🎲 ${dados.join('+')} = ${fd}`; resultEl.className = 'resultado-defesa sucesso'; }
@@ -3706,7 +3726,7 @@
             let fd;
             if (multiplicar) fd = sucessos * aUsada;
             else fd = sucessos;
-            const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}] (pilha): 🎲 ${qtdDadosFD}d → ${sucessos} sucesso(s) | FD = ${multiplicar ? `${sucessos} × ${aUsada} = ${fd}` : `${fd}`} + ${bfdUsado}(BFD)`;
+            const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}] (pilha): 🎲 ${qtdDadosFD}d → ${sucessos} sucesso(s) | FD = ${multiplicar ? `${sucessos} × ${aUsada} = ${fd}` : `${fd}`} + ${bfd}(BFD)`;
             addMensagem(texto, ehSecreta);
             if (!ehSecreta) enviarRolagemFirebase(texto, false);
             if (resultEl) { resultEl.textContent = `${sucessos} sucesso(s) | FD: ${fd}`; resultEl.className = 'resultado-defesa sucesso'; }
@@ -3748,10 +3768,10 @@
                 }
             }
             const hComCarta = temCoringa && !coringaVermelho && !temFigura ? 0 : hUsado;
-            const fd = aUsada + hComCarta + valorCartas + bfdUsado;
+            const fd = aUsada + hComCarta + valorCartas + bfd;
             const figuraStr = temFigura ? ' ⚡ [FIGURA = CRÍTICO!]' : '';
             const coringaStr = temCoringa ? (coringaVermelho ? ' 🃏 Coringa VERMELHO = crítico' : ' 🃏 Coringa PRETO = H removida') : '';
-            const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}] (cartas): 🃏 ${cartasStr.join('+')}${figuraStr}${coringaStr} | FD = ${aUsada}(A) + ${hComCarta}(H) + ${valorCartas}(cartas) + ${bfdUsado}(BFD) = ${fd}`;
+            const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}] (cartas): 🃏 ${cartasStr.join('+')}${figuraStr}${coringaStr} | FD = ${aUsada}(A) + ${hComCarta}(H) + ${valorCartas}(cartas) + ${bfd}(BFD) = ${fd}`;
             addMensagem(texto, ehSecreta);
             if (!ehSecreta) enviarRolagemFirebase(texto, false);
             if (resultEl) { resultEl.textContent = `🃏 ${cartasStr.join('+')} | FD: ${fd}`; resultEl.className = 'resultado-defesa sucesso'; }
@@ -3779,10 +3799,10 @@
                 if (pmAtual >= custoPM) { gastouPM = custoPM; setPMAtual(pmAtual - custoPM, isSub, subIndex); }
                 else { gastouPM = pmAtual; setPMAtual(0, isSub, subIndex); perdeuPV = custoPM - pmAtual; setPVAtual(Math.max(0, pvAtual - perdeuPV), isSub, subIndex); }
             }
-            const fd = aUsada + hUsado + pe + bfdUsado;
+            const fd = aUsada + hUsado + pe + bfd;
             const limiteStr = ` [Limite grátis: ${limiteGratis} = R${rTotal}+B1${bonusR1}+B2${bonusR2}${temCombate ? '+4 perícia' : ''}]`;
             const custoStr = custoPM > 0 ? ` | 💰 Custo: ${custoPM} PE extra (${gastouPM} PM${perdeuPV ? `, ${perdeuPV} PV` : ''})` : ' | 💰 Sem custo extra';
-            const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}] (PE em combate): ⚡ ${pe} PE${limiteStr} | FD = ${aUsada}(A) + ${hUsado}(H) + ${pe}(PE) + ${bfdUsado}(BFD) = ${fd}${custoStr}`;
+            const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}] (PE em combate): ⚡ ${pe} PE${limiteStr} | FD = ${aUsada}(A) + ${hUsado}(H) + ${pe}(PE) + ${bfd}(BFD) = ${fd}${custoStr}`;
             addMensagem(texto, ehSecreta);
             if (!ehSecreta) enviarRolagemFirebase(texto, false);
             if (resultEl) { resultEl.textContent = `⚡ ${pe} PE | FD: ${fd}`; resultEl.className = 'resultado-defesa sucesso'; }
@@ -3801,7 +3821,7 @@
                 let sucessos = 0, dadosFD = [];
                 for (let i = 0; i < qtdDadosFD; i++) { const d = Math.floor(Math.random() * 6) + 1; dadosFD.push(d); if (d >= 5) sucessos++; }
                 const dadosStr = dadosFD.length > 0 ? ` [${dadosFD.join(', ')}]` : '';
-                const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}] (sem PV + pilha): 🎲 ${qtdDadosFD}d${dadosStr} → ${sucessos} sucesso(s) | FD = ${sucessos} + ${bfdUsado}(BFD)`;
+                const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}] (sem PV + pilha): 🎲 ${qtdDadosFD}d${dadosStr} → ${sucessos} sucesso(s) | FD = ${sucessos} + ${bfd}(BFD)`;
                 addMensagem(texto, ehSecreta);
                 if (!ehSecreta) enviarRolagemFirebase(texto, false);
                 if (resultEl) { resultEl.textContent = `${sucessos} sucesso(s) | FD: ${sucessos}`; resultEl.className = 'resultado-defesa sucesso'; }
@@ -3812,9 +3832,9 @@
                 const dadoFD = Math.floor(Math.random() * 6) + 1;
                 const critico = dadoFD === 6;
                 const aDobrada = critico ? aUsada * 2 : aUsada;
-                const fd = aDobrada + dadoFD + hUsado + bfdUsado;
+                const fd = aDobrada + dadoFD + hUsado + bfd;
                 const criticoStr = critico ? ' ⚡ [CRÍTICO!]' : '';
-                const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}] (sem PV + ferimentos): 🎲 ${dadoFD} + ${aDobrada}(A)${criticoStr} + ${hUsado}(H) + ${bfdUsado}(BFD) = FD ${fd}`;
+                const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}] (sem PV + ferimentos): 🎲 ${dadoFD} + ${aDobrada}(A)${criticoStr} + ${hUsado}(H) + ${bfd}(BFD) = FD ${fd}`;
                 addMensagem(texto, ehSecreta);
                 if (!ehSecreta) enviarRolagemFirebase(texto, false);
                 if (resultEl) { resultEl.textContent = `FD ${fd}${criticoStr}`; resultEl.className = 'resultado-defesa sucesso'; }
@@ -3846,9 +3866,9 @@
         let dados = [], soma = 0, criticos = 0;
         for (let i = 0; i < qtdDados; i++) { const dado = criticoAutomatico ? 6 : Math.floor(Math.random() * 6) + 1; dados.push(dado); soma += dado; if (criticoAprimorado ? dado >= 5 : dado === 6) criticos++; }
         let aDobrado = criticos > 0 ? aUsada * 2 : aUsada;
-        const total = soma + aDobrado + hUsado + bfdUsado;
+        const total = soma + aDobrado + hUsado + bfd;
         const criticoStr = criticos > 0 ? ` (${criticos} crítico${criticos > 1 ? 's' : ''}!)` : '';
-        const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}]: 🎲 ${dados.join('+')} + ${aDobrado}(A) ${hStr} + ${bfdUsado}(BFD) = ${total}${criticoStr}`;
+        const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}]: 🎲 ${dados.join('+')} + ${aDobrado}(A) ${hStr} + ${bfd}(BFD) = ${total}${criticoStr}`;
         addMensagem(texto, ehSecreta);
         if (!ehSecreta) enviarRolagemFirebase(texto, false);
         if (resultEl) { resultEl.textContent = `🎲 ${dados.join('+')} = ${total}`; resultEl.className = 'resultado-defesa sucesso'; }
@@ -3909,7 +3929,17 @@
             b2Auto = ehCurto ? (parseInt(document.getElementById('bonusForca2')?.value) || 0) : (parseInt(document.getElementById('bonusPdf2')?.value) || 0);
             bfaAuto = ehCurto ? (parseInt(document.getElementById('bonusForcaDefesa')?.value) || 0) : (parseInt(document.getElementById('bonusPdfDefesa')?.value) || 0);
         }
-        const habilidadeTotal = habilidade + bonusH1 + bonusH2;
+        // CORREÇÃO 1: B1 e B2 de H só entram se os checkboxes estiverem marcados
+        let habilidadeTotal;
+        if (isSub && subIndex !== null) {
+            const chkH1 = document.getElementById(`subficha-chkBonusHabilidade-${subIndex}`)?.checked !== false;
+            const chkH2 = document.getElementById(`subficha-chkBonusHabilidade2-${subIndex}`)?.checked !== false;
+            habilidadeTotal = habilidade + (chkH1 ? bonusH1 : 0) + (chkH2 ? bonusH2 : 0);
+        } else {
+            const chkH1 = document.getElementById('chkBonusHabilidade')?.checked !== false;
+            const chkH2 = document.getElementById('chkBonusHabilidade2')?.checked !== false;
+            habilidadeTotal = habilidade + (chkH1 ? bonusH1 : 0) + (chkH2 ? bonusH2 : 0);
+        }
         const usandoCartas = regraAtiva('combateCartas');
         ataquesArray.forEach((ataque, idx) => {
             const resultId = isSub ? `sub-ataque-resultado-${subIndex}-${tipo}-${idx}` : `ataque-resultado-${tipo}-${idx}`;
@@ -3969,10 +3999,18 @@
         let defesasArray = isSub && subIndex !== null ? (defesasSub[subIndex] || []) : defesas;
         if (!defesasArray || defesasArray.length === 0) { container.innerHTML = '<div style="text-align: center; color: var(--texto-suave); padding: 20px;">Nenhuma defesa criada.</div>'; return; }
         let html = '';
-        let armadura, habilidade, bonusH1, bonusH2, bonusA1, bonusA2, bfdAuto = 0;
+        let armadura, habilidade, bonusH1, bonusH2, bonusA1, bonusA2, bfd;
         if (isSub && subIndex !== null) {
             const sub = subFichas[subIndex];
-            if (sub) { armadura = sub.armadura || 0; habilidade = sub.habilidade || 0; bonusH1 = sub.bonusHabilidade || 0; bonusH2 = sub.bonusHabilidade2 || 0; bonusA1 = sub.bonusArmadura || 0; bonusA2 = sub.bonusArmadura2 || 0; bfdAuto = Number(sub.bonusArmaduraDefesa) || 0; }
+            if (sub) {
+                armadura = sub.armadura || 0;
+                habilidade = sub.habilidade || 0;
+                bonusH1 = sub.bonusHabilidade || 0;
+                bonusH2 = sub.bonusHabilidade2 || 0;
+                bonusA1 = sub.bonusArmadura || 0;
+                bonusA2 = sub.bonusArmadura2 || 0;
+                bfd = Number(sub.bonusArmaduraDefesa) || 0;
+            }
         } else {
             armadura = parseInt(document.getElementById('armadura').value) || 0;
             habilidade = parseInt(document.getElementById('habilidade').value) || 0;
@@ -3980,17 +4018,27 @@
             bonusH2 = parseInt(document.getElementById('bonusHabilidade2').value) || 0;
             bonusA1 = parseInt(document.getElementById('bonusArmadura').value) || 0;
             bonusA2 = parseInt(document.getElementById('bonusArmadura2').value) || 0;
-            bfdAuto = parseInt(document.getElementById('bonusArmaduraDefesa').value) || 0;
+            bfd = parseInt(document.getElementById('bonusArmaduraDefesa').value) || 0;
         }
-        const habilidadeTotal = habilidade + bonusH1 + bonusH2;
+        // CORREÇÃO 1: B1 e B2 de H só entram se os checkboxes estiverem marcados
+        let habilidadeTotal;
+        if (isSub && subIndex !== null) {
+            const chkH1 = document.getElementById(`subficha-chkBonusHabilidade-${subIndex}`)?.checked !== false;
+            const chkH2 = document.getElementById(`subficha-chkBonusHabilidade2-${subIndex}`)?.checked !== false;
+            habilidadeTotal = habilidade + (chkH1 ? bonusH1 : 0) + (chkH2 ? bonusH2 : 0);
+        } else {
+            const chkH1 = document.getElementById('chkBonusHabilidade')?.checked !== false;
+            const chkH2 = document.getElementById('chkBonusHabilidade2')?.checked !== false;
+            habilidadeTotal = habilidade + (chkH1 ? bonusH1 : 0) + (chkH2 ? bonusH2 : 0);
+        }
         const armaduraTotal = armadura + bonusA1 + bonusA2;
         const usandoCartas = regraAtiva('combateCartas');
         defesasArray.forEach((defesa, idx) => {
             const resultId = isSub ? `sub-defesa-resultado-${subIndex}-${idx}` : `defesa-resultado-${idx}`;
             const incluirH = defesa.incluirH !== false;
             const incluirA = defesa.incluirA !== false;
-            const bfdValor = (defesa.bfd !== undefined && defesa.bfd !== null && defesa.bfd !== '') ? defesa.bfd : bfdAuto;
-            html += `<div class="defesa-bloco"><div class="defesa-header"><input type="text" value="${escapeHtml(defesa.nome || '')}" placeholder="Nome da defesa" data-defesa-campo="nome" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"><button class="btn-remover-defesa" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}">❌ Remover</button></div><div class="defesa-campos"><div class="campo"><label>A:</label><span class="atributo-auto">${armaduraTotal}</span></div><div class="campo"><label>H:</label><span class="atributo-auto">${habilidadeTotal}</span></div><div class="campo atributo-checkbox"><label>Incluir A:</label><input type="checkbox" ${incluirA ? 'checked' : ''} data-defesa-campo="incluirA" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo atributo-checkbox"><label>Incluir H:</label><input type="checkbox" ${incluirH ? 'checked' : ''} data-defesa-campo="incluirH" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo"><label>BFD:</label><input type="text" inputmode="numeric" value="${bfdValor}" data-defesa-campo="bfd" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo critico-campo"><label>⚡ Crítico Automático:</label><input type="checkbox" ${defesa.criticoAutomatico ? 'checked' : ''} data-defesa-campo="criticoAutomatico" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo critico-campo"><label>⚡ Crítico Aprimorado:</label><input type="checkbox" ${defesa.criticoAprimorado ? 'checked' : ''} data-defesa-campo="criticoAprimorado" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div></div>`;
+            // CORREÇÃO 2: Adicionado o quadro de BFD no popup de defesa
+            html += `<div class="defesa-bloco"><div class="defesa-header"><input type="text" value="${escapeHtml(defesa.nome || '')}" placeholder="Nome da defesa" data-defesa-campo="nome" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"><button class="btn-remover-defesa" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}">❌ Remover</button></div><div class="defesa-campos"><div class="campo"><label>A:</label><span class="atributo-auto">${armaduraTotal}</span></div><div class="campo"><label>H:</label><span class="atributo-auto">${habilidadeTotal}</span></div><div class="campo bfd-campo"><label>BFD:</label><span class="atributo-auto">${bfd}</span></div><div class="campo atributo-checkbox"><label>Incluir A:</label><input type="checkbox" ${incluirA ? 'checked' : ''} data-defesa-campo="incluirA" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo atributo-checkbox"><label>Incluir H:</label><input type="checkbox" ${incluirH ? 'checked' : ''} data-defesa-campo="incluirH" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo critico-campo"><label>⚡ Crítico Automático:</label><input type="checkbox" ${defesa.criticoAutomatico ? 'checked' : ''} data-defesa-campo="criticoAutomatico" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo critico-campo"><label>⚡ Crítico Aprimorado:</label><input type="checkbox" ${defesa.criticoAprimorado ? 'checked' : ''} data-defesa-campo="criticoAprimorado" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div></div>`;
             if (usandoCartas) {
                 html += `<div id="cartas-combate-defesa-${idx}-${isSub ? subIndex : 'principal'}"></div>`;
                 html += `<div class="defesa-roll-row"><button class="btn-roll-defesa" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}">🎲 Rolar</button><div class="resultado-defesa" id="${resultId}">Aguardando rolagem...</div></div>`;
@@ -4008,7 +4056,7 @@
                 let alvo = isSubDef && subIdx !== null ? defesasSub[subIdx] : defesas;
                 if (alvo && alvo[idx]) {
                     if (campo === 'criticoAutomatico' || campo === 'criticoAprimorado' || campo === 'incluirH' || campo === 'incluirA') alvo[idx][campo] = input.checked;
-                    else if (campo === 'qtdDados' || campo === 'bfd') alvo[idx][campo] = parseInt(input.value) || 0;
+                    else if (campo === 'qtdDados') alvo[idx][campo] = parseInt(input.value) || 0;
                     else alvo[idx][campo] = input.value;
                     debounceSave();
                 }
@@ -4043,7 +4091,7 @@
     }
     
     function adicionarDefesa(isSub = false, subIndex = null) {
-        const nova = { nome: 'Nova Defesa', qtdDados: 1, bfd: null, criticoAutomatico: false, criticoAprimorado: false, incluirH: true, incluirA: true };
+        const nova = { nome: 'Nova Defesa', qtdDados: 1, criticoAutomatico: false, criticoAprimorado: false, incluirH: true, incluirA: true };
         if (isSub && subIndex !== null) { if (!defesasSub[subIndex]) defesasSub[subIndex] = []; defesasSub[subIndex].push({ ...nova }); }
         else defesas.push({ ...nova });
         renderizarDefesas(isSub, subIndex); debounceSave();
@@ -4433,7 +4481,6 @@
         atualizarIndicadoresAtributosSub(index);
         configurarEventosStatusSub(index);
         renderizarBaralhoSub(index);
-        // Ofícios da sub-ficha
         const testesContainer = document.getElementById(`subficha-testesContainer-${index}`);
         if (testesContainer) {
             let oficiosDiv = document.getElementById(`subficha-oficios-${index}`);
@@ -5837,10 +5884,10 @@
         else gastosManuais = null;
         ataquesCurto = f.ataquesCurto ? f.ataquesCurto.map(a => ({ ...a, chkB1: a.chkB1 !== false, chkB2: a.chkB2 !== false, chkBFA: a.chkBFA !== false })) : [];
         ataquesDistancia = f.ataquesDistancia ? f.ataquesDistancia.map(a => ({ ...a, chkB1: a.chkB1 !== false, chkB2: a.chkB2 !== false, chkBFA: a.chkBFA !== false })) : [];
-        defesas = f.defesas ? f.defesas.map(d => ({ ...d, incluirH: d.incluirH !== false, incluirA: d.incluirA !== false, bfd: d.bfd ?? 0 })) : [];
+        defesas = f.defesas ? f.defesas.map(d => ({ ...d, incluirH: d.incluirH !== false, incluirA: d.incluirA !== false })) : [];
         ataquesCurtoSub = f.ataquesCurtoSub ? Object.fromEntries(Object.entries(f.ataquesCurtoSub).map(([k,v]) => [k, v.map(a => ({ ...a, chkB1: a.chkB1 !== false, chkB2: a.chkB2 !== false, chkBFA: a.chkBFA !== false }))])) : {};
         ataquesDistanciaSub = f.ataquesDistanciaSub ? Object.fromEntries(Object.entries(f.ataquesDistanciaSub).map(([k,v]) => [k, v.map(a => ({ ...a, chkB1: a.chkB1 !== false, chkB2: a.chkB2 !== false, chkBFA: a.chkBFA !== false }))])) : {};
-        defesasSub = f.defesasSub ? Object.fromEntries(Object.entries(f.defesasSub).map(([k,v]) => [k, v.map(d => ({ ...d, incluirH: d.incluirH !== false, incluirA: d.incluirA !== false, bfd: d.bfd ?? 0 }))])) : {};
+        defesasSub = f.defesasSub ? Object.fromEntries(Object.entries(f.defesasSub).map(([k,v]) => [k, v.map(d => ({ ...d, incluirH: d.incluirH !== false, incluirA: d.incluirA !== false }))])) : {};
         if (f.testes?.bonusTestes) window.bonusTestes = f.testes.bonusTestes; else window.bonusTestes = {};
         if (f.testes?.bonusAtributosTeste) bonusAtributosTeste = f.testes.bonusAtributosTeste; else bonusAtributosTeste = {};
         if (f.baralhoEstado && Array.isArray(f.baralhoEstado.monte) && Array.isArray(f.baralhoEstado.mao) && Array.isArray(f.baralhoEstado.descartes)) {
