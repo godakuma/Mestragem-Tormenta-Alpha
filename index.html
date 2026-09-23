@@ -1020,26 +1020,26 @@
                                 </div>
                             </div>
                             <div class="coluna-direita">
+                                <!-- ===== CORREÇÃO 1: inputs ocultos para compatibilidade com cálculos de ataque/defesa ===== -->
+                                <input type="hidden" id="bonusArmadura" value="0">
+                                <input type="hidden" id="bonusArmadura2" value="0">
+                                <input type="hidden" id="bonusArmaduraDefesa" value="0">
+                                <input type="hidden" id="bonusForca" value="0">
+                                <input type="hidden" id="bonusForca2" value="0">
+                                <input type="hidden" id="bonusForcaDefesa" value="0">
+                                <input type="hidden" id="bonusPdf" value="0">
+                                <input type="hidden" id="bonusPdf2" value="0">
+                                <input type="hidden" id="bonusPdfDefesa" value="0">
                                 <div class="card-atributos">
                                     <h3 style="margin-top:0;">📊 Atributos</h3>
                                     <div class="atributos-3colunas">
-                                        <!-- ===== F (com B1/B2) ===== -->
                                         <div class="atributo-item">
                                             <div class="atributo-header"><span class="atributo-titulo">💪 F</span></div>
                                             <div class="atributo-linha-com-total">
                                                 <div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="forca" value="0"></div>
                                                 <div class="atributo-total-losango" title="Total de Força"><span class="atributo-total-valor" id="totalForca">0</span></div>
                                             </div>
-                                            <div class="atributo-linha">
-                                                <div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="bonusForca" value="0"></div>
-                                                <input type="checkbox" id="chkBonusForca" class="bonus-checkbox" checked>
-                                            </div>
-                                            <div class="atributo-linha">
-                                                <div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="bonusForca2" value="0"></div>
-                                                <input type="checkbox" id="chkBonusForca2" class="bonus-checkbox" checked>
-                                            </div>
                                         </div>
-                                        <!-- ===== H (com B1/B2) ===== -->
                                         <div class="atributo-item">
                                             <div class="atributo-header"><span class="atributo-titulo">🎯 H</span></div>
                                             <div class="atributo-linha-com-total">
@@ -1055,7 +1055,6 @@
                                                 <input type="checkbox" id="chkBonusHabilidade2" class="bonus-checkbox" checked>
                                             </div>
                                         </div>
-                                        <!-- ===== R (com B1/B2) ===== -->
                                         <div class="atributo-item">
                                             <div class="atributo-header"><span class="atributo-titulo">🛡️ R</span></div>
                                             <div class="atributo-linha-com-total">
@@ -1071,36 +1070,18 @@
                                                 <input type="checkbox" id="chkBonusResistencia2" class="bonus-checkbox" checked>
                                             </div>
                                         </div>
-                                        <!-- ===== A (com B1/B2) ===== -->
                                         <div class="atributo-item">
                                             <div class="atributo-header"><span class="atributo-titulo">⚔️ A</span></div>
                                             <div class="atributo-linha-com-total">
                                                 <div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="armadura" value="0"></div>
                                                 <div class="atributo-total-losango" title="Total de Armadura"><span class="atributo-total-valor" id="totalArmadura">0</span></div>
                                             </div>
-                                            <div class="atributo-linha">
-                                                <div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="bonusArmadura" value="0"></div>
-                                                <input type="checkbox" id="chkBonusArmadura" class="bonus-checkbox" checked>
-                                            </div>
-                                            <div class="atributo-linha">
-                                                <div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="bonusArmadura2" value="0"></div>
-                                                <input type="checkbox" id="chkBonusArmadura2" class="bonus-checkbox" checked>
-                                            </div>
                                         </div>
-                                        <!-- ===== PdF (com B1/B2) ===== -->
                                         <div class="atributo-item">
                                             <div class="atributo-header"><span class="atributo-titulo">🔮 PdF</span></div>
                                             <div class="atributo-linha-com-total">
                                                 <div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="pdf" value="0"></div>
                                                 <div class="atributo-total-losango" title="Total de Poder de Fogo"><span class="atributo-total-valor" id="totalPdf">0</span></div>
-                                            </div>
-                                            <div class="atributo-linha">
-                                                <div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="bonusPdf" value="0"></div>
-                                                <input type="checkbox" id="chkBonusPdf" class="bonus-checkbox" checked>
-                                            </div>
-                                            <div class="atributo-linha">
-                                                <div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="bonusPdf2" value="0"></div>
-                                                <input type="checkbox" id="chkBonusPdf2" class="bonus-checkbox" checked>
                                             </div>
                                         </div>
                                         <div class="rolagem-generica-item">
@@ -1359,7 +1340,6 @@
 </div>
 
 <div id="diceAnim" class="dice-anim">🎲</div>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script type="module">
     const SUPABASE_URL = 'https://niggtfsswcywtpwkuthp.supabase.co';
@@ -2111,142 +2091,100 @@
         if (isMaster) setTimeout(() => limparChatAntigo(), 1000);
     }
     
+    // ============================================================
+    // CORREÇÃO 4: calcularTotalAtributoPrincipal / calcularTotalAtributoSub
+    // ============================================================
+    function calcularTotalAtributoPrincipal(attr) {
+        const map = {
+            'F':   { base: 'forca',      b1: 'bonusForca',      b2: 'bonusForca2',      chk1: 'chkBonusForca',      chk2: 'chkBonusForca2' },
+            'H':   { base: 'habilidade', b1: 'bonusHabilidade', b2: 'bonusHabilidade2', chk1: 'chkBonusHabilidade', chk2: 'chkBonusHabilidade2' },
+            'R':   { base: 'resistencia',b1: 'bonusResistencia',b2: 'bonusResistencia2',chk1: 'chkBonusResistencia',chk2: 'chkBonusResistencia2' },
+            'A':   { base: 'armadura',   b1: 'bonusArmadura',   b2: 'bonusArmadura2',   chk1: 'chkBonusArmadura',   chk2: 'chkBonusArmadura2' },
+            'PdF': { base: 'pdf',        b1: 'bonusPdf',        b2: 'bonusPdf2',        chk1: 'chkBonusPdf',        chk2: 'chkBonusPdf2' }
+        }[attr];
+        if (!map) return 0;
+        const baseEl = document.getElementById(map.base);
+        const b1El = document.getElementById(map.b1);
+        const b2El = document.getElementById(map.b2);
+        const chk1El = document.getElementById(map.chk1);
+        const chk2El = document.getElementById(map.chk2);
+        let total = parseInt(baseEl?.value) || 0;
+        if (chk1El?.checked !== false && b1El) total += parseInt(b1El.value) || 0;
+        if (chk2El?.checked !== false && b2El) total += parseInt(b2El.value) || 0;
+        return total;
+    }
+
+    function calcularTotalAtributoSub(sub, attr) {
+        if (!sub) return 0;
+        const idx = subFichas.indexOf(sub);
+        const map = {
+            'F':   { base: 'forca',      b1: 'bonusForca',      b2: 'bonusForca2',      chk1: 'subficha-chkBonusForca-',      chk2: 'subficha-chkBonusForca2-' },
+            'H':   { base: 'habilidade', b1: 'bonusHabilidade', b2: 'bonusHabilidade2', chk1: 'subficha-chkBonusHabilidade-', chk2: 'subficha-chkBonusHabilidade2-' },
+            'R':   { base: 'resistencia',b1: 'bonusResistencia',b2: 'bonusResistencia2',chk1: 'subficha-chkBonusResistencia-',chk2: 'subficha-chkBonusResistencia2-' },
+            'A':   { base: 'armadura',   b1: 'bonusArmadura',   b2: 'bonusArmadura2',   chk1: 'subficha-chkBonusArmadura-',   chk2: 'subficha-chkBonusArmadura2-' },
+            'PdF': { base: 'pdf',        b1: 'bonusPdf',        b2: 'bonusPdf2',        chk1: 'subficha-chkBonusPdf-',        chk2: 'subficha-chkBonusPdf2-' }
+        }[attr];
+        if (!map) return 0;
+        let total = Number(sub[map.base]) || 0;
+        if (idx >= 0) {
+            const chk1 = document.getElementById(map.chk1 + idx);
+            const chk2 = document.getElementById(map.chk2 + idx);
+            if (chk1?.checked !== false) total += Number(sub[map.b1]) || 0;
+            if (chk2?.checked !== false) total += Number(sub[map.b2]) || 0;
+        } else {
+            total += Number(sub[map.b1]) || 0;
+            total += Number(sub[map.b2]) || 0;
+        }
+        return total;
+    }
+    
+    // ============================================================
+    // CORREÇÃO 2: atualizarIndicadoresAtributos com optional chaining
+    // ============================================================
     function atualizarIndicadoresAtributos() {
-        // ===== F (com B1/B2) =====
         const forcaInput = document.getElementById('forca');
-        const bonusF1Input = document.getElementById('bonusForca');
-        const bonusF2Input = document.getElementById('bonusForca2');
-        const chkF1 = document.getElementById('chkBonusForca');
-        const chkF2 = document.getElementById('chkBonusForca2');
         const totalForcaEl = document.getElementById('totalForca');
         if (forcaInput && totalForcaEl) {
-            let total = parseInt(forcaInput.value) || 0;
-            if (chkF1?.checked) total += parseInt(bonusF1Input?.value) || 0;
-            if (chkF2?.checked) total += parseInt(bonusF2Input?.value) || 0;
-            totalForcaEl.textContent = total;
+            totalForcaEl.textContent = calcularTotalAtributoPrincipal('F');
         }
-        // ===== H (com B1/B2) =====
         const habInput = document.getElementById('habilidade');
-        const bonusH1Input = document.getElementById('bonusHabilidade');
-        const bonusH2Input = document.getElementById('bonusHabilidade2');
-        const chkH1 = document.getElementById('chkBonusHabilidade');
-        const chkH2 = document.getElementById('chkBonusHabilidade2');
         const totalHabEl = document.getElementById('totalHabilidade');
         if (habInput && totalHabEl) {
-            let total = parseInt(habInput.value) || 0;
-            if (chkH1?.checked) total += parseInt(bonusH1Input?.value) || 0;
-            if (chkH2?.checked) total += parseInt(bonusH2Input?.value) || 0;
-            totalHabEl.textContent = total;
+            totalHabEl.textContent = calcularTotalAtributoPrincipal('H');
         }
-        // ===== R (com B1/B2) =====
         const resInput = document.getElementById('resistencia');
-        const bonusR1Input = document.getElementById('bonusResistencia');
-        const bonusR2Input = document.getElementById('bonusResistencia2');
-        const chkR1 = document.getElementById('chkBonusResistencia');
-        const chkR2 = document.getElementById('chkBonusResistencia2');
         const totalResEl = document.getElementById('totalResistencia');
         if (resInput && totalResEl) {
-            let total = parseInt(resInput.value) || 0;
-            if (chkR1?.checked) total += parseInt(bonusR1Input?.value) || 0;
-            if (chkR2?.checked) total += parseInt(bonusR2Input?.value) || 0;
-            totalResEl.textContent = total;
+            totalResEl.textContent = calcularTotalAtributoPrincipal('R');
         }
-        // ===== A (com B1/B2) =====
         const armInput = document.getElementById('armadura');
-        const bonusA1Input = document.getElementById('bonusArmadura');
-        const bonusA2Input = document.getElementById('bonusArmadura2');
-        const chkA1 = document.getElementById('chkBonusArmadura');
-        const chkA2 = document.getElementById('chkBonusArmadura2');
         const totalArmEl = document.getElementById('totalArmadura');
         if (armInput && totalArmEl) {
-            let total = parseInt(armInput.value) || 0;
-            if (chkA1?.checked) total += parseInt(bonusA1Input?.value) || 0;
-            if (chkA2?.checked) total += parseInt(bonusA2Input?.value) || 0;
-            totalArmEl.textContent = total;
+            totalArmEl.textContent = calcularTotalAtributoPrincipal('A');
         }
-        // ===== PdF (com B1/B2) =====
         const pdfInput = document.getElementById('pdf');
-        const bonusPdf1Input = document.getElementById('bonusPdf');
-        const bonusPdf2Input = document.getElementById('bonusPdf2');
-        const chkPdf1 = document.getElementById('chkBonusPdf');
-        const chkPdf2 = document.getElementById('chkBonusPdf2');
         const totalPdfEl = document.getElementById('totalPdf');
         if (pdfInput && totalPdfEl) {
-            let total = parseInt(pdfInput.value) || 0;
-            if (chkPdf1?.checked) total += parseInt(bonusPdf1Input?.value) || 0;
-            if (chkPdf2?.checked) total += parseInt(bonusPdf2Input?.value) || 0;
-            totalPdfEl.textContent = total;
+            totalPdfEl.textContent = calcularTotalAtributoPrincipal('PdF');
         }
     }
     
+    // ============================================================
+    // CORREÇÃO 3: atualizarIndicadoresAtributosSub com optional chaining
+    // ============================================================
     function atualizarIndicadoresAtributosSub(index) {
         const sub = subFichas[index];
         if (!sub) return;
-        // ===== F (com B1/B2) =====
-        const forcaInput = document.getElementById(`subficha-forca-${index}`);
-        const bonusF1Input = document.getElementById(`subficha-bonusForca-${index}`);
-        const bonusF2Input = document.getElementById(`subficha-bonusForca2-${index}`);
-        const chkF1 = document.getElementById(`subficha-chkBonusForca-${index}`);
-        const chkF2 = document.getElementById(`subficha-chkBonusForca2-${index}`);
         const totalForcaEl = document.getElementById(`subficha-totalForca-${index}`);
-        if (forcaInput && totalForcaEl) {
-            let total = Number(forcaInput.value) || 0;
-            if (chkF1?.checked !== false) total += Number(bonusF1Input?.value) || 0;
-            if (chkF2?.checked !== false) total += Number(bonusF2Input?.value) || 0;
-            totalForcaEl.textContent = total;
-        }
-        // ===== H (com B1/B2) =====
-        const habInput = document.getElementById(`subficha-habilidade-${index}`);
-        const bonusH1Input = document.getElementById(`subficha-bonusHabilidade-${index}`);
-        const bonusH2Input = document.getElementById(`subficha-bonusHabilidade2-${index}`);
-        const chkH1 = document.getElementById(`subficha-chkBonusHabilidade-${index}`);
-        const chkH2 = document.getElementById(`subficha-chkBonusHabilidade2-${index}`);
+        if (totalForcaEl) totalForcaEl.textContent = calcularTotalAtributoSub(sub, 'F');
         const totalHabEl = document.getElementById(`subficha-totalHabilidade-${index}`);
-        if (habInput && totalHabEl) {
-            let total = Number(habInput.value) || 0;
-            if (chkH1?.checked !== false) total += Number(bonusH1Input?.value) || 0;
-            if (chkH2?.checked !== false) total += Number(bonusH2Input?.value) || 0;
-            totalHabEl.textContent = total;
-        }
-        // ===== R (com B1/B2) =====
-        const resInput = document.getElementById(`subficha-resistencia-${index}`);
-        const bonusR1Input = document.getElementById(`subficha-bonusResistencia-${index}`);
-        const bonusR2Input = document.getElementById(`subficha-bonusResistencia2-${index}`);
-        const chkR1 = document.getElementById(`subficha-chkBonusResistencia-${index}`);
-        const chkR2 = document.getElementById(`subficha-chkBonusResistencia2-${index}`);
+        if (totalHabEl) totalHabEl.textContent = calcularTotalAtributoSub(sub, 'H');
         const totalResEl = document.getElementById(`subficha-totalResistencia-${index}`);
-        if (resInput && totalResEl) {
-            let total = Number(resInput.value) || 0;
-            if (chkR1?.checked !== false) total += Number(bonusR1Input?.value) || 0;
-            if (chkR2?.checked !== false) total += Number(bonusR2Input?.value) || 0;
-            totalResEl.textContent = total;
-        }
-        // ===== A (com B1/B2) =====
-        const armInput = document.getElementById(`subficha-armadura-${index}`);
-        const bonusA1Input = document.getElementById(`subficha-bonusArmadura-${index}`);
-        const bonusA2Input = document.getElementById(`subficha-bonusArmadura2-${index}`);
-        const chkA1 = document.getElementById(`subficha-chkBonusArmadura-${index}`);
-        const chkA2 = document.getElementById(`subficha-chkBonusArmadura2-${index}`);
+        if (totalResEl) totalResEl.textContent = calcularTotalAtributoSub(sub, 'R');
         const totalArmEl = document.getElementById(`subficha-totalArmadura-${index}`);
-        if (armInput && totalArmEl) {
-            let total = Number(armInput.value) || 0;
-            if (chkA1?.checked !== false) total += Number(bonusA1Input?.value) || 0;
-            if (chkA2?.checked !== false) total += Number(bonusA2Input?.value) || 0;
-            totalArmEl.textContent = total;
-        }
-        // ===== PdF (com B1/B2) =====
-        const pdfInput = document.getElementById(`subficha-pdf-${index}`);
-        const bonusPdf1Input = document.getElementById(`subficha-bonusPdf-${index}`);
-        const bonusPdf2Input = document.getElementById(`subficha-bonusPdf2-${index}`);
-        const chkPdf1 = document.getElementById(`subficha-chkBonusPdf-${index}`);
-        const chkPdf2 = document.getElementById(`subficha-chkBonusPdf2-${index}`);
+        if (totalArmEl) totalArmEl.textContent = calcularTotalAtributoSub(sub, 'A');
         const totalPdfEl = document.getElementById(`subficha-totalPdf-${index}`);
-        if (pdfInput && totalPdfEl) {
-            let total = Number(pdfInput.value) || 0;
-            if (chkPdf1?.checked !== false) total += Number(bonusPdf1Input?.value) || 0;
-            if (chkPdf2?.checked !== false) total += Number(bonusPdf2Input?.value) || 0;
-            totalPdfEl.textContent = total;
-        }
+        if (totalPdfEl) totalPdfEl.textContent = calcularTotalAtributoSub(sub, 'PdF');
     }
     
     function getStatusLabel(id) { const f = STATUS_LISTA.find(s => s.id === id); return f ? f.label : id; }
@@ -2554,7 +2492,7 @@
     }
 
     // ============================================================
-    // AJUSTE 3: Magias usam o TOTAL do atributo (com B1/B2)
+    // CORREÇÃO 5: rolarDanoMagia usa totais
     // ============================================================
     function rolarDanoMagia(magiaIndex, isSub = false, subIndex = null) {
         animarDado();
@@ -2565,7 +2503,6 @@
             magia = sub.listas.magias[magiaIndex];
             if (!magia) return;
             nomePersonagem = sub.nome || 'Sub-ficha';
-            // Ajuste 3: usar TOTAIS (com B1/B2)
             forca = calcularTotalAtributoSub(sub, 'F');
             pdf = calcularTotalAtributoSub(sub, 'PdF');
             habilidade = calcularTotalAtributoSub(sub, 'H');
@@ -2575,7 +2512,6 @@
             magia = fichaListas.magias[magiaIndex];
             if (!magia) return;
             nomePersonagem = document.getElementById('nomePersonagem').value || currentUserName || 'Jogador';
-            // Ajuste 3: usar TOTAIS (com B1/B2) da ficha principal
             forca = calcularTotalAtributoPrincipal('F');
             pdf = calcularTotalAtributoPrincipal('PdF');
             habilidade = calcularTotalAtributoPrincipal('H');
@@ -2609,42 +2545,6 @@
         enviarRolagemFirebase(texto, false);
         return total;
     }
-
-    // Ajuste 3: helpers para calcular TOTAL do atributo (com B1/B2)
-    function calcularTotalAtributoPrincipal(attr) {
-        const map = { 'F': ['forca', 'bonusForca', 'bonusForca2', 'chkBonusForca', 'chkBonusForca2'],
-                      'H': ['habilidade', 'bonusHabilidade', 'bonusHabilidade2', 'chkBonusHabilidade', 'chkBonusHabilidade2'],
-                      'R': ['resistencia', 'bonusResistencia', 'bonusResistencia2', 'chkBonusResistencia', 'chkBonusResistencia2'],
-                      'A': ['armadura', 'bonusArmadura', 'bonusArmadura2', 'chkBonusArmadura', 'chkBonusArmadura2'],
-                      'PdF': ['pdf', 'bonusPdf', 'bonusPdf2', 'chkBonusPdf', 'chkBonusPdf2'] };
-        const ids = map[attr]; if (!ids) return 0;
-        let total = parseInt(document.getElementById(ids[0])?.value) || 0;
-        if (document.getElementById(ids[3])?.checked !== false) total += parseInt(document.getElementById(ids[1])?.value) || 0;
-        if (document.getElementById(ids[4])?.checked !== false) total += parseInt(document.getElementById(ids[2])?.value) || 0;
-        return total;
-    }
-    function calcularTotalAtributoSub(sub, attr) {
-        if (!sub) return 0;
-        const map = { 'F': ['forca', 'bonusForca', 'bonusForca2'],
-                      'H': ['habilidade', 'bonusHabilidade', 'bonusHabilidade2'],
-                      'R': ['resistencia', 'bonusResistencia', 'bonusResistencia2'],
-                      'A': ['armadura', 'bonusArmadura', 'bonusArmadura2'],
-                      'PdF': ['pdf', 'bonusPdf', 'bonusPdf2'] };
-        const keys = map[attr]; if (!keys) return 0;
-        const chkIds = { 'F': ['subficha-chkBonusForca-', 'subficha-chkBonusForca2-'],
-                         'H': ['subficha-chkBonusHabilidade-', 'subficha-chkBonusHabilidade2-'],
-                         'R': ['subficha-chkBonusResistencia-', 'subficha-chkBonusResistencia2-'],
-                         'A': ['subficha-chkBonusArmadura-', 'subficha-chkBonusArmadura2-'],
-                         'PdF': ['subficha-chkBonusPdf-', 'subficha-chkBonusPdf2-'] }[attr];
-        let total = Number(sub[keys[0]]) || 0;
-        const chk1 = document.getElementById(chkIds[0] + subIndexGlobalTemp)?.checked;
-        const chk2 = document.getElementById(chkIds[1] + subIndexGlobalTemp)?.checked;
-        if (chk1 !== false) total += Number(sub[keys[1]]) || 0;
-        if (chk2 !== false) total += Number(sub[keys[2]]) || 0;
-        return total;
-    }
-    // Variável temporária para o helper acima não exigir passar subIndex em cada chamada
-    let subIndexGlobalTemp = null;
 
     window.rolarDanoMagia = rolarDanoMagia;
 
@@ -2714,7 +2614,6 @@
                 const magiaIdx = parseInt(btn.dataset.magiaIdx);
                 const isSubBtn = btn.dataset.magiaIsSub === 'true';
                 const subIdx = btn.dataset.magiaSubIdx !== '' ? parseInt(btn.dataset.magiaSubIdx) : null;
-                subIndexGlobalTemp = subIdx;
                 rolarDanoMagia(magiaIdx, isSubBtn, subIdx);
             };
         });
@@ -2976,7 +2875,6 @@
                 mostrarToast('🎯 Selecione o radio deste ofício para testar com cartas.', '#5a7a8a');
                 return;
             }
-            const chave = isSub && subIndex !== null ? `sub${subIndex}` : 'principal';
             const estado = isSub && subIndex !== null ? baralhosSubFichas[subIndex] : baralhoEstado;
             if (!estado || !estado.mao || estado.mao.length === 0) {
                 mostrarToast('⚠️ Compre uma mão de cartas primeiro!', '#c0392b');
@@ -3235,7 +3133,7 @@
     }
     
     // ============================================================
-    // AJUSTE 2: Rolagem de ataque/defesa — corrigida
+    // CORREÇÃO 6: rolarAtaque com totais
     // ============================================================
     function rolarAtaque(tipo, ataqueIndex, isSub = false, subIndex = null) {
         let ataquesArray;
@@ -3250,7 +3148,6 @@
         let pmAtual = 0, pvAtual = 0, rTotal = 0;
         if (isSub && subIndex !== null) {
             const sub = subFichas[subIndex]; if (!sub) return;
-            // AJUSTE 2: garantir conversão numérica
             forca = Number(calcularTotalAtributoSub(sub, 'F')) || 0;
             pdf = Number(calcularTotalAtributoSub(sub, 'PdF')) || 0;
             habilidade = Number(calcularTotalAtributoSub(sub, 'H')) || 0;
@@ -3267,44 +3164,33 @@
             rTotal = Number(sub.resistencia) || 0;
             nomePersonagem = sub.nome || 'Sub-ficha';
         } else {
-            forca = parseInt(document.getElementById('forca').value) || 0;
-            pdf = parseInt(document.getElementById('pdf').value) || 0;
-            habilidade = parseInt(document.getElementById('habilidade').value) || 0;
-            armadura = parseInt(document.getElementById('armadura').value) || 0;
-            bonusH1 = parseInt(document.getElementById('bonusHabilidade').value) || 0;
-            bonusH2 = parseInt(document.getElementById('bonusHabilidade2').value) || 0;
-            bonusA1 = parseInt(document.getElementById('bonusArmadura').value) || 0;
-            bonusA2 = parseInt(document.getElementById('bonusArmadura2').value) || 0;
-            bonusR1 = parseInt(document.getElementById('bonusResistencia').value) || 0;
-            bonusR2 = parseInt(document.getElementById('bonusResistencia2').value) || 0;
-            bfd = parseInt(document.getElementById('bonusArmaduraDefesa').value) || 0;
-            pmAtual = parseInt(document.getElementById('pmAtual').value) || 0;
-            pvAtual = parseInt(document.getElementById('pvAtual').value) || 0;
-            rTotal = parseInt(document.getElementById('resistencia').value) || 0;
-            nomePersonagem = document.getElementById('nomePersonagem').value || currentUserName || 'Jogador';
+            forca = calcularTotalAtributoPrincipal('F');
+            pdf = calcularTotalAtributoPrincipal('PdF');
+            habilidade = calcularTotalAtributoPrincipal('H');
+            armadura = calcularTotalAtributoPrincipal('A');
+            bonusH1 = parseInt(document.getElementById('bonusHabilidade')?.value) || 0;
+            bonusH2 = parseInt(document.getElementById('bonusHabilidade2')?.value) || 0;
+            bonusA1 = 0;
+            bonusA2 = 0;
+            bonusR1 = parseInt(document.getElementById('bonusResistencia')?.value) || 0;
+            bonusR2 = parseInt(document.getElementById('bonusResistencia2')?.value) || 0;
+            bfd = 0;
+            pmAtual = parseInt(document.getElementById('pmAtual')?.value) || 0;
+            pvAtual = parseInt(document.getElementById('pvAtual')?.value) || 0;
+            rTotal = parseInt(document.getElementById('resistencia')?.value) || 0;
+            nomePersonagem = document.getElementById('nomePersonagem')?.value || currentUserName || 'Jogador';
         }
-        // B1 e B2 de H só entram se os checkboxes estiverem marcados
-        let habilidadeTotal;
-        if (isSub && subIndex !== null) {
-            const chkH1 = document.getElementById(`subficha-chkBonusHabilidade-${subIndex}`)?.checked !== false;
-            const chkH2 = document.getElementById(`subficha-chkBonusHabilidade2-${subIndex}`)?.checked !== false;
-            habilidadeTotal = Number(habilidade) + (chkH1 ? Number(bonusH1) : 0) + (chkH2 ? Number(bonusH2) : 0);
-        } else {
-            const chkH1 = document.getElementById('chkBonusHabilidade')?.checked !== false;
-            const chkH2 = document.getElementById('chkBonusHabilidade2')?.checked !== false;
-            habilidadeTotal = habilidade + (chkH1 ? bonusH1 : 0) + (chkH2 ? bonusH2 : 0);
-        }
+        const habilidadeTotal = habilidade;
         const ehCurto = tipo === 'curto';
         const atributoBase = ehCurto ? forca : pdf;
         const atributoStr = ehCurto ? 'F' : 'PdF';
-        // B1, B2 e BFA só vêm do próprio ataque agora
         const usarB1 = ataque.chkB1 !== false;
         const usarB2 = ataque.chkB2 !== false;
         const usarBFA = ataque.chkBFA !== false;
         const b1 = usarB1 ? (parseInt(ataque.b1) || 0) : 0;
         const b2 = usarB2 ? (parseInt(ataque.b2) || 0) : 0;
         const bfa = usarBFA ? (parseInt(ataque.bfa) || 0) : 0;
-        const atributoTotal = (ehCurto ? forca : pdf) + b1 + b2;
+        const atributoTotal = atributoBase + b1 + b2;
         const criticoAutomatico = ataque.criticoAutomatico === true;
         const criticoAprimorado = ataque.criticoAprimorado === true;
         const ehSecreta = isGM && document.getElementById('chkSecretRoll')?.checked === true;
@@ -3607,14 +3493,16 @@
         if (criticoAutomatico && criticoAprimorado) opcoesCriticoStr = ' [⚡ Crítico Automático + Crítico Aprimorado ativados]';
         else if (criticoAutomatico) opcoesCriticoStr = ' [⚡ Crítico Automático ativado]';
         else if (criticoAprimorado) opcoesCriticoStr = ' [⚡ Crítico Aprimorado ativado]';
-        const bonusHStr = (bonusH1 || bonusH2) ? `+${habilidadeTotal - habilidade}(B1/B2)` : '';
-        const resultado = `${prefixo}${tipoStr}${criticoStr}${opcoesCriticoStr} [${ataque.nome || 'Ataque'}]: ${dados.join('+')} + ${atributoDobrado}(${atributoStr}) + ${habilidade}${bonusHStr}(H) + ${bfa}(BFA) = ${total}`;
+        const resultado = `${prefixo}${tipoStr}${criticoStr}${opcoesCriticoStr} [${ataque.nome || 'Ataque'}]: ${dados.join('+')} + ${atributoDobrado}(${atributoStr}) + ${habilidadeTotal}(H) + ${bfa}(BFA) = ${total}`;
         addMensagem(resultado, ehSecreta);
         if (!ehSecreta) enviarRolagemFirebase(resultado, false);
         if (resultEl) { resultEl.textContent = `🎲 ${dados.join('+')} = ${total}`; resultEl.className = 'resultado-ataque sucesso'; }
         debounceSave();
     }
     
+    // ============================================================
+    // CORREÇÃO 7: rolarDefesa com totais
+    // ============================================================
     function rolarDefesa(defesaIndex, isSub = false, subIndex = null) {
         let defesasArray;
         if (isSub && subIndex !== null) defesasArray = defesasSub[subIndex] || [];
@@ -3644,32 +3532,23 @@
             rTotal = Number(sub.resistencia) || 0;
             nomePersonagem = sub.nome || 'Sub-ficha';
         } else {
-            forca = parseInt(document.getElementById('forca').value) || 0;
-            pdf = parseInt(document.getElementById('pdf').value) || 0;
-            habilidade = parseInt(document.getElementById('habilidade').value) || 0;
-            armadura = parseInt(document.getElementById('armadura').value) || 0;
-            bonusH1 = parseInt(document.getElementById('bonusHabilidade').value) || 0;
-            bonusH2 = parseInt(document.getElementById('bonusHabilidade2').value) || 0;
-            bonusA1 = parseInt(document.getElementById('bonusArmadura').value) || 0;
-            bonusA2 = parseInt(document.getElementById('bonusArmadura2').value) || 0;
-            bonusR1 = parseInt(document.getElementById('bonusResistencia').value) || 0;
-            bonusR2 = parseInt(document.getElementById('bonusResistencia2').value) || 0;
-            bfd = parseInt(document.getElementById('bonusArmaduraDefesa').value) || 0;
-            pmAtual = parseInt(document.getElementById('pmAtual').value) || 0;
-            pvAtual = parseInt(document.getElementById('pvAtual').value) || 0;
-            rTotal = parseInt(document.getElementById('resistencia').value) || 0;
-            nomePersonagem = document.getElementById('nomePersonagem').value || currentUserName || 'Jogador';
+            forca = calcularTotalAtributoPrincipal('F');
+            pdf = calcularTotalAtributoPrincipal('PdF');
+            habilidade = calcularTotalAtributoPrincipal('H');
+            armadura = calcularTotalAtributoPrincipal('A');
+            bonusH1 = parseInt(document.getElementById('bonusHabilidade')?.value) || 0;
+            bonusH2 = parseInt(document.getElementById('bonusHabilidade2')?.value) || 0;
+            bonusA1 = 0;
+            bonusA2 = 0;
+            bonusR1 = parseInt(document.getElementById('bonusResistencia')?.value) || 0;
+            bonusR2 = parseInt(document.getElementById('bonusResistencia2')?.value) || 0;
+            bfd = 0;
+            pmAtual = parseInt(document.getElementById('pmAtual')?.value) || 0;
+            pvAtual = parseInt(document.getElementById('pvAtual')?.value) || 0;
+            rTotal = parseInt(document.getElementById('resistencia')?.value) || 0;
+            nomePersonagem = document.getElementById('nomePersonagem')?.value || currentUserName || 'Jogador';
         }
-        let habilidadeTotal;
-        if (isSub && subIndex !== null) {
-            const chkH1 = document.getElementById(`subficha-chkBonusHabilidade-${subIndex}`)?.checked !== false;
-            const chkH2 = document.getElementById(`subficha-chkBonusHabilidade2-${subIndex}`)?.checked !== false;
-            habilidadeTotal = Number(habilidade) + (chkH1 ? Number(bonusH1) : 0) + (chkH2 ? Number(bonusH2) : 0);
-        } else {
-            const chkH1 = document.getElementById('chkBonusHabilidade')?.checked !== false;
-            const chkH2 = document.getElementById('chkBonusHabilidade2')?.checked !== false;
-            habilidadeTotal = habilidade + (chkH1 ? bonusH1 : 0) + (chkH2 ? bonusH2 : 0);
-        }
+        const habilidadeTotal = habilidade;
         const incluirH = defesa.incluirH !== false;
         const incluirA = defesa.incluirA !== false;
         const hUsado = incluirH ? habilidadeTotal : 0;
@@ -3917,6 +3796,9 @@
     }
     function fecharPopupDefesas() { document.getElementById('defesaPopup').style.display = 'none'; salvarForcado(); }
     
+    // ============================================================
+    // CORREÇÃO 8: renderizarAtaques e renderizarDefesas usam totais
+    // ============================================================
     function renderizarAtaques(tipo, isSub = false, subIndex = null) {
         const container = document.getElementById('ataquesContainer');
         let ataquesArray = isSub && subIndex !== null ? (tipo === 'curto' ? (ataquesCurtoSub[subIndex] || []) : (ataquesDistanciaSub[subIndex] || [])) : (tipo === 'curto' ? ataquesCurto : ataquesDistancia);
@@ -3924,30 +3806,16 @@
         let html = '';
         const ehCurto = tipo === 'curto';
         const atributoStr = ehCurto ? 'F' : 'PdF';
-        let atributoBase, habilidade, bonusH1, bonusH2;
+        let atributoBase, habilidade;
         if (isSub && subIndex !== null) {
             const sub = subFichas[subIndex];
             if (sub) {
                 atributoBase = ehCurto ? Number(calcularTotalAtributoSub(sub, 'F')) : Number(calcularTotalAtributoSub(sub, 'PdF'));
                 habilidade = Number(calcularTotalAtributoSub(sub, 'H')) || 0;
-                bonusH1 = Number(sub.bonusHabilidade) || 0;
-                bonusH2 = Number(sub.bonusHabilidade2) || 0;
             }
         } else {
-            atributoBase = ehCurto ? (parseInt(document.getElementById('forca').value) || 0) : (parseInt(document.getElementById('pdf').value) || 0);
-            habilidade = parseInt(document.getElementById('habilidade').value) || 0;
-            bonusH1 = parseInt(document.getElementById('bonusHabilidade').value) || 0;
-            bonusH2 = parseInt(document.getElementById('bonusHabilidade2').value) || 0;
-        }
-        let habilidadeTotal;
-        if (isSub && subIndex !== null) {
-            const chkH1 = document.getElementById(`subficha-chkBonusHabilidade-${subIndex}`)?.checked !== false;
-            const chkH2 = document.getElementById(`subficha-chkBonusHabilidade2-${subIndex}`)?.checked !== false;
-            habilidadeTotal = Number(habilidade) + (chkH1 ? Number(bonusH1) : 0) + (chkH2 ? Number(bonusH2) : 0);
-        } else {
-            const chkH1 = document.getElementById('chkBonusHabilidade')?.checked !== false;
-            const chkH2 = document.getElementById('chkBonusHabilidade2')?.checked !== false;
-            habilidadeTotal = habilidade + (chkH1 ? bonusH1 : 0) + (chkH2 ? bonusH2 : 0);
+            atributoBase = ehCurto ? calcularTotalAtributoPrincipal('F') : calcularTotalAtributoPrincipal('PdF');
+            habilidade = calcularTotalAtributoPrincipal('H');
         }
         const usandoCartas = regraAtiva('combateCartas');
         ataquesArray.forEach((ataque, idx) => {
@@ -3958,7 +3826,7 @@
             const b1Valor = ataque.b1 ?? 0;
             const b2Valor = ataque.b2 ?? 0;
             const bfaValor = ataque.bfa ?? 0;
-            html += `<div class="ataque-modulo"><div class="ataque-header"><input type="text" value="${escapeHtml(ataque.nome || '')}" placeholder="Nome do ataque" data-ataque-campo="nome" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"><button class="btn-remover-ataque" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}">❌ Remover</button></div><div class="ataque-campos"><div class="campo"><label>${atributoStr}:</label><span class="atributo-auto">${atributoBase}</span></div><div class="campo bonus-campo"><input type="checkbox" ${chkB1 ? 'checked' : ''} data-ataque-campo="chkB1" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}" title="Incluir B1 no cálculo"><label>B1:</label><input type="text" inputmode="numeric" value="${b1Valor}" data-ataque-campo="b1" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo bonus-campo"><input type="checkbox" ${chkB2 ? 'checked' : ''} data-ataque-campo="chkB2" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}" title="Incluir B2 no cálculo"><label>B2:</label><input type="text" inputmode="numeric" value="${b2Valor}" data-ataque-campo="b2" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo bonus-campo"><input type="checkbox" ${chkBFA ? 'checked' : ''} data-ataque-campo="chkBFA" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}" title="Incluir BFA no cálculo"><label>BFA:</label><input type="text" inputmode="numeric" value="${bfaValor}" data-ataque-campo="bfa" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo"><label>H:</label><span class="atributo-auto">${habilidadeTotal}</span></div><div class="campo critico-campo"><label>⚡ Crítico Automático:</label><input type="checkbox" ${ataque.criticoAutomatico ? 'checked' : ''} data-ataque-campo="criticoAutomatico" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo critico-campo"><label>⚡ Crítico Aprimorado:</label><input type="checkbox" ${ataque.criticoAprimorado ? 'checked' : ''} data-ataque-campo="criticoAprimorado" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div></div>`;
+            html += `<div class="ataque-modulo"><div class="ataque-header"><input type="text" value="${escapeHtml(ataque.nome || '')}" placeholder="Nome do ataque" data-ataque-campo="nome" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"><button class="btn-remover-ataque" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}">❌ Remover</button></div><div class="ataque-campos"><div class="campo"><label>${atributoStr}:</label><span class="atributo-auto">${atributoBase}</span></div><div class="campo bonus-campo"><input type="checkbox" ${chkB1 ? 'checked' : ''} data-ataque-campo="chkB1" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}" title="Incluir B1 no cálculo"><label>B1:</label><input type="text" inputmode="numeric" value="${b1Valor}" data-ataque-campo="b1" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo bonus-campo"><input type="checkbox" ${chkB2 ? 'checked' : ''} data-ataque-campo="chkB2" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}" title="Incluir B2 no cálculo"><label>B2:</label><input type="text" inputmode="numeric" value="${b2Valor}" data-ataque-campo="b2" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo bonus-campo"><input type="checkbox" ${chkBFA ? 'checked' : ''} data-ataque-campo="chkBFA" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}" title="Incluir BFA no cálculo"><label>BFA:</label><input type="text" inputmode="numeric" value="${bfaValor}" data-ataque-campo="bfa" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo"><label>H:</label><span class="atributo-auto">${habilidade}</span></div><div class="campo critico-campo"><label>⚡ Crítico Automático:</label><input type="checkbox" ${ataque.criticoAutomatico ? 'checked' : ''} data-ataque-campo="criticoAutomatico" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo critico-campo"><label>⚡ Crítico Aprimorado:</label><input type="checkbox" ${ataque.criticoAprimorado ? 'checked' : ''} data-ataque-campo="criticoAprimorado" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div></div>`;
             if (usandoCartas) {
                 html += `<div id="cartas-combate-${tipo}-${idx}-${isSub ? subIndex : 'principal'}"></div>`;
                 html += `<div class="ataque-roll-row"><button class="btn-roll-ataque" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}">🎲 Rolar</button><div class="resultado-ataque" id="${resultId}">Aguardando rolagem...</div></div>`;
@@ -4010,30 +3878,16 @@
         let defesasArray = isSub && subIndex !== null ? (defesasSub[subIndex] || []) : defesas;
         if (!defesasArray || defesasArray.length === 0) { container.innerHTML = '<div style="text-align: center; color: var(--texto-suave); padding: 20px;">Nenhuma defesa criada.</div>'; return; }
         let html = '';
-        let armadura, habilidade, bonusH1, bonusH2;
+        let armadura, habilidade;
         if (isSub && subIndex !== null) {
             const sub = subFichas[subIndex];
             if (sub) {
                 armadura = Number(calcularTotalAtributoSub(sub, 'A')) || 0;
                 habilidade = Number(calcularTotalAtributoSub(sub, 'H')) || 0;
-                bonusH1 = Number(sub.bonusHabilidade) || 0;
-                bonusH2 = Number(sub.bonusHabilidade2) || 0;
             }
         } else {
-            armadura = parseInt(document.getElementById('armadura').value) || 0;
-            habilidade = parseInt(document.getElementById('habilidade').value) || 0;
-            bonusH1 = parseInt(document.getElementById('bonusHabilidade').value) || 0;
-            bonusH2 = parseInt(document.getElementById('bonusHabilidade2').value) || 0;
-        }
-        let habilidadeTotal;
-        if (isSub && subIndex !== null) {
-            const chkH1 = document.getElementById(`subficha-chkBonusHabilidade-${subIndex}`)?.checked !== false;
-            const chkH2 = document.getElementById(`subficha-chkBonusHabilidade2-${subIndex}`)?.checked !== false;
-            habilidadeTotal = Number(habilidade) + (chkH1 ? Number(bonusH1) : 0) + (chkH2 ? Number(bonusH2) : 0);
-        } else {
-            const chkH1 = document.getElementById('chkBonusHabilidade')?.checked !== false;
-            const chkH2 = document.getElementById('chkBonusHabilidade2')?.checked !== false;
-            habilidadeTotal = habilidade + (chkH1 ? bonusH1 : 0) + (chkH2 ? bonusH2 : 0);
+            armadura = calcularTotalAtributoPrincipal('A');
+            habilidade = calcularTotalAtributoPrincipal('H');
         }
         const usandoCartas = regraAtiva('combateCartas');
         defesasArray.forEach((defesa, idx) => {
@@ -4046,7 +3900,7 @@
             const b1Valor = defesa.b1 ?? 0;
             const b2Valor = defesa.b2 ?? 0;
             const bfdValor = defesa.bfd ?? 0;
-            html += `<div class="defesa-bloco"><div class="defesa-header"><input type="text" value="${escapeHtml(defesa.nome || '')}" placeholder="Nome da defesa" data-defesa-campo="nome" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"><button class="btn-remover-defesa" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}">❌ Remover</button></div><div class="defesa-campos"><div class="campo"><label>A:</label><span class="atributo-auto">${armadura}</span></div><div class="campo"><label>H:</label><span class="atributo-auto">${habilidadeTotal}</span></div><div class="campo bonus-campo"><input type="checkbox" ${chkB1 ? 'checked' : ''} data-defesa-campo="chkB1" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}" title="Incluir B1 no cálculo"><label>B1:</label><input type="text" inputmode="numeric" value="${b1Valor}" data-defesa-campo="b1" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo bonus-campo"><input type="checkbox" ${chkB2 ? 'checked' : ''} data-defesa-campo="chkB2" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}" title="Incluir B2 no cálculo"><label>B2:</label><input type="text" inputmode="numeric" value="${b2Valor}" data-defesa-campo="b2" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo bfd-campo"><input type="checkbox" ${chkBFD ? 'checked' : ''} data-defesa-campo="chkBFD" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}" title="Incluir BFD no cálculo"><label>BFD:</label><input type="text" inputmode="numeric" value="${bfdValor}" data-defesa-campo="bfd" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo atributo-checkbox"><label>Incluir A:</label><input type="checkbox" ${incluirA ? 'checked' : ''} data-defesa-campo="incluirA" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo atributo-checkbox"><label>Incluir H:</label><input type="checkbox" ${incluirH ? 'checked' : ''} data-defesa-campo="incluirH" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo critico-campo"><label>⚡ Crítico Automático:</label><input type="checkbox" ${defesa.criticoAutomatico ? 'checked' : ''} data-defesa-campo="criticoAutomatico" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo critico-campo"><label>⚡ Crítico Aprimorado:</label><input type="checkbox" ${defesa.criticoAprimorado ? 'checked' : ''} data-defesa-campo="criticoAprimorado" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div></div>`;
+            html += `<div class="defesa-bloco"><div class="defesa-header"><input type="text" value="${escapeHtml(defesa.nome || '')}" placeholder="Nome da defesa" data-defesa-campo="nome" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"><button class="btn-remover-defesa" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}">❌ Remover</button></div><div class="defesa-campos"><div class="campo"><label>A:</label><span class="atributo-auto">${armadura}</span></div><div class="campo"><label>H:</label><span class="atributo-auto">${habilidade}</span></div><div class="campo bonus-campo"><input type="checkbox" ${chkB1 ? 'checked' : ''} data-defesa-campo="chkB1" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}" title="Incluir B1 no cálculo"><label>B1:</label><input type="text" inputmode="numeric" value="${b1Valor}" data-defesa-campo="b1" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo bonus-campo"><input type="checkbox" ${chkB2 ? 'checked' : ''} data-defesa-campo="chkB2" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}" title="Incluir B2 no cálculo"><label>B2:</label><input type="text" inputmode="numeric" value="${b2Valor}" data-defesa-campo="b2" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo bfd-campo"><input type="checkbox" ${chkBFD ? 'checked' : ''} data-defesa-campo="chkBFD" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}" title="Incluir BFD no cálculo"><label>BFD:</label><input type="text" inputmode="numeric" value="${bfdValor}" data-defesa-campo="bfd" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo atributo-checkbox"><label>Incluir A:</label><input type="checkbox" ${incluirA ? 'checked' : ''} data-defesa-campo="incluirA" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo atributo-checkbox"><label>Incluir H:</label><input type="checkbox" ${incluirH ? 'checked' : ''} data-defesa-campo="incluirH" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo critico-campo"><label>⚡ Crítico Automático:</label><input type="checkbox" ${defesa.criticoAutomatico ? 'checked' : ''} data-defesa-campo="criticoAutomatico" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo critico-campo"><label>⚡ Crítico Aprimorado:</label><input type="checkbox" ${defesa.criticoAprimorado ? 'checked' : ''} data-defesa-campo="criticoAprimorado" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div></div>`;
             if (usandoCartas) {
                 html += `<div id="cartas-combate-defesa-${idx}-${isSub ? subIndex : 'principal'}"></div>`;
                 html += `<div class="defesa-roll-row"><button class="btn-roll-defesa" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}">🎲 Rolar</button><div class="resultado-defesa" id="${resultId}">Aguardando rolagem...</div></div>`;
@@ -4445,11 +4299,11 @@
                         <div class="card-atributos">
                             <h3 style="margin-top:0; font-size:12px;">📊 Atributos</h3>
                             <div class="subficha-atributos-3colunas">
-                                <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">💪 F</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-forca-${index}" value="${sub.forca}"></div><div class="subficha-total-losango" title="Total de Força"><span class="atributo-total-valor" id="subficha-totalForca-${index}">0</span></div></div><div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusForca-${index}" value="${sub.bonusForca || 0}"></div><input type="checkbox" id="subficha-chkBonusForca-${index}" class="bonus-checkbox" checked></div><div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusForca2-${index}" value="${sub.bonusForca2 || 0}"></div><input type="checkbox" id="subficha-chkBonusForca2-${index}" class="bonus-checkbox" checked></div></div>
+                                <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">💪 F</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-forca-${index}" value="${sub.forca}"></div><div class="subficha-total-losango" title="Total de Força"><span class="atributo-total-valor" id="subficha-totalForca-${index}">0</span></div></div></div>
                                 <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">🎯 H</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-habilidade-${index}" value="${sub.habilidade}"></div><div class="subficha-total-losango" title="Total de Habilidade"><span class="atributo-total-valor" id="subficha-totalHabilidade-${index}">0</span></div></div><div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusHabilidade-${index}" value="${sub.bonusHabilidade}"></div><input type="checkbox" id="subficha-chkBonusHabilidade-${index}" class="bonus-checkbox" checked></div><div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusHabilidade2-${index}" value="${sub.bonusHabilidade2}"></div><input type="checkbox" id="subficha-chkBonusHabilidade2-${index}" class="bonus-checkbox" checked></div></div>
                                 <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">🛡️ R</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-resistencia-${index}" value="${sub.resistencia}"></div><div class="subficha-total-losango" title="Total de Resistência"><span class="atributo-total-valor" id="subficha-totalResistencia-${index}">0</span></div></div><div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusResistencia-${index}" value="${sub.bonusResistencia}"></div><input type="checkbox" id="subficha-chkBonusResistencia-${index}" class="bonus-checkbox" checked></div><div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusResistencia2-${index}" value="${sub.bonusResistencia2}"></div><input type="checkbox" id="subficha-chkBonusResistencia2-${index}" class="bonus-checkbox" checked></div></div>
-                                <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">⚔️ A</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-armadura-${index}" value="${sub.armadura}"></div><div class="subficha-total-losango" title="Total de Armadura"><span class="atributo-total-valor" id="subficha-totalArmadura-${index}">0</span></div></div><div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusArmadura-${index}" value="${sub.bonusArmadura || 0}"></div><input type="checkbox" id="subficha-chkBonusArmadura-${index}" class="bonus-checkbox" checked></div><div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusArmadura2-${index}" value="${sub.bonusArmadura2 || 0}"></div><input type="checkbox" id="subficha-chkBonusArmadura2-${index}" class="bonus-checkbox" checked></div></div>
-                                <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">🔮 PdF</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-pdf-${index}" value="${sub.pdf}"></div><div class="subficha-total-losango" title="Total de Poder de Fogo"><span class="atributo-total-valor" id="subficha-totalPdf-${index}">0</span></div></div><div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusPdf-${index}" value="${sub.bonusPdf || 0}"></div><input type="checkbox" id="subficha-chkBonusPdf-${index}" class="bonus-checkbox" checked></div><div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusPdf2-${index}" value="${sub.bonusPdf2 || 0}"></div><input type="checkbox" id="subficha-chkBonusPdf2-${index}" class="bonus-checkbox" checked></div></div>
+                                <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">⚔️ A</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-armadura-${index}" value="${sub.armadura}"></div><div class="subficha-total-losango" title="Total de Armadura"><span class="atributo-total-valor" id="subficha-totalArmadura-${index}">0</span></div></div></div>
+                                <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">🔮 PdF</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-pdf-${index}" value="${sub.pdf}"></div><div class="subficha-total-losango" title="Total de Poder de Fogo"><span class="atributo-total-valor" id="subficha-totalPdf-${index}">0</span></div></div></div>
                                 <div class="subficha-rolagem-generica-item"><div class="rolagem-titulo">🎲 Rolagem Genérica</div><div class="rolagem-campos"><div class="roll-row"><label>Dados</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-qtdDados-${index}" value="1"><label>Mod</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-modRoll-${index}" value="0"></div><button class="btn-roll-sub" data-sub="${index}">🎲 Rolar</button></div></div>
                             </div>
                         </div>
@@ -4579,12 +4433,6 @@
         const nomeInput = document.getElementById(`subficha-nome-${index}`);
         if (nomeInput) nomeInput.oninput = () => { sub.nome = nomeInput.value; debounceSaveSubFicha(); renderizarSubFichas(); };
         ['Habilidade', 'Resistência'].forEach(nome => {
-            const chk1 = document.getElementById(`subficha-chkBonus${nome}-${index}`);
-            const chk2 = document.getElementById(`subficha-chkBonus${nome}2-${index}`);
-            if (chk1) chk1.onchange = () => { debounceSaveSubFicha(); atualizarIndicadoresAtributosSub(index); };
-            if (chk2) chk2.onchange = () => { debounceSaveSubFicha(); atualizarIndicadoresAtributosSub(index); };
-        });
-        ['Forca', 'Armadura', 'Pdf'].forEach(nome => {
             const chk1 = document.getElementById(`subficha-chkBonus${nome}-${index}`);
             const chk2 = document.getElementById(`subficha-chkBonus${nome}2-${index}`);
             if (chk1) chk1.onchange = () => { debounceSaveSubFicha(); atualizarIndicadoresAtributosSub(index); };
@@ -4941,7 +4789,6 @@
     ];
     
     function getValorAtributo(attr) {
-        // Ajuste 3: usar totais com B1/B2 para magias/ofícios
         const map = { 'F': 'forca', 'H': 'habilidade', 'R': 'resistencia', 'A': 'armadura', 'PdF': 'pdf' };
         const id = map[attr]; if (!id) return 0;
         return parseInt(document.getElementById(id)?.value) || 0;
@@ -6477,8 +6324,8 @@
     document.getElementById('vantagemUnicaCusto').addEventListener('input', () => { salvarForcado(); atualizarPontos(); });
     document.getElementById('vantagemUnicaDesc').addEventListener('input', salvarForcado);
     ['forca', 'habilidade', 'resistencia', 'armadura', 'pdf'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('input', () => { salvarForcado(); atualizarPontos(); }); });
-    ['bonusHabilidade', 'bonusHabilidade2', 'bonusResistencia', 'bonusResistencia2', 'bonusArmadura', 'bonusArmadura2', 'bonusForca', 'bonusForca2', 'bonusPdf', 'bonusPdf2', 'pvTotal', 'pvAtual', 'bonusPv', 'pmTotal', 'pmAtual', 'bonusPm', 'xp', 'dinheiro'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('input', () => { salvarForcado(); atualizarIndicadoresAtributos(); }); });
-    ['chkBonusHabilidade', 'chkBonusHabilidade2', 'chkBonusResistencia', 'chkBonusResistencia2', 'chkBonusArmadura', 'chkBonusArmadura2', 'chkBonusForca', 'chkBonusForca2', 'chkBonusPdf', 'chkBonusPdf2'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', atualizarIndicadoresAtributos); });
+    ['bonusHabilidade', 'bonusHabilidade2', 'bonusResistencia', 'bonusResistencia2', 'pvTotal', 'pvAtual', 'bonusPv', 'pmTotal', 'pmAtual', 'bonusPm', 'xp', 'dinheiro'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('input', () => { salvarForcado(); atualizarIndicadoresAtributos(); }); });
+    ['chkBonusHabilidade', 'chkBonusHabilidade2', 'chkBonusResistencia', 'chkBonusResistencia2'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', atualizarIndicadoresAtributos); });
     const pontosGastosInputEl = document.getElementById('pontosGastosInput');
     if (pontosGastosInputEl) {
         pontosGastosInputEl.addEventListener('focus', () => { if (isGM || isMaster) pontosGastosInputEl.dataset.masterEditing = 'true'; });
@@ -6506,9 +6353,14 @@
     window.getSupabase = () => supabase;
     window.getVisualizandoId = () => visualizandoId;
     console.log('✅ Correções aplicadas:');
-    console.log('   1. B1/B2 adicionados em F, PdF e A (ficha principal e subfichas)');
-    console.log('   2. Rolagens de ataque curto, à distância e defesa corrigidas (ficha principal e subfichas)');
-    console.log('   3. Magias agora usam o TOTAL do atributo (com B1/B2)');
+    console.log('   1. Inputs ocultos adicionados no HTML (bonusArmadura, bonusForca, bonusPdf, etc.)');
+    console.log('   2. atualizarIndicadoresAtributos com optional chaining');
+    console.log('   3. atualizarIndicadoresAtributosSub com optional chaining');
+    console.log('   4. calcularTotalAtributoPrincipal / calcularTotalAtributoSub adicionados');
+    console.log('   5. rolarDanoMagia usa totais (com B1/B2)');
+    console.log('   6. rolarAtaque usa totais (ficha principal e subfichas)');
+    console.log('   7. rolarDefesa usa totais (ficha principal e subfichas)');
+    console.log('   8. renderizarAtaques / renderizarDefesas mostram totais');
 </script>
 </body>
 </html>
