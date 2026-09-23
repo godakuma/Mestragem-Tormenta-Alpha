@@ -616,6 +616,8 @@
     .ataque-modulo .ataque-campos .campo.critico-campo { background: var(--fundo-critico); border: 1px solid var(--perigo-forte); }
     .ataque-modulo .ataque-campos .campo.critico-campo label { color: var(--perigo-forte); }
     .ataque-modulo .ataque-campos .campo.critico-campo input[type="checkbox"] { accent-color: var(--perigo-forte); }
+    .ataque-modulo .ataque-campos .campo.bonus-campo { background: rgba(59, 110, 165, 0.08); border: 1px solid var(--primaria); }
+    .ataque-modulo .ataque-campos .campo.bonus-campo label { color: var(--primaria); }
     .ataque-modulo .ataque-roll-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--borda-clara); }
     .ataque-modulo .ataque-roll-row .qtd-dados { display: flex; align-items: center; gap: 4px; }
     .ataque-modulo .ataque-roll-row .qtd-dados label { font-size: 10px; color: var(--texto-medio); font-weight: bold; }
@@ -736,15 +738,18 @@
     .defesa-bloco .defesa-campos .campo { display: flex; align-items: center; gap: 4px; background: var(--fundo-painel-claro); padding: 4px 8px; border-radius: 4px; }
     .defesa-bloco .defesa-campos .campo label { font-size: 10px; color: var(--texto-medio); font-weight: bold; }
     .defesa-bloco .defesa-campos .campo .atributo-auto { font-weight: bold; color: var(--primaria-escura); font-size: 14px; min-width: 30px; text-align: center; background: var(--fundo-painel-claro); padding: 2px 6px; border-radius: 3px; border: 1px solid var(--borda-clara); }
+    .defesa-bloco .defesa-campos .campo input[type="text"] { width: 40px; background: var(--fundo-input); color: var(--texto); border: 1px solid var(--borda-clara); border-radius: 3px; padding: 4px; text-align: center; font-size: 13px; -moz-appearance: textfield; appearance: textfield; }
+    .defesa-bloco .defesa-campos .campo input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--primaria); flex-shrink: 0; }
     .defesa-bloco .defesa-campos .campo.critico-campo { background: var(--fundo-critico); border: 1px solid var(--perigo-forte); }
     .defesa-bloco .defesa-campos .campo.critico-campo label { color: var(--perigo-forte); }
     .defesa-bloco .defesa-campos .campo.critico-campo input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--perigo-forte); }
     .defesa-bloco .defesa-campos .campo.atributo-checkbox { background: var(--fundo-bonus); border: 1px solid var(--primaria); }
     .defesa-bloco .defesa-campos .campo.atributo-checkbox label { color: var(--primaria); }
     .defesa-bloco .defesa-campos .campo.atributo-checkbox input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--primaria); }
+    .defesa-bloco .defesa-campos .campo.bonus-campo { background: rgba(59, 110, 165, 0.08); border: 1px solid var(--primaria); }
+    .defesa-bloco .defesa-campos .campo.bonus-campo label { color: var(--primaria); }
     .defesa-bloco .defesa-campos .campo.bfd-campo { background: rgba(138, 122, 74, 0.12); border: 1px solid var(--dourado); }
     .defesa-bloco .defesa-campos .campo.bfd-campo label { color: var(--dourado); }
-    .defesa-bloco .defesa-campos .campo.bfd-campo .atributo-auto { border-color: var(--dourado); color: var(--dourado); background: var(--fundo-painel-claro); }
     .defesa-bloco .defesa-roll-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--borda-clara); }
     .defesa-bloco .defesa-roll-row .qtd-dados { display: flex; align-items: center; gap: 4px; }
     .defesa-bloco .defesa-roll-row .qtd-dados label { font-size: 10px; color: var(--texto-medio); font-weight: bold; }
@@ -1024,17 +1029,6 @@
                                                 <div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="forca" value="0"></div>
                                                 <div class="atributo-total-losango" title="Total de Força"><span class="atributo-total-valor" id="totalForca">0</span></div>
                                             </div>
-                                            <div class="atributo-linha">
-                                                <div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="bonusForca" value="0"></div>
-                                                <input type="checkbox" id="chkBonusForca" class="bonus-checkbox" checked>
-                                            </div>
-                                            <div class="atributo-linha">
-                                                <div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="bonusForca2" value="0"></div>
-                                                <input type="checkbox" id="chkBonusForca2" class="bonus-checkbox" checked>
-                                            </div>
-                                            <div class="atributo-linha">
-                                                <div class="bonus3"><label>BFA</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="bonusForcaDefesa" value="0"></div>
-                                            </div>
                                         </div>
                                         <div class="atributo-item">
                                             <div class="atributo-header"><span class="atributo-titulo">🎯 H</span></div>
@@ -1072,34 +1066,12 @@
                                                 <div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="armadura" value="0"></div>
                                                 <div class="atributo-total-losango" title="Total de Armadura"><span class="atributo-total-valor" id="totalArmadura">0</span></div>
                                             </div>
-                                            <div class="atributo-linha">
-                                                <div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="bonusArmadura" value="0"></div>
-                                                <input type="checkbox" id="chkBonusArmadura" class="bonus-checkbox" checked>
-                                            </div>
-                                            <div class="atributo-linha">
-                                                <div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="bonusArmadura2" value="0"></div>
-                                                <input type="checkbox" id="chkBonusArmadura2" class="bonus-checkbox" checked>
-                                            </div>
-                                            <div class="atributo-linha">
-                                                <div class="bonus3"><label>BFD</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="bonusArmaduraDefesa" value="0"></div>
-                                            </div>
                                         </div>
                                         <div class="atributo-item">
                                             <div class="atributo-header"><span class="atributo-titulo">🔮 PdF</span></div>
                                             <div class="atributo-linha-com-total">
                                                 <div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="pdf" value="0"></div>
                                                 <div class="atributo-total-losango" title="Total de Poder de Fogo"><span class="atributo-total-valor" id="totalPdf">0</span></div>
-                                            </div>
-                                            <div class="atributo-linha">
-                                                <div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="bonusPdf" value="0"></div>
-                                                <input type="checkbox" id="chkBonusPdf" class="bonus-checkbox" checked>
-                                            </div>
-                                            <div class="atributo-linha">
-                                                <div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="bonusPdf2" value="0"></div>
-                                                <input type="checkbox" id="chkBonusPdf2" class="bonus-checkbox" checked>
-                                            </div>
-                                            <div class="atributo-linha">
-                                                <div class="bonus3"><label>BFA</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="bonusPdfDefesa" value="0"></div>
                                             </div>
                                         </div>
                                         <div class="rolagem-generica-item">
@@ -1372,6 +1344,7 @@
     let _jogadoresChannel = null;
     let _rolagensChannel = null;
     let _mesasChannel = null;
+    let _sustentadosChannel = null;
 
     const CATEGORIAS_REGRAS = {
         testes: { nome: '🎯 Testes', descricao: 'Regras que substituem os testes de perícia.' },
@@ -2114,10 +2087,6 @@
         const totalForcaEl = document.getElementById('totalForca');
         if (forcaInput && totalForcaEl) {
             let total = parseInt(forcaInput.value) || 0;
-            const b1 = parseInt(document.getElementById('bonusForca')?.value) || 0;
-            const b2 = parseInt(document.getElementById('bonusForca2')?.value) || 0;
-            if (document.getElementById('chkBonusForca')?.checked) total += b1;
-            if (document.getElementById('chkBonusForca2')?.checked) total += b2;
             totalForcaEl.textContent = total;
         }
         const habInput = document.getElementById('habilidade');
@@ -2145,25 +2114,15 @@
             totalResEl.textContent = total;
         }
         const armInput = document.getElementById('armadura');
-        const bonusA1Input = document.getElementById('bonusArmadura');
-        const bonusA2Input = document.getElementById('bonusArmadura2');
-        const chkA1 = document.getElementById('chkBonusArmadura');
-        const chkA2 = document.getElementById('chkBonusArmadura2');
         const totalArmEl = document.getElementById('totalArmadura');
         if (armInput && totalArmEl) {
             let total = parseInt(armInput.value) || 0;
-            if (chkA1?.checked) total += parseInt(bonusA1Input?.value) || 0;
-            if (chkA2?.checked) total += parseInt(bonusA2Input?.value) || 0;
             totalArmEl.textContent = total;
         }
         const pdfInput = document.getElementById('pdf');
         const totalPdfEl = document.getElementById('totalPdf');
         if (pdfInput && totalPdfEl) {
             let total = parseInt(pdfInput.value) || 0;
-            const b1 = parseInt(document.getElementById('bonusPdf')?.value) || 0;
-            const b2 = parseInt(document.getElementById('bonusPdf2')?.value) || 0;
-            if (document.getElementById('chkBonusPdf')?.checked) total += b1;
-            if (document.getElementById('chkBonusPdf2')?.checked) total += b2;
             totalPdfEl.textContent = total;
         }
     }
@@ -2175,10 +2134,6 @@
         const totalForcaEl = document.getElementById(`subficha-totalForca-${index}`);
         if (forcaInput && totalForcaEl) {
             let total = parseInt(forcaInput.value) || 0;
-            const b1 = parseInt(document.getElementById(`subficha-bonusForca-${index}`)?.value) || 0;
-            const b2 = parseInt(document.getElementById(`subficha-bonusForca2-${index}`)?.value) || 0;
-            if (document.getElementById(`subficha-chkBonusForca-${index}`)?.checked) total += b1;
-            if (document.getElementById(`subficha-chkBonusForca2-${index}`)?.checked) total += b2;
             totalForcaEl.textContent = total;
         }
         const habInput = document.getElementById(`subficha-habilidade-${index}`);
@@ -2206,25 +2161,15 @@
             totalResEl.textContent = total;
         }
         const armInput = document.getElementById(`subficha-armadura-${index}`);
-        const bonusA1Input = document.getElementById(`subficha-bonusArmadura-${index}`);
-        const bonusA2Input = document.getElementById(`subficha-bonusArmadura2-${index}`);
-        const chkA1 = document.getElementById(`subficha-chkBonusArmadura-${index}`);
-        const chkA2 = document.getElementById(`subficha-chkBonusArmadura2-${index}`);
         const totalArmEl = document.getElementById(`subficha-totalArmadura-${index}`);
         if (armInput && totalArmEl) {
             let total = parseInt(armInput.value) || 0;
-            if (chkA1?.checked) total += parseInt(bonusA1Input?.value) || 0;
-            if (chkA2?.checked) total += parseInt(bonusA2Input?.value) || 0;
             totalArmEl.textContent = total;
         }
         const pdfInput = document.getElementById(`subficha-pdf-${index}`);
         const totalPdfEl = document.getElementById(`subficha-totalPdf-${index}`);
         if (pdfInput && totalPdfEl) {
             let total = parseInt(pdfInput.value) || 0;
-            const b1 = parseInt(document.getElementById(`subficha-bonusPdf-${index}`)?.value) || 0;
-            const b2 = parseInt(document.getElementById(`subficha-bonusPdf2-${index}`)?.value) || 0;
-            if (document.getElementById(`subficha-chkBonusPdf-${index}`)?.checked) total += b1;
-            if (document.getElementById(`subficha-chkBonusPdf2-${index}`)?.checked) total += b2;
             totalPdfEl.textContent = total;
         }
     }
@@ -2507,11 +2452,8 @@
     function rolarDanoMagia(magiaIndex, isSub = false, subIndex = null) {
         animarDado();
         let magia, nomePersonagem, forca, pdf, habilidade, armadura, resistencia;
-        let bonusF1 = 0, bonusF2 = 0, bfaF = 0;
-        let bonusP1 = 0, bonusP2 = 0, bfaP = 0;
         let bonusH1 = 0, bonusH2 = 0;
         let bonusR1 = 0, bonusR2 = 0;
-        let bonusA1 = 0, bonusA2 = 0;
         if (isSub && subIndex !== null) {
             const sub = subFichas[subIndex];
             if (!sub) return;
@@ -2527,14 +2469,6 @@
             bonusH2 = Number(sub.bonusHabilidade2) || 0;
             bonusR1 = Number(sub.bonusResistencia) || 0;
             bonusR2 = Number(sub.bonusResistencia2) || 0;
-            bonusA1 = Number(sub.bonusArmadura) || 0;
-            bonusA2 = Number(sub.bonusArmadura2) || 0;
-            bonusF1 = Number(sub.bonusForca) || 0;
-            bonusF2 = Number(sub.bonusForca2) || 0;
-            bfaF = Number(sub.bonusForcaDefesa) || 0;
-            bonusP1 = Number(sub.bonusPdf) || 0;
-            bonusP2 = Number(sub.bonusPdf2) || 0;
-            bfaP = Number(sub.bonusPdfDefesa) || 0;
         } else {
             magia = fichaListas.magias[magiaIndex];
             if (!magia) return;
@@ -2548,18 +2482,6 @@
             bonusH2 = parseInt(document.getElementById('bonusHabilidade2').value) || 0;
             bonusR1 = parseInt(document.getElementById('bonusResistencia').value) || 0;
             bonusR2 = parseInt(document.getElementById('bonusResistencia2').value) || 0;
-            bonusA1 = parseInt(document.getElementById('bonusArmadura').value) || 0;
-            bonusA2 = parseInt(document.getElementById('bonusArmadura2').value) || 0;
-            bonusF1 = parseInt(document.getElementById('bonusForca')?.value) || 0;
-            bonusF2 = parseInt(document.getElementById('bonusForca2')?.value) || 0;
-            bfaF = parseInt(document.getElementById('bonusForcaDefesa')?.value) || 0;
-            bonusP1 = parseInt(document.getElementById('bonusPdf')?.value) || 0;
-            bonusP2 = parseInt(document.getElementById('bonusPdf2')?.value) || 0;
-            bfaP = parseInt(document.getElementById('bonusPdfDefesa')?.value) || 0;
-            if (document.getElementById('chkBonusForca')?.checked === false) bonusF1 = 0;
-            if (document.getElementById('chkBonusForca2')?.checked === false) bonusF2 = 0;
-            if (document.getElementById('chkBonusPdf')?.checked === false) bonusP1 = 0;
-            if (document.getElementById('chkBonusPdf2')?.checked === false) bonusP2 = 0;
         }
         const usarF = magia.magiaUsaF === true;
         const usarH = magia.magiaUsaH === true;
@@ -2570,11 +2492,11 @@
         const qtdDados = Math.max(0, parseInt(magia.magiaQtdDados) || 0);
         let partesCalc = [];
         let somaBase = 0;
-        if (usarF) { const totalF = forca + bonusF1 + bonusF2; partesCalc.push(`${totalF}(F)`); somaBase += totalF; }
+        if (usarF) { partesCalc.push(`${forca}(F)`); somaBase += forca; }
         if (usarH) { const totalH = habilidade + bonusH1 + bonusH2; partesCalc.push(`${totalH}(H)`); somaBase += totalH; }
         if (usarR) { const totalR = resistencia + bonusR1 + bonusR2; partesCalc.push(`${totalR}(R)`); somaBase += totalR; }
-        if (usarA) { const totalA = armadura + bonusA1 + bonusA2; partesCalc.push(`${totalA}(A)`); somaBase += totalA; }
-        if (usarPdf) { const totalP = pdf + bonusP1 + bonusP2; partesCalc.push(`${totalP}(PdF)`); somaBase += totalP; }
+        if (usarA) { partesCalc.push(`${armadura}(A)`); somaBase += armadura; }
+        if (usarPdf) { partesCalc.push(`${pdf}(PdF)`); somaBase += pdf; }
         if (valorLivre) { partesCalc.push(`${valorLivre}(livre)`); somaBase += valorLivre; }
         let dados = [], somaDados = 0;
         for (let i = 0; i < qtdDados; i++) { const d = Math.floor(Math.random() * 6) + 1; dados.push(d); somaDados += d; }
@@ -2583,7 +2505,7 @@
         const nomeMagia = magia.nome || 'Magia sem nome';
         const prefixo = isSub && subIndex !== null ? `[${nomePersonagem}] ` : '';
         const calcStr = partesCalc.length > 0 ? partesCalc.join(' + ') : '0';
-        const texto = `${prefixo}🔮 ${nomeMagia} — Dano: ${calcStr} = ${total}`;
+        const texto = `${prefixo}🔮 ${nomeMagia} — Lançamento: ${calcStr} = ${total}`;
         addMensagem(texto, false);
         enviarRolagemFirebase(texto, false);
         return total;
@@ -2612,7 +2534,7 @@
         });
         html += `<div class="magia-campo"><label>Valor:</label><input type="text" inputmode="numeric" pattern="[0-9-]*" class="magia-valor-livre" value="${valorLivre}" data-magia-campo="valorLivre" data-magia-idx="${magiaIndex}" data-magia-is-sub="${isSub}" data-magia-sub-idx="${isSub ? subIndex : ''}"></div>`;
         html += `<div class="magia-campo"><label>Dados d6:</label><input type="text" inputmode="numeric" pattern="[0-9]*" class="magia-qtd-dados" value="${qtdDados}" data-magia-campo="qtdDados" data-magia-idx="${magiaIndex}" data-magia-is-sub="${isSub}" data-magia-sub-idx="${isSub ? subIndex : ''}"></div>`;
-        html += `<button type="button" class="btn-rolar-dano-magia" data-magia-idx="${magiaIndex}" data-magia-is-sub="${isSub}" data-magia-sub-idx="${isSub ? subIndex : ''}">🎲 Rolar Dano</button>`;
+        html += `<button type="button" class="btn-rolar-dano-magia" data-magia-idx="${magiaIndex}" data-magia-is-sub="${isSub}" data-magia-sub-idx="${isSub ? subIndex : ''}">🔮 Lançar Magia</button>`;
         html += `</div>`;
         return html;
     }
@@ -2803,9 +2725,6 @@
         const treinadoStr = treinado ? ' [TREINADO]' : '';
         const prefixo = isSub && subIndex !== null ? `[${nomePersonagem}] ` : '';
 
-        // ============================================================
-        // REGRA: Teste alternativo (sem fatores aleatórios) - PE
-        // ============================================================
         if (usandoAltEsforco) {
             const cfg = regrasConfig.periciasDificuldade || { facil: 8, medio: 10, dificil: 14, impossivel: 18 };
             const difMap = { 'facil': cfg.facil ?? 8, 'medio': cfg.medio ?? 10, 'dificil': cfg.dificil ?? 14, 'impossivel': cfg.impossivel ?? 18 };
@@ -2844,9 +2763,6 @@
             return;
         }
 
-        // ============================================================
-        // REGRA: Teste alternativo (contra dificuldade)
-        // ============================================================
         if (usandoAltDificuldade) {
             const cfg = regrasConfig.periciasDificuldade || { facil: 8, medio: 10, dificil: 14, impossivel: 18 };
             const difMap = { 'facil': cfg.facil ?? 8, 'medio': cfg.medio ?? 10, 'dificil': cfg.dificil ?? 14, 'impossivel': cfg.impossivel ?? 18 };
@@ -2854,10 +2770,9 @@
             const treinoBonus = treinado ? 4 : 0;
             const dado = Math.floor(Math.random() * 6) + 1;
             const alvoFinal = valorAttr + b1Atributo + treinoBonus + bonus - pen;
-            const sucesso = dado !== 6 && dado + alvoFinal >= dificuldadeValor;
-            const sextoStr = dado === 6 ? ' ⚠️ [6 = falha automática]' : '';
+            const sucesso = (dado + alvoFinal) >= dificuldadeValor;
             const bpStr = `${bonus ? ` +${bonus}(B)` : ''}${pen ? ` -${pen}(P)` : ''}`;
-            const texto = `${prefixo}🛠️ ${nomeOficio}${treinadoStr} (${dificuldadeNome}): 🎲 ${dado} + ${alvoFinal} [${valorAttr}+${b1Atributo}(B1)${treinoBonus ? '+4(treino)' : ''}${bpStr}] = ${dado + alvoFinal} | Alvo: ${dificuldadeValor} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}${sextoStr}`;
+            const texto = `${prefixo}🛠️ ${nomeOficio}${treinadoStr} (${dificuldadeNome}): 🎲 ${dado} + ${alvoFinal} [${valorAttr}+${b1Atributo}(B1)${treinoBonus ? '+4(treino)' : ''}${bpStr}] = ${dado + alvoFinal} | Alvo: ${dificuldadeValor} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}`;
             addMensagem(texto, ehSecreta);
             if (!ehSecreta) enviarRolagemFirebase(texto, false);
             if (resultadoElement) { resultadoElement.textContent = `🎲 ${dado} + ${alvoFinal} = ${dado + alvoFinal} → ${sucesso ? '✅' : '❌'}`; resultadoElement.className = 'oficio-resultado ' + (sucesso ? 'sucesso' : 'falha'); }
@@ -2865,9 +2780,6 @@
             return;
         }
 
-        // ============================================================
-        // REGRA: Teste alternativo (com bonificação em perícia treinada)
-        // ============================================================
         if (usandoAltBonus) {
             let modDificuldade = 0;
             if (dificuldadeVal === 'facil') modDificuldade = treinado ? +3 : -1;
@@ -2889,9 +2801,6 @@
             return;
         }
 
-        // ============================================================
-        // REGRA: Teste alternativo (pilha de dados)
-        // ============================================================
         if (usandoAltPilha) {
             const qtdBonusTreinado = treinado ? 4 : 0;
             const explosao = subopcaoAtiva('periciasPilhaDados', 'explosaoSeis');
@@ -2926,9 +2835,6 @@
             return;
         }
 
-        // ============================================================
-        // REGRA: Teste alternativo (com cartas)
-        // ============================================================
         if (usandoAltCartas) {
             if (!of.selecionadoCarta) {
                 mostrarToast('🎯 Selecione o radio deste ofício para testar com cartas.', '#5a7a8a');
@@ -2995,7 +2901,6 @@
                 debounceSave();
                 return;
             }
-            // Regra geral com cartas
             let modDificuldade = 0, sucessoAutomatico = false, falhaAutomatica = false;
             if (dificuldadeVal === 'facil') { if (treinado) sucessoAutomatico = true; else modDificuldade = -1; }
             else if (dificuldadeVal === 'medio') { if (treinado) modDificuldade = +1; else modDificuldade = -3; }
@@ -3025,9 +2930,6 @@
             return;
         }
 
-        // ============================================================
-        // REGRA: Teste alternativo (nível de sucesso)
-        // ============================================================
         if (usandoNivelSucesso) {
             let modDificuldade = 0, sucessoAutomatico = false, falhaAutomatica = false;
             if (dificuldadeVal === 'facil') { if (treinado) sucessoAutomatico = true; else modDificuldade = -1; }
@@ -3068,9 +2970,6 @@
             return;
         }
 
-        // ============================================================
-        // REGRA GERAL (padrão)
-        // ============================================================
         let modDificuldade = 0, sucessoAutomatico = false, falhaAutomatica = false;
         if (dificuldadeVal === 'facil') { if (treinado) sucessoAutomatico = true; else modDificuldade = -1; }
         else if (dificuldadeVal === 'medio') { if (treinado) modDificuldade = +1; else modDificuldade = -3; }
@@ -3211,7 +3110,6 @@
         animarDado();
 
         let forca, pdf, habilidade, armadura, bonusH1, bonusH2, bonusA1, bonusA2, bfd, bonusR1 = 0, bonusR2 = 0;
-        let bonusF1 = 0, bonusF2 = 0, bfaF = 0, bonusP1 = 0, bonusP2 = 0, bfaP = 0;
         let nomePersonagem;
         let pmAtual = 0, pvAtual = 0, rTotal = 0;
         if (isSub && subIndex !== null) {
@@ -3227,12 +3125,6 @@
             bonusR1 = Number(sub.bonusResistencia) || 0;
             bonusR2 = Number(sub.bonusResistencia2) || 0;
             bfd = Number(sub.bonusArmaduraDefesa) || 0;
-            bonusF1 = Number(sub.bonusForca) || 0;
-            bonusF2 = Number(sub.bonusForca2) || 0;
-            bfaF = Number(sub.bonusForcaDefesa) || 0;
-            bonusP1 = Number(sub.bonusPdf) || 0;
-            bonusP2 = Number(sub.bonusPdf2) || 0;
-            bfaP = Number(sub.bonusPdfDefesa) || 0;
             pmAtual = Number(sub.pmAtual) || 0;
             pvAtual = Number(sub.pvAtual) || 0;
             rTotal = Number(sub.resistencia) || 0;
@@ -3249,25 +3141,14 @@
             bonusR1 = parseInt(document.getElementById('bonusResistencia').value) || 0;
             bonusR2 = parseInt(document.getElementById('bonusResistencia2').value) || 0;
             bfd = parseInt(document.getElementById('bonusArmaduraDefesa').value) || 0;
-            bonusF1 = parseInt(document.getElementById('bonusForca')?.value) || 0;
-            bonusF2 = parseInt(document.getElementById('bonusForca2')?.value) || 0;
-            bfaF = parseInt(document.getElementById('bonusForcaDefesa')?.value) || 0;
-            bonusP1 = parseInt(document.getElementById('bonusPdf')?.value) || 0;
-            bonusP2 = parseInt(document.getElementById('bonusPdf2')?.value) || 0;
-            bfaP = parseInt(document.getElementById('bonusPdfDefesa')?.value) || 0;
-            if (document.getElementById('chkBonusForca')?.checked === false) bonusF1 = 0;
-            if (document.getElementById('chkBonusForca2')?.checked === false) bonusF2 = 0;
-            if (document.getElementById('chkBonusPdf')?.checked === false) bonusP1 = 0;
-            if (document.getElementById('chkBonusPdf2')?.checked === false) bonusP2 = 0;
             pmAtual = parseInt(document.getElementById('pmAtual').value) || 0;
             pvAtual = parseInt(document.getElementById('pvAtual').value) || 0;
             rTotal = parseInt(document.getElementById('resistencia').value) || 0;
             nomePersonagem = document.getElementById('nomePersonagem').value || currentUserName || 'Jogador';
         }
-        // CORREÇÃO 1: B1 e B2 de H só entram se os checkboxes estiverem marcados
+        // B1 e B2 de H só entram se os checkboxes estiverem marcados
         let habilidadeTotal;
         if (isSub && subIndex !== null) {
-            const sub = subFichas[subIndex];
             const chkH1 = document.getElementById(`subficha-chkBonusHabilidade-${subIndex}`)?.checked !== false;
             const chkH2 = document.getElementById(`subficha-chkBonusHabilidade2-${subIndex}`)?.checked !== false;
             habilidadeTotal = habilidade + (chkH1 ? bonusH1 : 0) + (chkH2 ? bonusH2 : 0);
@@ -3277,17 +3158,15 @@
             habilidadeTotal = habilidade + (chkH1 ? bonusH1 : 0) + (chkH2 ? bonusH2 : 0);
         }
         const ehCurto = tipo === 'curto';
-        const atributoBase = ehCurto ? (forca + bonusF1 + bonusF2) : (pdf + bonusP1 + bonusP2);
+        const atributoBase = ehCurto ? forca : pdf;
         const atributoStr = ehCurto ? 'F' : 'PdF';
-        const bfaAuto = ehCurto ? bfaF : bfaP;
-        const b1Auto = ehCurto ? bonusF1 : bonusP1;
-        const b2Auto = ehCurto ? bonusF2 : bonusP2;
+        // B1, B2 e BFA só vêm do próprio ataque agora
         const usarB1 = ataque.chkB1 !== false;
         const usarB2 = ataque.chkB2 !== false;
         const usarBFA = ataque.chkBFA !== false;
-        const b1 = usarB1 ? (parseInt(ataque.b1) || b1Auto) : 0;
-        const b2 = usarB2 ? (parseInt(ataque.b2) || b2Auto) : 0;
-        const bfa = usarBFA ? (parseInt(ataque.bfa) || bfaAuto) : 0;
+        const b1 = usarB1 ? (parseInt(ataque.b1) || 0) : 0;
+        const b2 = usarB2 ? (parseInt(ataque.b2) || 0) : 0;
+        const bfa = usarBFA ? (parseInt(ataque.bfa) || 0) : 0;
         const atributoTotal = (ehCurto ? forca : pdf) + b1 + b2;
         const criticoAutomatico = ataque.criticoAutomatico === true;
         const criticoAprimorado = ataque.criticoAprimorado === true;
@@ -3647,7 +3526,7 @@
             rTotal = parseInt(document.getElementById('resistencia').value) || 0;
             nomePersonagem = document.getElementById('nomePersonagem').value || currentUserName || 'Jogador';
         }
-        // CORREÇÃO 1: B1 e B2 de H só entram se os checkboxes estiverem marcados
+        // B1 e B2 de H só entram se os checkboxes estiverem marcados
         let habilidadeTotal;
         if (isSub && subIndex !== null) {
             const chkH1 = document.getElementById(`subficha-chkBonusHabilidade-${subIndex}`)?.checked !== false;
@@ -3658,11 +3537,17 @@
             const chkH2 = document.getElementById('chkBonusHabilidade2')?.checked !== false;
             habilidadeTotal = habilidade + (chkH1 ? bonusH1 : 0) + (chkH2 ? bonusH2 : 0);
         }
-        const armaduraTotal = armadura + bonusA1 + bonusA2;
         const incluirH = defesa.incluirH !== false;
         const incluirA = defesa.incluirA !== false;
         const hUsado = incluirH ? habilidadeTotal : 0;
-        const aUsada = incluirA ? armaduraTotal : 0;
+        // B1, B2 e BFD agora vêm da própria defesa
+        const usarB1 = defesa.chkB1 !== false;
+        const usarB2 = defesa.chkB2 !== false;
+        const usarBFD = defesa.chkBFD !== false;
+        const b1 = usarB1 ? (parseInt(defesa.b1) || 0) : 0;
+        const b2 = usarB2 ? (parseInt(defesa.b2) || 0) : 0;
+        const bfdUsado = usarBFD ? (parseInt(defesa.bfd) || 0) : 0;
+        const aUsada = incluirA ? (armadura + b1 + b2) : 0;
         const qtdDados = parseInt(defesa.qtdDados) || 1;
         const criticoAutomatico = defesa.criticoAutomatico === true;
         const criticoAprimorado = defesa.criticoAprimorado === true;
@@ -3682,9 +3567,9 @@
                 let nivelSucesso = 0, criticoNivel = false;
                 if (dadoDefesa <= hUsado) { nivelSucesso = dadoDefesa; if (dadoDefesa === hUsado) criticoNivel = true; }
                 const armaduraDobrada = criticoNivel ? aUsada * 2 : aUsada;
-                const fd = armaduraDobrada + nivelSucesso + bfd;
+                const fd = armaduraDobrada + nivelSucesso + bfdUsado;
                 const criticoStr = criticoNivel ? ' ⚡ [ACERTO CRÍTICO!]' : '';
-                const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}] (nível de sucesso): 🎲 ${dadoDefesa} vs H${hUsado} → Nível ${nivelSucesso}${criticoStr} | FD = ${armaduraDobrada}(A) + ${nivelSucesso}(nível) + ${bfd}(BFD) = ${fd}`;
+                const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}] (nível de sucesso): 🎲 ${dadoDefesa} vs H${hUsado} → Nível ${nivelSucesso}${criticoStr} | FD = ${armaduraDobrada}(A) + ${nivelSucesso}(nível) + ${bfdUsado}(BFD) = ${fd}`;
                 addMensagem(texto, ehSecreta);
                 if (!ehSecreta) enviarRolagemFirebase(texto, false);
                 if (resultEl) { resultEl.textContent = `🎲 ${dadoDefesa} → Nível ${nivelSucesso} | FD: ${fd}`; resultEl.className = 'resultado-defesa sucesso'; }
@@ -3694,9 +3579,9 @@
             let dados = [], soma = 0, criticos = 0;
             for (let i = 0; i < qtdDados; i++) { const d = criticoAutomatico ? 6 : Math.floor(Math.random() * 6) + 1; dados.push(d); soma += d; if (criticoAprimorado ? d >= 5 : d === 6) criticos++; }
             const armaduraDobrada = criticos > 0 ? aUsada * 2 : aUsada;
-            const fd = soma + armaduraDobrada + hUsado + bfd;
+            const fd = soma + armaduraDobrada + hUsado + bfdUsado;
             const criticoStr = criticos > 0 ? ` (${criticos} crítico${criticos > 1 ? 's' : ''}!)` : '';
-            const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}]: 🎲 ${dados.join('+')} ${aStr} ${hStr} +${bfd}(BFD) = ${fd}${criticoStr}`;
+            const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}]: 🎲 ${dados.join('+')} ${aStr} ${hStr} +${bfdUsado}(BFD) = ${fd}${criticoStr}`;
             addMensagem(texto, ehSecreta);
             if (!ehSecreta) enviarRolagemFirebase(texto, false);
             if (resultEl) { resultEl.textContent = `🎲 ${dados.join('+')} = ${fd}`; resultEl.className = 'resultado-defesa sucesso'; }
@@ -3711,8 +3596,8 @@
                 const qtd = Math.max(0, aUsada);
                 let dados = [], soma = 0;
                 for (let i = 0; i < qtd; i++) { const d = Math.floor(Math.random() * 6) + 1; dados.push(d); soma += d; }
-                const fd = soma + bfd;
-                const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}] (pilha - dados por ponto): 🎲 ${dados.join('+')} (${qtd}d) + ${bfd}(BFD) = ${fd}`;
+                const fd = soma + bfdUsado;
+                const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}] (pilha - dados por ponto): 🎲 ${dados.join('+')} (${qtd}d) + ${bfdUsado}(BFD) = ${fd}`;
                 addMensagem(texto, ehSecreta);
                 if (!ehSecreta) enviarRolagemFirebase(texto, false);
                 if (resultEl) { resultEl.textContent = `🎲 ${dados.join('+')} = ${fd}`; resultEl.className = 'resultado-defesa sucesso'; }
@@ -3726,7 +3611,7 @@
             let fd;
             if (multiplicar) fd = sucessos * aUsada;
             else fd = sucessos;
-            const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}] (pilha): 🎲 ${qtdDadosFD}d → ${sucessos} sucesso(s) | FD = ${multiplicar ? `${sucessos} × ${aUsada} = ${fd}` : `${fd}`} + ${bfd}(BFD)`;
+            const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}] (pilha): 🎲 ${qtdDadosFD}d → ${sucessos} sucesso(s) | FD = ${multiplicar ? `${sucessos} × ${aUsada} = ${fd}` : `${fd}`} + ${bfdUsado}(BFD)`;
             addMensagem(texto, ehSecreta);
             if (!ehSecreta) enviarRolagemFirebase(texto, false);
             if (resultEl) { resultEl.textContent = `${sucessos} sucesso(s) | FD: ${fd}`; resultEl.className = 'resultado-defesa sucesso'; }
@@ -3768,10 +3653,10 @@
                 }
             }
             const hComCarta = temCoringa && !coringaVermelho && !temFigura ? 0 : hUsado;
-            const fd = aUsada + hComCarta + valorCartas + bfd;
+            const fd = aUsada + hComCarta + valorCartas + bfdUsado;
             const figuraStr = temFigura ? ' ⚡ [FIGURA = CRÍTICO!]' : '';
             const coringaStr = temCoringa ? (coringaVermelho ? ' 🃏 Coringa VERMELHO = crítico' : ' 🃏 Coringa PRETO = H removida') : '';
-            const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}] (cartas): 🃏 ${cartasStr.join('+')}${figuraStr}${coringaStr} | FD = ${aUsada}(A) + ${hComCarta}(H) + ${valorCartas}(cartas) + ${bfd}(BFD) = ${fd}`;
+            const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}] (cartas): 🃏 ${cartasStr.join('+')}${figuraStr}${coringaStr} | FD = ${aUsada}(A) + ${hComCarta}(H) + ${valorCartas}(cartas) + ${bfdUsado}(BFD) = ${fd}`;
             addMensagem(texto, ehSecreta);
             if (!ehSecreta) enviarRolagemFirebase(texto, false);
             if (resultEl) { resultEl.textContent = `🃏 ${cartasStr.join('+')} | FD: ${fd}`; resultEl.className = 'resultado-defesa sucesso'; }
@@ -3799,10 +3684,10 @@
                 if (pmAtual >= custoPM) { gastouPM = custoPM; setPMAtual(pmAtual - custoPM, isSub, subIndex); }
                 else { gastouPM = pmAtual; setPMAtual(0, isSub, subIndex); perdeuPV = custoPM - pmAtual; setPVAtual(Math.max(0, pvAtual - perdeuPV), isSub, subIndex); }
             }
-            const fd = aUsada + hUsado + pe + bfd;
+            const fd = aUsada + hUsado + pe + bfdUsado;
             const limiteStr = ` [Limite grátis: ${limiteGratis} = R${rTotal}+B1${bonusR1}+B2${bonusR2}${temCombate ? '+4 perícia' : ''}]`;
             const custoStr = custoPM > 0 ? ` | 💰 Custo: ${custoPM} PE extra (${gastouPM} PM${perdeuPV ? `, ${perdeuPV} PV` : ''})` : ' | 💰 Sem custo extra';
-            const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}] (PE em combate): ⚡ ${pe} PE${limiteStr} | FD = ${aUsada}(A) + ${hUsado}(H) + ${pe}(PE) + ${bfd}(BFD) = ${fd}${custoStr}`;
+            const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}] (PE em combate): ⚡ ${pe} PE${limiteStr} | FD = ${aUsada}(A) + ${hUsado}(H) + ${pe}(PE) + ${bfdUsado}(BFD) = ${fd}${custoStr}`;
             addMensagem(texto, ehSecreta);
             if (!ehSecreta) enviarRolagemFirebase(texto, false);
             if (resultEl) { resultEl.textContent = `⚡ ${pe} PE | FD: ${fd}`; resultEl.className = 'resultado-defesa sucesso'; }
@@ -3821,7 +3706,7 @@
                 let sucessos = 0, dadosFD = [];
                 for (let i = 0; i < qtdDadosFD; i++) { const d = Math.floor(Math.random() * 6) + 1; dadosFD.push(d); if (d >= 5) sucessos++; }
                 const dadosStr = dadosFD.length > 0 ? ` [${dadosFD.join(', ')}]` : '';
-                const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}] (sem PV + pilha): 🎲 ${qtdDadosFD}d${dadosStr} → ${sucessos} sucesso(s) | FD = ${sucessos} + ${bfd}(BFD)`;
+                const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}] (sem PV + pilha): 🎲 ${qtdDadosFD}d${dadosStr} → ${sucessos} sucesso(s) | FD = ${sucessos} + ${bfdUsado}(BFD)`;
                 addMensagem(texto, ehSecreta);
                 if (!ehSecreta) enviarRolagemFirebase(texto, false);
                 if (resultEl) { resultEl.textContent = `${sucessos} sucesso(s) | FD: ${sucessos}`; resultEl.className = 'resultado-defesa sucesso'; }
@@ -3832,9 +3717,9 @@
                 const dadoFD = Math.floor(Math.random() * 6) + 1;
                 const critico = dadoFD === 6;
                 const aDobrada = critico ? aUsada * 2 : aUsada;
-                const fd = aDobrada + dadoFD + hUsado + bfd;
+                const fd = aDobrada + dadoFD + hUsado + bfdUsado;
                 const criticoStr = critico ? ' ⚡ [CRÍTICO!]' : '';
-                const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}] (sem PV + ferimentos): 🎲 ${dadoFD} + ${aDobrada}(A)${criticoStr} + ${hUsado}(H) + ${bfd}(BFD) = FD ${fd}`;
+                const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}] (sem PV + ferimentos): 🎲 ${dadoFD} + ${aDobrada}(A)${criticoStr} + ${hUsado}(H) + ${bfdUsado}(BFD) = FD ${fd}`;
                 addMensagem(texto, ehSecreta);
                 if (!ehSecreta) enviarRolagemFirebase(texto, false);
                 if (resultEl) { resultEl.textContent = `FD ${fd}${criticoStr}`; resultEl.className = 'resultado-defesa sucesso'; }
@@ -3866,9 +3751,9 @@
         let dados = [], soma = 0, criticos = 0;
         for (let i = 0; i < qtdDados; i++) { const dado = criticoAutomatico ? 6 : Math.floor(Math.random() * 6) + 1; dados.push(dado); soma += dado; if (criticoAprimorado ? dado >= 5 : dado === 6) criticos++; }
         let aDobrado = criticos > 0 ? aUsada * 2 : aUsada;
-        const total = soma + aDobrado + hUsado + bfd;
+        const total = soma + aDobrado + hUsado + bfdUsado;
         const criticoStr = criticos > 0 ? ` (${criticos} crítico${criticos > 1 ? 's' : ''}!)` : '';
-        const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}]: 🎲 ${dados.join('+')} + ${aDobrado}(A) ${hStr} + ${bfd}(BFD) = ${total}${criticoStr}`;
+        const texto = `${prefixo}🛡️ Defesa [${defesa.nome || 'Defesa'}]: 🎲 ${dados.join('+')} + ${aDobrado}(A) ${hStr} + ${bfdUsado}(BFD) = ${total}${criticoStr}`;
         addMensagem(texto, ehSecreta);
         if (!ehSecreta) enviarRolagemFirebase(texto, false);
         if (resultEl) { resultEl.textContent = `🎲 ${dados.join('+')} = ${total}`; resultEl.className = 'resultado-defesa sucesso'; }
@@ -3908,7 +3793,6 @@
         const ehCurto = tipo === 'curto';
         const atributoStr = ehCurto ? 'F' : 'PdF';
         let atributoBase, habilidade, bonusH1, bonusH2;
-        let b1Auto = 0, b2Auto = 0, bfaAuto = 0;
         if (isSub && subIndex !== null) {
             const sub = subFichas[subIndex];
             if (sub) {
@@ -3916,20 +3800,13 @@
                 habilidade = sub.habilidade || 0;
                 bonusH1 = sub.bonusHabilidade || 0;
                 bonusH2 = sub.bonusHabilidade2 || 0;
-                b1Auto = ehCurto ? (Number(sub.bonusForca) || 0) : (Number(sub.bonusPdf) || 0);
-                b2Auto = ehCurto ? (Number(sub.bonusForca2) || 0) : (Number(sub.bonusPdf2) || 0);
-                bfaAuto = ehCurto ? (Number(sub.bonusForcaDefesa) || 0) : (Number(sub.bonusPdfDefesa) || 0);
             }
         } else {
             atributoBase = ehCurto ? (parseInt(document.getElementById('forca').value) || 0) : (parseInt(document.getElementById('pdf').value) || 0);
             habilidade = parseInt(document.getElementById('habilidade').value) || 0;
             bonusH1 = parseInt(document.getElementById('bonusHabilidade').value) || 0;
             bonusH2 = parseInt(document.getElementById('bonusHabilidade2').value) || 0;
-            b1Auto = ehCurto ? (parseInt(document.getElementById('bonusForca')?.value) || 0) : (parseInt(document.getElementById('bonusPdf')?.value) || 0);
-            b2Auto = ehCurto ? (parseInt(document.getElementById('bonusForca2')?.value) || 0) : (parseInt(document.getElementById('bonusPdf2')?.value) || 0);
-            bfaAuto = ehCurto ? (parseInt(document.getElementById('bonusForcaDefesa')?.value) || 0) : (parseInt(document.getElementById('bonusPdfDefesa')?.value) || 0);
         }
-        // CORREÇÃO 1: B1 e B2 de H só entram se os checkboxes estiverem marcados
         let habilidadeTotal;
         if (isSub && subIndex !== null) {
             const chkH1 = document.getElementById(`subficha-chkBonusHabilidade-${subIndex}`)?.checked !== false;
@@ -3946,10 +3823,10 @@
             const chkB1 = ataque.chkB1 !== false;
             const chkB2 = ataque.chkB2 !== false;
             const chkBFA = ataque.chkBFA !== false;
-            const b1Valor = (ataque.b1 !== undefined && ataque.b1 !== null && ataque.b1 !== '') ? ataque.b1 : b1Auto;
-            const b2Valor = (ataque.b2 !== undefined && ataque.b2 !== null && ataque.b2 !== '') ? ataque.b2 : b2Auto;
-            const bfaValor = (ataque.bfa !== undefined && ataque.bfa !== null && ataque.bfa !== '') ? ataque.bfa : bfaAuto;
-            html += `<div class="ataque-modulo"><div class="ataque-header"><input type="text" value="${escapeHtml(ataque.nome || '')}" placeholder="Nome do ataque" data-ataque-campo="nome" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"><button class="btn-remover-ataque" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}">❌ Remover</button></div><div class="ataque-campos"><div class="campo"><label>${atributoStr}:</label><span class="atributo-auto">${atributoBase}</span></div><div class="campo"><input type="checkbox" ${chkB1 ? 'checked' : ''} data-ataque-campo="chkB1" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}" title="Incluir B1"><label>B1:</label><input type="text" inputmode="numeric" value="${b1Valor}" data-ataque-campo="b1" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo"><input type="checkbox" ${chkB2 ? 'checked' : ''} data-ataque-campo="chkB2" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}" title="Incluir B2"><label>B2:</label><input type="text" inputmode="numeric" value="${b2Valor}" data-ataque-campo="b2" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo"><input type="checkbox" ${chkBFA ? 'checked' : ''} data-ataque-campo="chkBFA" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}" title="Incluir BFA"><label>BFA:</label><input type="text" inputmode="numeric" value="${bfaValor}" data-ataque-campo="bfa" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo"><label>H:</label><span class="atributo-auto">${habilidadeTotal}</span></div><div class="campo critico-campo"><label>⚡ Crítico Automático:</label><input type="checkbox" ${ataque.criticoAutomatico ? 'checked' : ''} data-ataque-campo="criticoAutomatico" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo critico-campo"><label>⚡ Crítico Aprimorado:</label><input type="checkbox" ${ataque.criticoAprimorado ? 'checked' : ''} data-ataque-campo="criticoAprimorado" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div></div>`;
+            const b1Valor = ataque.b1 ?? 0;
+            const b2Valor = ataque.b2 ?? 0;
+            const bfaValor = ataque.bfa ?? 0;
+            html += `<div class="ataque-modulo"><div class="ataque-header"><input type="text" value="${escapeHtml(ataque.nome || '')}" placeholder="Nome do ataque" data-ataque-campo="nome" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"><button class="btn-remover-ataque" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}">❌ Remover</button></div><div class="ataque-campos"><div class="campo"><label>${atributoStr}:</label><span class="atributo-auto">${atributoBase}</span></div><div class="campo bonus-campo"><input type="checkbox" ${chkB1 ? 'checked' : ''} data-ataque-campo="chkB1" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}" title="Incluir B1 no cálculo"><label>B1:</label><input type="text" inputmode="numeric" value="${b1Valor}" data-ataque-campo="b1" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo bonus-campo"><input type="checkbox" ${chkB2 ? 'checked' : ''} data-ataque-campo="chkB2" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}" title="Incluir B2 no cálculo"><label>B2:</label><input type="text" inputmode="numeric" value="${b2Valor}" data-ataque-campo="b2" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo bonus-campo"><input type="checkbox" ${chkBFA ? 'checked' : ''} data-ataque-campo="chkBFA" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}" title="Incluir BFA no cálculo"><label>BFA:</label><input type="text" inputmode="numeric" value="${bfaValor}" data-ataque-campo="bfa" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo"><label>H:</label><span class="atributo-auto">${habilidadeTotal}</span></div><div class="campo critico-campo"><label>⚡ Crítico Automático:</label><input type="checkbox" ${ataque.criticoAutomatico ? 'checked' : ''} data-ataque-campo="criticoAutomatico" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo critico-campo"><label>⚡ Crítico Aprimorado:</label><input type="checkbox" ${ataque.criticoAprimorado ? 'checked' : ''} data-ataque-campo="criticoAprimorado" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div></div>`;
             if (usandoCartas) {
                 html += `<div id="cartas-combate-${tipo}-${idx}-${isSub ? subIndex : 'principal'}"></div>`;
                 html += `<div class="ataque-roll-row"><button class="btn-roll-ataque" data-tipo="${tipo}" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}">🎲 Rolar</button><div class="resultado-ataque" id="${resultId}">Aguardando rolagem...</div></div>`;
@@ -3967,7 +3844,9 @@
                 let alvo = isSubAtaque && subIdx !== null ? (tipoAtaque === 'curto' ? ataquesCurtoSub[subIdx] : ataquesDistanciaSub[subIdx]) : (tipoAtaque === 'curto' ? ataquesCurto : ataquesDistancia);
                 if (alvo && alvo[idx]) {
                     if (campo === 'criticoAutomatico' || campo === 'criticoAprimorado' || campo === 'chkB1' || campo === 'chkB2' || campo === 'chkBFA') alvo[idx][campo] = input.checked;
-                    else if (campo === 'qtdDados' || campo === 'b1' || campo === 'b2' || campo === 'bfa') alvo[idx][campo] = parseInt(input.value) || 0;
+                    else if (campo === 'qtdDados' || campo === 'b1' || campo === 'b2' || campo === 'bfa') {
+                        alvo[idx][campo] = parseInt(input.value) || 0;
+                    }
                     else alvo[idx][campo] = input.value;
                     debounceSave();
                 }
@@ -3999,7 +3878,7 @@
         let defesasArray = isSub && subIndex !== null ? (defesasSub[subIndex] || []) : defesas;
         if (!defesasArray || defesasArray.length === 0) { container.innerHTML = '<div style="text-align: center; color: var(--texto-suave); padding: 20px;">Nenhuma defesa criada.</div>'; return; }
         let html = '';
-        let armadura, habilidade, bonusH1, bonusH2, bonusA1, bonusA2, bfd;
+        let armadura, habilidade, bonusH1, bonusH2;
         if (isSub && subIndex !== null) {
             const sub = subFichas[subIndex];
             if (sub) {
@@ -4007,20 +3886,13 @@
                 habilidade = sub.habilidade || 0;
                 bonusH1 = sub.bonusHabilidade || 0;
                 bonusH2 = sub.bonusHabilidade2 || 0;
-                bonusA1 = sub.bonusArmadura || 0;
-                bonusA2 = sub.bonusArmadura2 || 0;
-                bfd = Number(sub.bonusArmaduraDefesa) || 0;
             }
         } else {
             armadura = parseInt(document.getElementById('armadura').value) || 0;
             habilidade = parseInt(document.getElementById('habilidade').value) || 0;
             bonusH1 = parseInt(document.getElementById('bonusHabilidade').value) || 0;
             bonusH2 = parseInt(document.getElementById('bonusHabilidade2').value) || 0;
-            bonusA1 = parseInt(document.getElementById('bonusArmadura').value) || 0;
-            bonusA2 = parseInt(document.getElementById('bonusArmadura2').value) || 0;
-            bfd = parseInt(document.getElementById('bonusArmaduraDefesa').value) || 0;
         }
-        // CORREÇÃO 1: B1 e B2 de H só entram se os checkboxes estiverem marcados
         let habilidadeTotal;
         if (isSub && subIndex !== null) {
             const chkH1 = document.getElementById(`subficha-chkBonusHabilidade-${subIndex}`)?.checked !== false;
@@ -4031,14 +3903,18 @@
             const chkH2 = document.getElementById('chkBonusHabilidade2')?.checked !== false;
             habilidadeTotal = habilidade + (chkH1 ? bonusH1 : 0) + (chkH2 ? bonusH2 : 0);
         }
-        const armaduraTotal = armadura + bonusA1 + bonusA2;
         const usandoCartas = regraAtiva('combateCartas');
         defesasArray.forEach((defesa, idx) => {
             const resultId = isSub ? `sub-defesa-resultado-${subIndex}-${idx}` : `defesa-resultado-${idx}`;
             const incluirH = defesa.incluirH !== false;
             const incluirA = defesa.incluirA !== false;
-            // CORREÇÃO 2: Adicionado o quadro de BFD no popup de defesa
-            html += `<div class="defesa-bloco"><div class="defesa-header"><input type="text" value="${escapeHtml(defesa.nome || '')}" placeholder="Nome da defesa" data-defesa-campo="nome" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"><button class="btn-remover-defesa" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}">❌ Remover</button></div><div class="defesa-campos"><div class="campo"><label>A:</label><span class="atributo-auto">${armaduraTotal}</span></div><div class="campo"><label>H:</label><span class="atributo-auto">${habilidadeTotal}</span></div><div class="campo bfd-campo"><label>BFD:</label><span class="atributo-auto">${bfd}</span></div><div class="campo atributo-checkbox"><label>Incluir A:</label><input type="checkbox" ${incluirA ? 'checked' : ''} data-defesa-campo="incluirA" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo atributo-checkbox"><label>Incluir H:</label><input type="checkbox" ${incluirH ? 'checked' : ''} data-defesa-campo="incluirH" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo critico-campo"><label>⚡ Crítico Automático:</label><input type="checkbox" ${defesa.criticoAutomatico ? 'checked' : ''} data-defesa-campo="criticoAutomatico" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo critico-campo"><label>⚡ Crítico Aprimorado:</label><input type="checkbox" ${defesa.criticoAprimorado ? 'checked' : ''} data-defesa-campo="criticoAprimorado" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div></div>`;
+            const chkB1 = defesa.chkB1 !== false;
+            const chkB2 = defesa.chkB2 !== false;
+            const chkBFD = defesa.chkBFD !== false;
+            const b1Valor = defesa.b1 ?? 0;
+            const b2Valor = defesa.b2 ?? 0;
+            const bfdValor = defesa.bfd ?? 0;
+            html += `<div class="defesa-bloco"><div class="defesa-header"><input type="text" value="${escapeHtml(defesa.nome || '')}" placeholder="Nome da defesa" data-defesa-campo="nome" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"><button class="btn-remover-defesa" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}">❌ Remover</button></div><div class="defesa-campos"><div class="campo"><label>A:</label><span class="atributo-auto">${armadura}</span></div><div class="campo"><label>H:</label><span class="atributo-auto">${habilidadeTotal}</span></div><div class="campo bonus-campo"><input type="checkbox" ${chkB1 ? 'checked' : ''} data-defesa-campo="chkB1" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}" title="Incluir B1 no cálculo"><label>B1:</label><input type="text" inputmode="numeric" value="${b1Valor}" data-defesa-campo="b1" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo bonus-campo"><input type="checkbox" ${chkB2 ? 'checked' : ''} data-defesa-campo="chkB2" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}" title="Incluir B2 no cálculo"><label>B2:</label><input type="text" inputmode="numeric" value="${b2Valor}" data-defesa-campo="b2" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo bfd-campo"><input type="checkbox" ${chkBFD ? 'checked' : ''} data-defesa-campo="chkBFD" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}" title="Incluir BFD no cálculo"><label>BFD:</label><input type="text" inputmode="numeric" value="${bfdValor}" data-defesa-campo="bfd" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo atributo-checkbox"><label>Incluir A:</label><input type="checkbox" ${incluirA ? 'checked' : ''} data-defesa-campo="incluirA" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo atributo-checkbox"><label>Incluir H:</label><input type="checkbox" ${incluirH ? 'checked' : ''} data-defesa-campo="incluirH" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo critico-campo"><label>⚡ Crítico Automático:</label><input type="checkbox" ${defesa.criticoAutomatico ? 'checked' : ''} data-defesa-campo="criticoAutomatico" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div><div class="campo critico-campo"><label>⚡ Crítico Aprimorado:</label><input type="checkbox" ${defesa.criticoAprimorado ? 'checked' : ''} data-defesa-campo="criticoAprimorado" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}"></div></div>`;
             if (usandoCartas) {
                 html += `<div id="cartas-combate-defesa-${idx}-${isSub ? subIndex : 'principal'}"></div>`;
                 html += `<div class="defesa-roll-row"><button class="btn-roll-defesa" data-idx="${idx}" data-sub="${isSub ? subIndex : ''}" data-issub="${isSub}">🎲 Rolar</button><div class="resultado-defesa" id="${resultId}">Aguardando rolagem...</div></div>`;
@@ -4055,13 +3931,13 @@
                 const isSubDef = input.dataset.issub === 'true'; const subIdx = input.dataset.sub !== '' ? parseInt(input.dataset.sub) : null;
                 let alvo = isSubDef && subIdx !== null ? defesasSub[subIdx] : defesas;
                 if (alvo && alvo[idx]) {
-                    if (campo === 'criticoAutomatico' || campo === 'criticoAprimorado' || campo === 'incluirH' || campo === 'incluirA') alvo[idx][campo] = input.checked;
-                    else if (campo === 'qtdDados') alvo[idx][campo] = parseInt(input.value) || 0;
+                    if (campo === 'criticoAutomatico' || campo === 'criticoAprimorado' || campo === 'incluirH' || campo === 'incluirA' || campo === 'chkB1' || campo === 'chkB2' || campo === 'chkBFD') alvo[idx][campo] = input.checked;
+                    else if (campo === 'qtdDados' || campo === 'b1' || campo === 'b2' || campo === 'bfd') alvo[idx][campo] = parseInt(input.value) || 0;
                     else alvo[idx][campo] = input.value;
                     debounceSave();
                 }
             };
-            if (campo === 'criticoAutomatico' || campo === 'criticoAprimorado' || campo === 'incluirH' || campo === 'incluirA') input.onchange = handler; else input.oninput = handler;
+            if (campo === 'criticoAutomatico' || campo === 'criticoAprimorado' || campo === 'incluirH' || campo === 'incluirA' || campo === 'chkB1' || campo === 'chkB2' || campo === 'chkBFD') input.onchange = handler; else input.oninput = handler;
         });
         container.querySelectorAll('.btn-remover-defesa').forEach(btn => {
             btn.onclick = () => {
@@ -4084,14 +3960,14 @@
     }
     
     function adicionarAtaque(tipo, isSub = false, subIndex = null) {
-        const novo = { nome: 'Novo Ataque', b1: null, b2: null, bfa: null, chkB1: true, chkB2: true, chkBFA: true, qtdDados: 1, criticoAutomatico: false, criticoAprimorado: false };
+        const novo = { nome: 'Novo Ataque', b1: 0, b2: 0, bfa: 0, chkB1: true, chkB2: true, chkBFA: true, qtdDados: 1, criticoAutomatico: false, criticoAprimorado: false };
         if (isSub && subIndex !== null) { if (tipo === 'curto') { if (!ataquesCurtoSub[subIndex]) ataquesCurtoSub[subIndex] = []; ataquesCurtoSub[subIndex].push({ ...novo }); } else { if (!ataquesDistanciaSub[subIndex]) ataquesDistanciaSub[subIndex] = []; ataquesDistanciaSub[subIndex].push({ ...novo }); } }
         else { if (tipo === 'curto') ataquesCurto.push({ ...novo }); else ataquesDistancia.push({ ...novo }); }
         renderizarAtaques(tipo, isSub, subIndex); debounceSave();
     }
     
     function adicionarDefesa(isSub = false, subIndex = null) {
-        const nova = { nome: 'Nova Defesa', qtdDados: 1, criticoAutomatico: false, criticoAprimorado: false, incluirH: true, incluirA: true };
+        const nova = { nome: 'Nova Defesa', qtdDados: 1, criticoAutomatico: false, criticoAprimorado: false, incluirH: true, incluirA: true, b1: 0, b2: 0, bfd: 0, chkB1: true, chkB2: true, chkBFD: true };
         if (isSub && subIndex !== null) { if (!defesasSub[subIndex]) defesasSub[subIndex] = []; defesasSub[subIndex].push({ ...nova }); }
         else defesas.push({ ...nova });
         renderizarDefesas(isSub, subIndex); debounceSave();
@@ -4195,38 +4071,8 @@
         };
     }
     
-    function atualizarBadgeSustentados() {
-        const badge = document.getElementById('btnAbrirSustentados');
-        const contador = document.getElementById('sustentadosContador');
-        const numero = document.getElementById('sustentadosNumero');
-        const magias = fichaListas.magias || [];
-        const vantagens = fichaListas.vantagens || [];
-        const sustentadasMagias = magias.filter(m => m.sustentado === true);
-        const sustentadasVantagens = vantagens.filter(v => v.sustentado === true);
-        let subSustentadas = 0;
-        subFichas.forEach(sub => {
-            if (sub.listas?.magias) subSustentadas += sub.listas.magias.filter(m => m.sustentado === true).length;
-            if (sub.listas?.vantagens) subSustentadas += sub.listas.vantagens.filter(v => v.sustentado === true).length;
-        });
-        const count = sustentadasMagias.length + sustentadasVantagens.length + subSustentadas;
-        if (badge) badge.style.display = 'inline-flex';
-        if (contador) contador.textContent = count;
-        if (numero) numero.textContent = count;
-        if (badge) { if (count > 0) badge.classList.add('ativo'); else badge.classList.remove('ativo'); }
-    }
-    
-    function buscarTodosItensSustentados() {
-        const resultados = [];
-        (fichaListas.magias || []).filter(m => m.sustentado === true).forEach(m => resultados.push({ ...m, tipo: 'magias', origem: 'Ficha Principal' }));
-        (fichaListas.vantagens || []).filter(v => v.sustentado === true).forEach(v => resultados.push({ ...v, tipo: 'vantagens', origem: 'Ficha Principal' }));
-        subFichas.forEach(sub => {
-            if (sub.listas?.magias) sub.listas.magias.filter(m => m.sustentado === true).forEach(m => resultados.push({ ...m, tipo: 'magias', origem: `Sub-ficha: ${sub.nome}` }));
-            if (sub.listas?.vantagens) sub.listas.vantagens.filter(v => v.sustentado === true).forEach(v => resultados.push({ ...v, tipo: 'vantagens', origem: `Sub-ficha: ${sub.nome}` }));
-        });
-        return resultados;
-    }
-    
     async function carregarItensSustentados() {
+        if (!currentPin) return;
         const { data, error } = await supabase.from('jogadores').select('*').eq('pin', currentPin);
         if (error || !data) { renderizarPopupSustentados([]); return; }
         const todos = [];
@@ -4245,6 +4091,72 @@
             }
         }
         renderizarPopupSustentados(todos);
+        atualizarBadgeSustentadosGlobal(todos.length);
+    }
+
+    function atualizarBadgeSustentadosGlobal(totalGlobal) {
+        const badge = document.getElementById('btnAbrirSustentados');
+        const contador = document.getElementById('sustentadosContador');
+        const numero = document.getElementById('sustentadosNumero');
+        if (badge) badge.style.display = 'inline-flex';
+        if (contador) contador.textContent = totalGlobal;
+        if (numero) numero.textContent = totalGlobal;
+        if (badge) { if (totalGlobal > 0) badge.classList.add('ativo'); else badge.classList.remove('ativo'); }
+    }
+
+    async function atualizarBadgeSustentadosTodos() {
+        if (!currentPin) return;
+        try {
+            const { data, error } = await supabase.from('jogadores').select('ficha').eq('pin', currentPin);
+            if (error || !data) return;
+            let total = 0;
+            for (const row of data) {
+                const ficha = row.ficha;
+                if (!ficha) continue;
+                if (ficha.listas?.magias) total += ficha.listas.magias.filter(m => m.sustentado === true).length;
+                if (ficha.listas?.vantagens) total += ficha.listas.vantagens.filter(v => v.sustentado === true).length;
+                if (ficha.subFichas && Array.isArray(ficha.subFichas)) {
+                    ficha.subFichas.forEach(sub => {
+                        if (!sub.listas) return;
+                        if (sub.listas.magias) total += sub.listas.magias.filter(m => m.sustentado === true).length;
+                        if (sub.listas.vantagens) total += sub.listas.vantagens.filter(v => v.sustentado === true).length;
+                    });
+                }
+            }
+            atualizarBadgeSustentadosGlobal(total);
+        } catch (err) { console.warn('Erro ao atualizar badge sustentados:', err); }
+    }
+    
+    function atualizarBadgeSustentados() {
+        const badge = document.getElementById('btnAbrirSustentados');
+        const contador = document.getElementById('sustentadosContador');
+        const numero = document.getElementById('sustentadosNumero');
+        const magias = fichaListas.magias || [];
+        const vantagens = fichaListas.vantagens || [];
+        const sustentadasMagias = magias.filter(m => m.sustentado === true);
+        const sustentadasVantagens = vantagens.filter(v => v.sustentado === true);
+        let subSustentadas = 0;
+        subFichas.forEach(sub => {
+            if (sub.listas?.magias) subSustentadas += sub.listas.magias.filter(m => m.sustentado === true).length;
+            if (sub.listas?.vantagens) subSustentadas += sub.listas.vantagens.filter(v => v.sustentado === true).length;
+        });
+        const count = sustentadasMagias.length + sustentadasVantagens.length + subSustentadas;
+        if (badge) badge.style.display = 'inline-flex';
+        if (contador) contador.textContent = count;
+        if (numero) numero.textContent = count;
+        if (badge) { if (count > 0) badge.classList.add('ativo'); else badge.classList.remove('ativo'); }
+        atualizarBadgeSustentadosTodos();
+    }
+    
+    function buscarTodosItensSustentados() {
+        const resultados = [];
+        (fichaListas.magias || []).filter(m => m.sustentado === true).forEach(m => resultados.push({ ...m, tipo: 'magias', origem: 'Ficha Principal' }));
+        (fichaListas.vantagens || []).filter(v => v.sustentado === true).forEach(v => resultados.push({ ...v, tipo: 'vantagens', origem: 'Ficha Principal' }));
+        subFichas.forEach(sub => {
+            if (sub.listas?.magias) sub.listas.magias.filter(m => m.sustentado === true).forEach(m => resultados.push({ ...m, tipo: 'magias', origem: `Sub-ficha: ${sub.nome}` }));
+            if (sub.listas?.vantagens) sub.listas.vantagens.filter(v => v.sustentado === true).forEach(v => resultados.push({ ...v, tipo: 'vantagens', origem: `Sub-ficha: ${sub.nome}` }));
+        });
+        return resultados;
     }
     
     function renderizarPopupSustentados(sustentados) {
@@ -4295,20 +4207,21 @@
     
     function abrirPopupSustentados() {
         const popup = document.getElementById('sustentadosPopup');
-        if (isMaster) carregarItensSustentados();
-        else {
-            const itens = buscarTodosItensSustentados();
-            const itensComJogador = itens.map(item => ({ ...item, jogadorId: currentUserId, jogadorNome: document.getElementById('nomePersonagem').value || currentUserName || 'Jogador' }));
-            renderizarPopupSustentados(itensComJogador);
-        }
+        carregarItensSustentados();
         popup.style.display = 'flex';
     }
     function fecharPopupSustentados() { document.getElementById('sustentadosPopup').style.display = 'none'; }
     
     function escutarSustentadosGlobais() {
-        if (!currentPin || !isMaster) return;
+        if (!currentPin) return;
+        if (_sustentadosChannel) { try { supabase.removeChannel(_sustentadosChannel); } catch(e) {} _sustentadosChannel = null; }
         const channelName = `sustentados-${currentPin}-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
-        const channel = supabase.channel(channelName).on('postgres_changes', { event: '*', schema: 'public', table: 'jogadores', filter: `pin=eq.${currentPin}` }, async () => { const popup = document.getElementById('sustentadosPopup'); if (popup.style.display === 'flex') await carregarItensSustentados(); }).subscribe();
+        const channel = supabase.channel(channelName).on('postgres_changes', { event: '*', schema: 'public', table: 'jogadores', filter: `pin=eq.${currentPin}` }, async () => {
+            await atualizarBadgeSustentadosTodos();
+            const popup = document.getElementById('sustentadosPopup');
+            if (popup.style.display === 'flex') await carregarItensSustentados();
+        }).subscribe();
+        _sustentadosChannel = channel;
         realtimeChannels.push(channel);
     }
     
@@ -4329,7 +4242,7 @@
         const podeEditar = isGM || sub.criadoPor === currentUserId;
         const tipoDisplay = sub.tipo === 'aliado' ? '🤝 Aliado' : (sub.tipo === 'familiar' ? '🐾 Familiar' : '✨ Invocação');
         const tipoClass = sub.tipo === 'aliado' ? 'aliado' : (sub.tipo === 'familiar' ? 'familiar' : 'invocacao');
-        let html = `<div class="subficha-header"><div><h3>${escapeHtml(sub.nome)} <span class="subficha-tipo ${tipoClass}">${tipoDisplay}</span></h3></div><div class="subficha-acoes">${podeEditar ? `<button class="btn-subficha-expandir" data-idx="${index}">${estaExpandida ? '📋 Resumo' : '✏️ Editar'}</button>` : ''}${podeEditar ? `<button class="btn-subficha excluir" data-idx="${index}">🗑️ Excluir</button>` : ''}</div></div><div class="subficha-resumo"><div class="subficha-detalhes"><span>💪 F: ${sub.forca} ${sub.bonusForca ? `(+${sub.bonusForca})` : ''} ${sub.bonusForca2 ? `(+${sub.bonusForca2})` : ''}</span><span>🎯 H: ${sub.habilidade} ${sub.bonusHabilidade ? `(+${sub.bonusHabilidade})` : ''} ${sub.bonusHabilidade2 ? `(+${sub.bonusHabilidade2})` : ''}</span><span>🛡️ R: ${sub.resistencia} ${sub.bonusResistencia ? `(+${sub.bonusResistencia})` : ''} ${sub.bonusResistencia2 ? `(+${sub.bonusResistencia2})` : ''}</span><span>⚔️ A: ${sub.armadura} ${sub.bonusArmadura ? `(+${sub.bonusArmadura})` : ''} ${sub.bonusArmadura2 ? `(+${sub.bonusArmadura2})` : ''}</span><span>🔮 PdF: ${sub.pdf} ${sub.bonusPdf ? `(+${sub.bonusPdf})` : ''} ${sub.bonusPdf2 ? `(+${sub.bonusPdf2})` : ''}</span><span>❤️ PV: ${sub.pvAtual}/${sub.pvTotal} (Bônus: ${sub.bonusPv})</span><span>✨ PM: ${sub.pmAtual}/${sub.pmTotal} (Bônus: ${sub.bonusPm})</span>${sub.escala ? `<span>📏 Escala: ${escapeHtml(sub.escala)}</span>` : ''}</div></div>`;
+        let html = `<div class="subficha-header"><div><h3>${escapeHtml(sub.nome)} <span class="subficha-tipo ${tipoClass}">${tipoDisplay}</span></h3></div><div class="subficha-acoes">${podeEditar ? `<button class="btn-subficha-expandir" data-idx="${index}">${estaExpandida ? '📋 Resumo' : '✏️ Editar'}</button>` : ''}${podeEditar ? `<button class="btn-subficha excluir" data-idx="${index}">🗑️ Excluir</button>` : ''}</div></div><div class="subficha-resumo"><div class="subficha-detalhes"><span>💪 F: ${sub.forca}</span><span>🎯 H: ${sub.habilidade} ${sub.bonusHabilidade ? `(+${sub.bonusHabilidade})` : ''} ${sub.bonusHabilidade2 ? `(+${sub.bonusHabilidade2})` : ''}</span><span>🛡️ R: ${sub.resistencia} ${sub.bonusResistencia ? `(+${sub.bonusResistencia})` : ''} ${sub.bonusResistencia2 ? `(+${sub.bonusResistencia2})` : ''}</span><span>⚔️ A: ${sub.armadura}</span><span>🔮 PdF: ${sub.pdf}</span><span>❤️ PV: ${sub.pvAtual}/${sub.pvTotal} (Bônus: ${sub.bonusPv})</span><span>✨ PM: ${sub.pmAtual}/${sub.pmTotal} (Bônus: ${sub.bonusPm})</span>${sub.escala ? `<span>📏 Escala: ${escapeHtml(sub.escala)}</span>` : ''}</div></div>`;
         if (estaExpandida) {
             html += `<div class="subficha-edit-area visivel"><div class="subficha-abas"><button class="subficha-aba-btn ativa" data-aba-sub="principal-${index}">📋 Principal</button><button class="subficha-aba-btn" data-aba-sub="testes-${index}">🎯 Testes</button><button class="subficha-aba-btn" data-aba-sub="vantagens-${index}">✨ Vantagens</button><button class="subficha-aba-btn" data-aba-sub="inventario-${index}">🎒 Inventário</button><button class="subficha-aba-btn" data-aba-sub="magias-${index}">🔮 Magias</button><button class="subficha-aba-btn" data-aba-sub="kits-${index}">📦 Kits</button><button class="subficha-aba-btn" data-aba-sub="status-${index}">⚠️ Status</button></div><div id="subficha-conteudo-${index}"></div></div>`;
         }
@@ -4400,11 +4313,11 @@
                         <div class="card-atributos">
                             <h3 style="margin-top:0; font-size:12px;">📊 Atributos</h3>
                             <div class="subficha-atributos-3colunas">
-                                <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">💪 F</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-forca-${index}" value="${sub.forca}"></div><div class="subficha-total-losango" title="Total de Força"><span class="atributo-total-valor" id="subficha-totalForca-${index}">0</span></div></div><div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusForca-${index}" value="${sub.bonusForca || 0}"></div><input type="checkbox" id="subficha-chkBonusForca-${index}" class="bonus-checkbox" checked></div><div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusForca2-${index}" value="${sub.bonusForca2 || 0}"></div><input type="checkbox" id="subficha-chkBonusForca2-${index}" class="bonus-checkbox" checked></div><div class="atributo-linha"><div class="bonus3"><label>BFA</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusForcaDefesa-${index}" value="${sub.bonusForcaDefesa || 0}"></div></div></div>
+                                <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">💪 F</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-forca-${index}" value="${sub.forca}"></div><div class="subficha-total-losango" title="Total de Força"><span class="atributo-total-valor" id="subficha-totalForca-${index}">0</span></div></div></div>
                                 <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">🎯 H</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-habilidade-${index}" value="${sub.habilidade}"></div><div class="subficha-total-losango" title="Total de Habilidade"><span class="atributo-total-valor" id="subficha-totalHabilidade-${index}">0</span></div></div><div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusHabilidade-${index}" value="${sub.bonusHabilidade}"></div><input type="checkbox" id="subficha-chkBonusHabilidade-${index}" class="bonus-checkbox" checked></div><div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusHabilidade2-${index}" value="${sub.bonusHabilidade2}"></div><input type="checkbox" id="subficha-chkBonusHabilidade2-${index}" class="bonus-checkbox" checked></div></div>
                                 <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">🛡️ R</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-resistencia-${index}" value="${sub.resistencia}"></div><div class="subficha-total-losango" title="Total de Resistência"><span class="atributo-total-valor" id="subficha-totalResistencia-${index}">0</span></div></div><div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusResistencia-${index}" value="${sub.bonusResistencia}"></div><input type="checkbox" id="subficha-chkBonusResistencia-${index}" class="bonus-checkbox" checked></div><div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusResistencia2-${index}" value="${sub.bonusResistencia2}"></div><input type="checkbox" id="subficha-chkBonusResistencia2-${index}" class="bonus-checkbox" checked></div></div>
-                                <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">⚔️ A</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-armadura-${index}" value="${sub.armadura}"></div><div class="subficha-total-losango" title="Total de Armadura"><span class="atributo-total-valor" id="subficha-totalArmadura-${index}">0</span></div></div><div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusArmadura-${index}" value="${sub.bonusArmadura}"></div><input type="checkbox" id="subficha-chkBonusArmadura-${index}" class="bonus-checkbox" checked></div><div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusArmadura2-${index}" value="${sub.bonusArmadura2}"></div><input type="checkbox" id="subficha-chkBonusArmadura2-${index}" class="bonus-checkbox" checked></div><div class="atributo-linha"><div class="bonus3"><label>BFD</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusArmaduraDefesa-${index}" value="${sub.bonusArmaduraDefesa || 0}"></div></div></div>
-                                <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">🔮 PdF</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-pdf-${index}" value="${sub.pdf}"></div><div class="subficha-total-losango" title="Total de Poder de Fogo"><span class="atributo-total-valor" id="subficha-totalPdf-${index}">0</span></div></div><div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusPdf-${index}" value="${sub.bonusPdf || 0}"></div><input type="checkbox" id="subficha-chkBonusPdf-${index}" class="bonus-checkbox" checked></div><div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusPdf2-${index}" value="${sub.bonusPdf2 || 0}"></div><input type="checkbox" id="subficha-chkBonusPdf2-${index}" class="bonus-checkbox" checked></div><div class="atributo-linha"><div class="bonus3"><label>BFA</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusPdfDefesa-${index}" value="${sub.bonusPdfDefesa || 0}"></div></div></div>
+                                <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">⚔️ A</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-armadura-${index}" value="${sub.armadura}"></div><div class="subficha-total-losango" title="Total de Armadura"><span class="atributo-total-valor" id="subficha-totalArmadura-${index}">0</span></div></div></div>
+                                <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">🔮 PdF</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-pdf-${index}" value="${sub.pdf}"></div><div class="subficha-total-losango" title="Total de Poder de Fogo"><span class="atributo-total-valor" id="subficha-totalPdf-${index}">0</span></div></div></div>
                                 <div class="subficha-rolagem-generica-item"><div class="rolagem-titulo">🎲 Rolagem Genérica</div><div class="rolagem-campos"><div class="roll-row"><label>Dados</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-qtdDados-${index}" value="1"><label>Mod</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-modRoll-${index}" value="0"></div><button class="btn-roll-sub" data-sub="${index}">🎲 Rolar</button></div></div>
                             </div>
                         </div>
@@ -4533,7 +4446,7 @@
         if (escalaInput) escalaInput.oninput = () => { sub.escala = escalaInput.value; debounceSaveSubFicha(); };
         const nomeInput = document.getElementById(`subficha-nome-${index}`);
         if (nomeInput) nomeInput.oninput = () => { sub.nome = nomeInput.value; debounceSaveSubFicha(); renderizarSubFichas(); };
-        ['Habilidade', 'Resistência', 'Armadura', 'Força', 'Pdf'].forEach(nome => {
+        ['Habilidade', 'Resistência'].forEach(nome => {
             const chk1 = document.getElementById(`subficha-chkBonus${nome}-${index}`);
             const chk2 = document.getElementById(`subficha-chkBonus${nome}2-${index}`);
             if (chk1) chk1.onchange = () => { debounceSaveSubFicha(); atualizarIndicadoresAtributosSub(index); };
@@ -4903,7 +4816,7 @@
         else { const el = document.getElementById('pvAtual'); if (el) el.value = Math.max(0, valor); }
     }
     function getB1Atributo(attr, isSub = false, subIndex = null) {
-        const map = { 'H': 'bonusHabilidade', 'R': 'bonusResistencia', 'A': 'bonusArmadura', 'F': 'bonusForca', 'PdF': 'bonusPdf' };
+        const map = { 'H': 'bonusHabilidade', 'R': 'bonusResistencia' };
         const key = map[attr];
         if (isSub && subIndex !== null) { const sub = subFichas[subIndex]; if (!sub) return 0; return Number(sub[key]) || 0; }
         const id = key;
@@ -4980,11 +4893,10 @@
         const dificuldadeNome = difNomeMap[dificuldade] || 'Médio';
         const dado = Math.floor(Math.random() * 6) + 1;
         const alvoFinal = baseAtributo + treinoBonus + bp.bonus - bp.pen;
-        const sucesso = dado !== 6 && dado + alvoFinal >= dificuldadeValor;
+        const sucesso = (dado + alvoFinal) >= dificuldadeValor;
         const bonusTesteStr = (bonusTeste.bonusAzul || bonusTeste.bonusVermelho) ? ` [+${bonusTeste.bonusAzul}${bonusTeste.bonusVermelho ? `+${bonusTeste.bonusVermelho}` : ''}]` : '';
         const bpStr = `${bp.bonus ? ` +${bp.bonus}(B)` : ''}${bp.pen ? ` -${bp.pen}(P)` : ''}`;
-        const sextoStr = dado === 6 ? ' ⚠️ [6 = falha automática]' : '';
-        const resultadoTexto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste} (${dificuldadeNome}): 🎲 ${dado} + ${alvoFinal} [${baseAtributo}${treinoBonus ? '+4' : ''}${bonusTesteStr}${bpStr}] = ${dado + alvoFinal} | Alvo: ${dificuldadeValor} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}${sextoStr}`;
+        const resultadoTexto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste} (${dificuldadeNome}): 🎲 ${dado} + ${alvoFinal} [${baseAtributo}${treinoBonus ? '+4' : ''}${bonusTesteStr}${bpStr}] = ${dado + alvoFinal} | Alvo: ${dificuldadeValor} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}`;
         addMensagem(resultadoTexto, ehSecreta);
         if (!ehSecreta) enviarRolagemFirebase(resultadoTexto, false);
         if (resultadoElement) { resultadoElement.textContent = `🎲 ${dado} + ${alvoFinal} = ${dado + alvoFinal} → ${sucesso ? '✅' : '❌'}`; resultadoElement.className = 'teste-resultado'; if (sucesso) resultadoElement.classList.add('sucesso'); else resultadoElement.classList.add('falha'); }
@@ -5803,9 +5715,9 @@
             bonusResistencia: parseInt(document.getElementById('bonusResistencia').value) || 0,
             bonusResistencia2: parseInt(document.getElementById('bonusResistencia2').value) || 0,
             armadura: parseInt(document.getElementById('armadura').value) || 0,
-            bonusArmadura: parseInt(document.getElementById('bonusArmadura').value) || 0,
-            bonusArmadura2: parseInt(document.getElementById('bonusArmadura2').value) || 0,
-            bonusArmaduraDefesa: parseInt(document.getElementById('bonusArmaduraDefesa').value) || 0,
+            bonusArmadura: parseInt(document.getElementById('bonusArmadura')?.value) || 0,
+            bonusArmadura2: parseInt(document.getElementById('bonusArmadura2')?.value) || 0,
+            bonusArmaduraDefesa: parseInt(document.getElementById('bonusArmaduraDefesa')?.value) || 0,
             bonusForca: parseInt(document.getElementById('bonusForca')?.value) || 0,
             bonusForca2: parseInt(document.getElementById('bonusForca2')?.value) || 0,
             bonusForcaDefesa: parseInt(document.getElementById('bonusForcaDefesa')?.value) || 0,
@@ -5854,9 +5766,9 @@
         document.getElementById('bonusResistencia').value = f.bonusResistencia ?? 0;
         document.getElementById('bonusResistencia2').value = f.bonusResistencia2 ?? 0;
         document.getElementById('armadura').value = f.armadura ?? 0;
-        document.getElementById('bonusArmadura').value = f.bonusArmadura ?? 0;
-        document.getElementById('bonusArmadura2').value = f.bonusArmadura2 ?? 0;
-        document.getElementById('bonusArmaduraDefesa').value = f.bonusArmaduraDefesa ?? 0;
+        const bonusArmaduraEl = document.getElementById('bonusArmadura'); if (bonusArmaduraEl) bonusArmaduraEl.value = f.bonusArmadura ?? 0;
+        const bonusArmadura2El = document.getElementById('bonusArmadura2'); if (bonusArmadura2El) bonusArmadura2El.value = f.bonusArmadura2 ?? 0;
+        const bonusArmaduraDefesaEl = document.getElementById('bonusArmaduraDefesa'); if (bonusArmaduraDefesaEl) bonusArmaduraDefesaEl.value = f.bonusArmaduraDefesa ?? 0;
         const bonusForcaEl = document.getElementById('bonusForca'); if (bonusForcaEl) bonusForcaEl.value = f.bonusForca ?? 0;
         const bonusForca2El = document.getElementById('bonusForca2'); if (bonusForca2El) bonusForca2El.value = f.bonusForca2 ?? 0;
         const bonusForcaDefesaEl = document.getElementById('bonusForcaDefesa'); if (bonusForcaDefesaEl) bonusForcaDefesaEl.value = f.bonusForcaDefesa ?? 0;
@@ -5884,10 +5796,10 @@
         else gastosManuais = null;
         ataquesCurto = f.ataquesCurto ? f.ataquesCurto.map(a => ({ ...a, chkB1: a.chkB1 !== false, chkB2: a.chkB2 !== false, chkBFA: a.chkBFA !== false })) : [];
         ataquesDistancia = f.ataquesDistancia ? f.ataquesDistancia.map(a => ({ ...a, chkB1: a.chkB1 !== false, chkB2: a.chkB2 !== false, chkBFA: a.chkBFA !== false })) : [];
-        defesas = f.defesas ? f.defesas.map(d => ({ ...d, incluirH: d.incluirH !== false, incluirA: d.incluirA !== false })) : [];
+        defesas = f.defesas ? f.defesas.map(d => ({ ...d, incluirH: d.incluirH !== false, incluirA: d.incluirA !== false, chkB1: d.chkB1 !== false, chkB2: d.chkB2 !== false, chkBFD: d.chkBFD !== false })) : [];
         ataquesCurtoSub = f.ataquesCurtoSub ? Object.fromEntries(Object.entries(f.ataquesCurtoSub).map(([k,v]) => [k, v.map(a => ({ ...a, chkB1: a.chkB1 !== false, chkB2: a.chkB2 !== false, chkBFA: a.chkBFA !== false }))])) : {};
         ataquesDistanciaSub = f.ataquesDistanciaSub ? Object.fromEntries(Object.entries(f.ataquesDistanciaSub).map(([k,v]) => [k, v.map(a => ({ ...a, chkB1: a.chkB1 !== false, chkB2: a.chkB2 !== false, chkBFA: a.chkBFA !== false }))])) : {};
-        defesasSub = f.defesasSub ? Object.fromEntries(Object.entries(f.defesasSub).map(([k,v]) => [k, v.map(d => ({ ...d, incluirH: d.incluirH !== false, incluirA: d.incluirA !== false }))])) : {};
+        defesasSub = f.defesasSub ? Object.fromEntries(Object.entries(f.defesasSub).map(([k,v]) => [k, v.map(d => ({ ...d, incluirH: d.incluirH !== false, incluirA: d.incluirA !== false, chkB1: d.chkB1 !== false, chkB2: d.chkB2 !== false, chkBFD: d.chkBFD !== false }))])) : {};
         if (f.testes?.bonusTestes) window.bonusTestes = f.testes.bonusTestes; else window.bonusTestes = {};
         if (f.testes?.bonusAtributosTeste) bonusAtributosTeste = f.testes.bonusAtributosTeste; else bonusAtributosTeste = {};
         if (f.baralhoEstado && Array.isArray(f.baralhoEstado.monte) && Array.isArray(f.baralhoEstado.mao) && Array.isArray(f.baralhoEstado.descartes)) {
@@ -5942,12 +5854,6 @@
                 if (!subCopy.statusSub) { const s = {}; STATUS_LISTA.forEach(x => { s[x.id] = false; }); subCopy.statusSub = s; }
                 if (subCopy.escala === undefined) subCopy.escala = '';
                 if (!Number.isFinite(subCopy.pontosBase)) subCopy.pontosBase = 0;
-                if (!subCopy.bonusForca) subCopy.bonusForca = 0;
-                if (!subCopy.bonusForca2) subCopy.bonusForca2 = 0;
-                if (!subCopy.bonusForcaDefesa) subCopy.bonusForcaDefesa = 0;
-                if (!subCopy.bonusPdf) subCopy.bonusPdf = 0;
-                if (!subCopy.bonusPdf2) subCopy.bonusPdf2 = 0;
-                if (!subCopy.bonusPdfDefesa) subCopy.bonusPdfDefesa = 0;
                 return subCopy;
             });
         } else subFichas = [];
@@ -6341,7 +6247,7 @@
             document.getElementById('btnVoltarLista').onclick = voltarParaLista;
             document.getElementById('btnUpdateAll').onclick = atualizarTodasFichas;
             document.getElementById('btnUpdateSelected').onclick = atualizarFichasSelecionadas;
-            escutarSustentadosGlobais(); escutarStatusGlobais();
+            escutarStatusGlobais();
             document.getElementById('btnAbrirRegras').style.display = 'inline-flex';
         } else {
             gmPanel.style.display = 'none'; editorFicha.style.display = 'block'; secretRollContainer.style.display = 'none';
@@ -6350,6 +6256,8 @@
             document.getElementById('btnAbrirRegras').style.display = 'none';
             carregarFichaPorId(currentUserId);
         }
+        escutarSustentadosGlobais();
+        setTimeout(() => atualizarBadgeSustentadosTodos(), 1000);
         document.getElementById('btnAtualizarFicha').onclick = atualizarFichaUsuario;
         document.getElementById('btnCriarNovaFicha').onclick = criarNovaFicha;
         document.getElementById('btnMigrarCodigos').onclick = migrarCodigosFichasExistentes;
@@ -6375,7 +6283,7 @@
         if (currentPin && currentUserId) { await supabase.from('jogadores').update({ conectado: false }).eq('id', currentUserId); }
         if (intervaloLimpeza) clearInterval(intervaloLimpeza);
         for (const ch of realtimeChannels) { try { supabase.removeChannel(ch); } catch(e) {} }
-        realtimeChannels = []; _jogadoresChannel = null; _rolagensChannel = null; _mesasChannel = null;
+        realtimeChannels = []; _jogadoresChannel = null; _rolagensChannel = null; _mesasChannel = null; _sustentadosChannel = null;
         currentPin = null; currentUserId = null; currentUserName = null; isMaster = false; isGM = false; visualizandoId = null; periciaSelecionadaCarta = null;
         cartaViradaAguardandoUso = false;
         periciaSelecionadaCartaSub = {};
@@ -6424,8 +6332,8 @@
     document.getElementById('vantagemUnicaCusto').addEventListener('input', () => { salvarForcado(); atualizarPontos(); });
     document.getElementById('vantagemUnicaDesc').addEventListener('input', salvarForcado);
     ['forca', 'habilidade', 'resistencia', 'armadura', 'pdf'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('input', () => { salvarForcado(); atualizarPontos(); }); });
-    ['bonusHabilidade', 'bonusHabilidade2', 'bonusResistencia', 'bonusResistencia2', 'bonusArmadura', 'bonusArmadura2', 'bonusArmaduraDefesa', 'bonusForca', 'bonusForca2', 'bonusForcaDefesa', 'bonusPdf', 'bonusPdf2', 'bonusPdfDefesa', 'pvTotal', 'pvAtual', 'bonusPv', 'pmTotal', 'pmAtual', 'bonusPm', 'xp', 'dinheiro'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('input', () => { salvarForcado(); atualizarIndicadoresAtributos(); }); });
-    ['chkBonusHabilidade', 'chkBonusHabilidade2', 'chkBonusResistencia', 'chkBonusResistencia2', 'chkBonusArmadura', 'chkBonusArmadura2', 'chkBonusForca', 'chkBonusForca2', 'chkBonusPdf', 'chkBonusPdf2'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', atualizarIndicadoresAtributos); });
+    ['bonusHabilidade', 'bonusHabilidade2', 'bonusResistencia', 'bonusResistencia2', 'pvTotal', 'pvAtual', 'bonusPv', 'pmTotal', 'pmAtual', 'bonusPm', 'xp', 'dinheiro'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('input', () => { salvarForcado(); atualizarIndicadoresAtributos(); }); });
+    ['chkBonusHabilidade', 'chkBonusHabilidade2', 'chkBonusResistencia', 'chkBonusResistencia2'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', atualizarIndicadoresAtributos); });
     const pontosGastosInputEl = document.getElementById('pontosGastosInput');
     if (pontosGastosInputEl) {
         pontosGastosInputEl.addEventListener('focus', () => { if (isGM || isMaster) pontosGastosInputEl.dataset.masterEditing = 'true'; });
@@ -6452,9 +6360,10 @@
     renderizarStatusCheckboxes();
     window.getSupabase = () => supabase;
     window.getVisualizandoId = () => visualizandoId;
-    console.log('✅ Sistema Tormenta Alpha migrado para Supabase');
-    console.log('✅ Correções: cores creme removidas; magias com checkboxes de atributos + valor livre + dados; B1/B2/BFA em F e PdF');
-    console.log('✅ Ajustes: campo PE de Ofícios visível apenas com regra de esforço ativa; Ofícios usam as regras alternativas de teste (ficha principal e subfichas); re-renderização automática dos ofícios ao ativar/desativar regras');
+    console.log('✅ Correções aplicadas:');
+    console.log('   1. B1/B2/BFA removidos dos módulos F e PdF (ficam apenas nos ataques)');
+    console.log('   2. B1/B2/BFD removidos do módulo A (ficam apenas nas defesas)');
+    console.log('   3. "Rolar Dano" das magias substituído por "Lançar Magia"');
 </script>
 </body>
 </html>
