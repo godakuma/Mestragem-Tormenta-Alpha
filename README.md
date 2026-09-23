@@ -322,6 +322,8 @@ Status são globais: o popup "Condições Ativas" mostra as de todos.
 
 Backup semanal via exportação é recomendado.
 
+
+
 🇺🇸 Detailed User Guide (English)
 
 1. Overview
