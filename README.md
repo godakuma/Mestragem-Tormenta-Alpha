@@ -323,50 +323,6 @@ Status são globais: o popup "Condições Ativas" mostra as de todos.
 Backup semanal via exportação é recomendado.
 
 🇺🇸 Detailed User Guide (English)
-📑 Table of Contents
-Overview
-
-First Access
-
-Creating a Table (GM)
-
-Joining as GM
-
-Joining as Player
-
-GM Panel
-
-Sheet Structure
-
-Main Tab
-
-Tests Tab
-
-Advantages Tab
-
-Inventory Tab
-
-Spells Tab
-
-Kits Tab
-
-More Sheets Tab (Sub-sheets)
-
-Status Tab
-
-Rolls
-
-Alternative Rules
-
-Roll Chat
-
-Deck (Cards)
-
-Sustained Items
-
-Export / Import
-
-Tips and Best Practices
 
 1. Overview
 Tormenta Alpha – Sheet System is a web extension for RPG sessions. It allows you to:
