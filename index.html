@@ -2100,25 +2100,25 @@
     }
     
     function addMensagem(texto, ehSecreta = false) {
-        const nome = document.getElementById('nomePersonagem').value || currentUserName || 'Jogador';
-        const hora = new Date().toLocaleTimeString();
-        const msgDiv = document.createElement('div');
-        msgDiv.className = ehSecreta ? 'mensagem secreta' : 'mensagem';
-        const labelSecreto = ehSecreta ? ' <span style="color:#5a7a8a;">[SEGREDO]</span>' : '';
-        msgDiv.innerHTML = `<div class="mensagem-header"><strong>${escapeHtml(nome)}${labelSecreto}</strong><span class="mensagem-time">${hora}</span></div><div class="mensagem-texto">${escapeHtml(texto)}</div>`;
-        chatDivLateral.insertBefore(msgDiv, chatDivLateral.firstChild);
-        const empty = chatDivLateral.querySelector('.empty-chat');
-        if (empty) empty.remove();
-        while (chatDivLateral.children.length > MAX_CHAT_MESSAGES_DISPLAY) chatDivLateral.removeChild(chatDivLateral.lastChild);
-    }
+    const nome = isMaster ? 'Mestre' : (document.getElementById('nomePersonagem').value || currentUserName || 'Jogador');
+    const hora = new Date().toLocaleTimeString();
+    const msgDiv = document.createElement('div');
+    msgDiv.className = ehSecreta ? 'mensagem secreta' : 'mensagem';
+    const labelSecreto = ehSecreta ? ' <span style="color:#5a7a8a;">[SEGREDO]</span>' : '';
+    msgDiv.innerHTML = `<div class="mensagem-header"><strong>${escapeHtml(nome)}${labelSecreto}</strong><span class="mensagem-time">${hora}</span></div><div class="mensagem-texto">${escapeHtml(texto)}</div>`;
+    chatDivLateral.insertBefore(msgDiv, chatDivLateral.firstChild);
+    const empty = chatDivLateral.querySelector('.empty-chat');
+    if (empty) empty.remove();
+    while (chatDivLateral.children.length > MAX_CHAT_MESSAGES_DISPLAY) chatDivLateral.removeChild(chatDivLateral.lastChild);
+}
     
     async function enviarRolagemFirebase(texto, ehSecreta = false) {
-        if (!currentPin) return;
-        const nome = document.getElementById('nomePersonagem').value || currentUserName || 'Jogador';
-        const { error } = await supabase.from('rolagens').insert({ pin: currentPin, texto, jogador: nome, secreta: ehSecreta, timestamp: Date.now() });
-        if (error) console.error('enviarRolagem:', error);
-        if (isMaster) setTimeout(() => limparChatAntigo(), 1000);
-    }
+    if (!currentPin) return;
+    const nome = isMaster ? 'Mestre' : (document.getElementById('nomePersonagem').value || currentUserName || 'Jogador');
+    const { error } = await supabase.from('rolagens').insert({ pin: currentPin, texto, jogador: nome, secreta: ehSecreta, timestamp: Date.now() });
+    if (error) console.error('enviarRolagem:', error);
+    if (isMaster) setTimeout(() => limparChatAntigo(), 1000);
+}
     
     // ============================================================
     // CÁLCULO DE TOTAIS (com B1/B2 visíveis)
