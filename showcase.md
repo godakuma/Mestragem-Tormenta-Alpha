@@ -2,7 +2,7 @@
 title: Tormenta Alpha - Fichas
 description: Sistema de fichas e rolagens para Tormenta Alpha, com suporte a mesas, chat e sub-fichas.
 author: godakuma
-image: https://cdn-icons-png.flaticon.com/512/1149/1149636.png
+image: https://github.com/godakuma/Mestragem-Tormenta-Alpha/blob/main/Gerenciador.jpg
 icon: https://cdn-icons-png.flaticon.com/512/1149/1149636.png
 tags:
   - tool
