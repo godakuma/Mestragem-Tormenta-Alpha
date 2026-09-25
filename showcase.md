@@ -5,8 +5,7 @@ author: godakuma
 image: https://cdn-icons-png.flaticon.com/512/1149/1149636.png
 icon: https://cdn-icons-png.flaticon.com/512/1149/1149636.png
 tags:
-  - character-sheet
-  - rpg
+  - tool
 manifest: https://godakuma.github.io/Mestragem-Tormenta-Alpha/manifest.json
 learn-more: https://github.com/godakuma/Mestragem-Tormenta-Alpha
 ---
