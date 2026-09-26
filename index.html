@@ -813,84 +813,288 @@
     }
     .magia-dano-controles .btn-rolar-dano-magia:hover { background: var(--sucesso-hover); }
 
-    /* ===== OFÍCIOS ===== */
-    .oficios-header {
-        grid-column: 1 / -1;
-        display: flex; justify-content: space-between; align-items: center;
-        margin-top: 10px; padding: 8px 12px;
-        background: var(--fundo-painel-claro);
+    /* ===== ATRIBUTOS CUSTOMIZADOS ===== */
+    .atributo-custom-item {
+        background: var(--fundo-painel);
         border-radius: 6px;
-        border-left: 4px solid var(--secundaria);
-        flex-wrap: wrap; gap: 8px;
-    }
-    .oficios-header .oficios-titulo {
-        font-weight: bold; color: var(--primaria-escura); font-size: 13px;
-    }
-    .oficios-header .btn-add-oficio {
-        background: var(--primaria); color: #fff; border: none; border-radius: 4px;
-        padding: 4px 12px; cursor: pointer; font-size: 11px; font-weight: bold;
-    }
-    .oficios-header .btn-add-oficio:hover { background: var(--primaria-hover); }
-    .oficio-item {
-        grid-column: 1 / -1;
-        display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
-        background: var(--fundo-painel-claro); border-radius: 4px;
-        padding: 4px 8px; min-height: 30px;
+        padding: 8px 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        min-width: 0;
         border-left: 3px solid var(--secundaria);
     }
-    .oficio-item .oficio-nome {
-        flex: 1; min-width: 100px;
-        background: var(--fundo-input); color: var(--texto);
-        border: 1px solid var(--borda-clara); border-radius: 3px;
-        padding: 3px 6px; font-size: 11px; font-weight: bold;
+    .atributo-custom-item .atributo-header {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 2px;
     }
-    .oficio-item .oficio-attr {
-        background: var(--fundo-input); color: var(--primaria-escura);
-        border: 1px solid var(--borda-clara); border-radius: 3px;
-        padding: 3px 4px; font-size: 11px; font-weight: bold;
-        min-width: 60px;
+    .atributo-custom-item .atributo-titulo {
+        font-weight: bold;
+        color: var(--secundaria);
+        font-size: 13px;
+        min-width: 36px;
     }
-    .oficio-item .oficio-pericia-bonus,
-    .oficio-item .oficio-pericia-pen {
-        width: 34px; background: var(--fundo-input); color: var(--texto);
-        border: 1px solid var(--borda-clara); border-radius: 3px;
-        padding: 2px 4px; text-align: center; font-size: 11px; font-weight: bold;
-        -moz-appearance: textfield; appearance: textfield;
+    .atributo-custom-item .atributo-titulo input {
+        width: 60px;
+        background: var(--fundo-input);
+        color: var(--secundaria);
+        border: 1px solid var(--borda-clara);
+        border-radius: 4px;
+        padding: 2px 4px;
+        text-align: center;
+        font-size: 12px;
+        font-weight: bold;
     }
-    .oficio-item .oficio-pericia-bonus { border-color: var(--primaria); color: var(--primaria); background: var(--fundo-bonus); }
-    .oficio-item .oficio-pericia-pen { border-color: var(--perigo-forte); color: var(--perigo-forte); background: var(--fundo-pen); }
-    .oficio-item .oficio-pericia-bonus::-webkit-outer-spin-button,
-    .oficio-item .oficio-pericia-pen::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-    .oficio-item .oficio-pe-input {
-        width: 42px; background: var(--fundo-pe); color: var(--texto-pe);
-        border: 1px solid var(--borda-pe); border-radius: 3px;
-        padding: 2px 4px; text-align: center; font-size: 11px; font-weight: bold;
-        -moz-appearance: textfield; appearance: textfield;
+    .atributo-custom-item .btn-del-atributo {
+        background: var(--perigo);
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        padding: 2px 6px;
+        cursor: pointer;
+        font-size: 10px;
+        margin-left: auto;
     }
-    .oficio-item .oficio-pe-input::-webkit-outer-spin-button,
-    .oficio-item .oficio-pe-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-    .oficio-item .oficio-checkbox {
-        width: 14px; height: 14px; cursor: pointer; accent-color: var(--primaria);
+    .atributo-custom-item .btn-del-atributo:hover { background: var(--perigo-hover); }
+    .atributo-custom-item .atributo-linha {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        width: 100%;
     }
-    .oficio-item .oficio-btn-roll {
-        background: var(--primaria); color: #fff; border: none; border-radius: 3px;
-        padding: 2px 6px; cursor: pointer; font-size: 12px; line-height: 1.4;
+    .atributo-custom-item .atributo-linha label {
+        font-size: 10px;
+        color: var(--texto-medio);
+        min-width: 40px;
+        font-weight: bold;
     }
-    .oficio-item .oficio-btn-roll:hover { background: var(--primaria-hover); }
-    .oficio-item .oficio-resultado {
-        font-size: 10px; font-weight: bold; min-width: 50px; padding: 2px 6px;
-        border-radius: 3px; background: var(--fundo-input); text-align: center;
-        border-left: 2px solid transparent; flex: 1; min-width: 70px;
+    .atributo-custom-item .atributo-linha input[type="text"] {
+        background: var(--fundo-input);
+        color: var(--secundaria);
+        border: 1px solid var(--borda-clara);
+        border-radius: 4px;
+        padding: 4px 6px;
+        text-align: center;
+        font-size: 13px;
+        font-weight: bold;
+        width: 45px;
+        -moz-appearance: textfield;
+        appearance: textfield;
+        flex-shrink: 0;
     }
-    .oficio-item .oficio-resultado.sucesso { border-left-color: var(--sucesso); color: var(--sucesso); }
-    .oficio-item .oficio-resultado.falha { border-left-color: var(--perigo-forte); color: var(--perigo-forte); }
-    .oficio-item .oficio-btn-del {
-        background: var(--perigo); color: #fff; border: none; border-radius: 3px;
-        padding: 2px 8px; cursor: pointer; font-size: 11px; font-weight: bold;
+    .atributo-custom-item .atributo-linha input[type="text"]::-webkit-outer-spin-button,
+    .atributo-custom-item .atributo-linha input[type="text"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .atributo-custom-item .atributo-linha-com-total {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
     }
-    .oficio-item .oficio-btn-del:hover { background: var(--perigo-hover); }
-    .oficio-item .oficio-radio-carta {
-        width: 16px; height: 16px; cursor: pointer; accent-color: var(--secundaria);
+    .atributo-custom-item .atributo-linha-com-total .atributo-linha { flex: 1; min-width: 0; }
+    .atributo-custom-item .atributo-total-losango {
+        flex-shrink: 0;
+        width: 56px;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+    .atributo-custom-item .atributo-total-losango::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 40px;
+        height: 40px;
+        background: var(--fundo-input);
+        border: 2px solid var(--secundaria);
+        transform: translate(-50%, -50%) rotate(45deg);
+        border-radius: 3px;
+    }
+    .atributo-custom-item .atributo-total-losango .atributo-total-valor {
+        position: relative;
+        z-index: 1;
+        font-size: 20px;
+        font-weight: bold;
+        color: var(--secundaria);
+        line-height: 1;
+    }
+    .atributo-custom-item .bonus1 {
+        border-color: var(--secundaria);
+        background: rgba(74, 122, 138, 0.12);
+        padding: 2px 4px;
+        border-radius: 3px;
+        border: 1px solid var(--secundaria);
+        display: flex;
+        align-items: center;
+        gap: 2px;
+    }
+    .atributo-custom-item .bonus1 input {
+        border-color: var(--secundaria);
+        color: var(--secundaria);
+        width: 32px;
+        font-size: 12px;
+        padding: 2px 4px;
+        background: var(--fundo-input);
+        border-radius: 4px;
+        text-align: center;
+        font-weight: bold;
+    }
+    .atributo-custom-item .bonus2 {
+        border-color: var(--dourado);
+        background: rgba(138, 122, 74, 0.12);
+        padding: 2px 4px;
+        border-radius: 3px;
+        border: 1px solid var(--dourado);
+        display: flex;
+        align-items: center;
+        gap: 2px;
+    }
+    .atributo-custom-item .bonus2 input {
+        border-color: var(--dourado);
+        color: var(--dourado);
+        width: 32px;
+        font-size: 12px;
+        padding: 2px 4px;
+        background: var(--fundo-input);
+        border-radius: 4px;
+        text-align: center;
+        font-weight: bold;
+    }
+    .atributo-custom-item .bonus-checkbox {
+        width: 14px;
+        height: 14px;
+        cursor: pointer;
+        accent-color: var(--secundaria);
+        margin: 0 2px;
+        flex-shrink: 0;
+    }
+    .subficha-atributo-custom-item {
+        background: var(--fundo-painel);
+        border-radius: 4px;
+        padding: 4px 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+        border-left: 3px solid var(--secundaria);
+    }
+    .subficha-atributo-custom-item .atributo-header {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-bottom: 2px;
+    }
+    .subficha-atributo-custom-item .atributo-titulo input {
+        width: 44px;
+        background: var(--fundo-input);
+        color: var(--secundaria);
+        border: 1px solid var(--borda-clara);
+        border-radius: 3px;
+        padding: 1px 3px;
+        text-align: center;
+        font-size: 10px;
+        font-weight: bold;
+    }
+    .subficha-atributo-custom-item .btn-del-atributo {
+        background: var(--perigo);
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        padding: 1px 4px;
+        cursor: pointer;
+        font-size: 9px;
+        margin-left: auto;
+    }
+    .subficha-atributo-custom-item .atributo-linha {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        width: 100%;
+    }
+    .subficha-atributo-custom-item .atributo-linha label {
+        font-size: 9px;
+        color: var(--texto-medio);
+        min-width: 26px;
+        font-weight: bold;
+    }
+    .subficha-atributo-custom-item .atributo-linha input[type="text"] {
+        background: var(--fundo-input);
+        color: var(--secundaria);
+        border: 1px solid var(--borda-clara);
+        border-radius: 3px;
+        padding: 2px 3px;
+        text-align: center;
+        font-size: 11px;
+        font-weight: bold;
+        width: 32px;
+        -moz-appearance: textfield;
+        appearance: textfield;
+        flex-shrink: 0;
+    }
+    .subficha-atributo-custom-item .atributo-linha-com-total {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        width: 100%;
+    }
+    .subficha-atributo-custom-item .atributo-linha-com-total .atributo-linha { flex: 1; min-width: 0; }
+    .subficha-atributo-custom-item .subficha-total-losango {
+        flex-shrink: 0;
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+    .subficha-atributo-custom-item .subficha-total-losango::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 32px;
+        height: 32px;
+        background: var(--fundo-input);
+        border: 2px solid var(--secundaria);
+        transform: translate(-50%, -50%) rotate(45deg);
+        border-radius: 3px;
+    }
+    .subficha-atributo-custom-item .subficha-total-losango .atributo-total-valor {
+        position: relative;
+        z-index: 1;
+        font-size: 16px;
+        font-weight: bold;
+        color: var(--secundaria);
+        line-height: 1;
+    }
+    .btn-add-atributo {
+        grid-column: 1 / -1;
+        background: var(--secundaria);
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 6px 12px;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: bold;
+        margin-top: 4px;
+    }
+    .btn-add-atributo:hover { background: var(--secundaria-hover); }
+
+    .teste-atributo-select {
+        background: var(--fundo-input);
+        color: var(--secundaria);
+        border: 1px solid var(--borda-clara);
+        border-radius: 3px;
+        padding: 2px 4px;
+        font-size: 11px;
+        font-weight: bold;
+        cursor: pointer;
+        min-width: 50px;
     }
 
     body.regra-combate-sem-pv .recurso-pv-principal,
@@ -1128,6 +1332,8 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div id="atributosCustomContainer" style="display: contents;"></div>
+                                        <button type="button" class="btn-add-atributo" id="btnAddAtributoCustom">➕ Novo Atributo</button>
                                     </div>
                                 </div>
                                 <div class="recursos-3colunas">
@@ -1371,7 +1577,7 @@
 <div id="diceAnim" class="dice-anim">🎲</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script type="module">
-    const SUPABASE_URL = 'https://niggtfsswcywtpwkuthp.supabase.co';
+        const SUPABASE_URL = 'https://niggtfsswcywtpwkuthp.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_HI8ICc_uO3W86hLpFIrahA_BXtMT0-d';
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const db = new Proxy({}, { get: () => undefined });
@@ -1379,6 +1585,8 @@
     let realtimeChannels = [];
     let listaJogadoresUnsubscribe = null;
     let intervaloLimpeza = null;
+    let intervaloRefreshJogadores = null;
+    let intervaloRegras = null;
     let _jogadoresChannel = null;
     let _rolagensChannel = null;
     let _mesasChannel = null;
@@ -1690,6 +1898,27 @@
         realtimeChannels.push(channel);
     }
 
+    // === NOVO: Polling de regras a cada 8s (garantia para jogadores) ===
+    function iniciarPollingRegras() {
+        if (intervaloRegras) clearInterval(intervaloRegras);
+        if (!currentPin) return;
+        intervaloRegras = setInterval(async () => {
+            const antes = JSON.stringify({ a: regrasMesa, c: regrasConfig, s: regrasSubopcoes });
+            await carregarRegrasMesa();
+            const depois = JSON.stringify({ a: regrasMesa, c: regrasConfig, s: regrasSubopcoes });
+            if (antes !== depois) {
+                // Regras mudaram — re-renderizar testes
+                if (visualizandoId) {
+                    renderizarTestes('testesContainer', false, null);
+                    subFichas.forEach((_, idx) => renderizarTestes(`subficha-testesContainer-${idx}`, true, idx));
+                    renderizarBaralhoPrincipal();
+                    subFichas.forEach((_, idx) => renderizarBaralhoSub(idx));
+                    reRenderizarOficios();
+                }
+            }
+        }, 8000);
+    }
+
     function abrirPopupRegras() {
         if (!isMaster) { mostrarToast('⚠️ Apenas o Mestre pode alterar as regras da mesa.', '#c0392b'); return; }
         renderizarPopupRegras();
@@ -1896,6 +2125,9 @@
     let oficiosPrincipais = [];
     let oficiosSub = {};
     
+    let atributosCustom = [];
+    let atributosCustomSub = {};
+    
     let baralhoEstado = { monte: [], mao: [], descartes: [] };
     let periciaSelecionadaCarta = null;
     let cartaViradaAguardandoUso = false;
@@ -2100,30 +2332,174 @@
     }
     
     function addMensagem(texto, ehSecreta = false) {
-    const nome = isMaster ? 'Mestre' : (document.getElementById('nomePersonagem').value || currentUserName || 'Jogador');
-    const hora = new Date().toLocaleTimeString();
-    const msgDiv = document.createElement('div');
-    msgDiv.className = ehSecreta ? 'mensagem secreta' : 'mensagem';
-    const labelSecreto = ehSecreta ? ' <span style="color:#5a7a8a;">[SEGREDO]</span>' : '';
-    msgDiv.innerHTML = `<div class="mensagem-header"><strong>${escapeHtml(nome)}${labelSecreto}</strong><span class="mensagem-time">${hora}</span></div><div class="mensagem-texto">${escapeHtml(texto)}</div>`;
-    chatDivLateral.insertBefore(msgDiv, chatDivLateral.firstChild);
-    const empty = chatDivLateral.querySelector('.empty-chat');
-    if (empty) empty.remove();
-    while (chatDivLateral.children.length > MAX_CHAT_MESSAGES_DISPLAY) chatDivLateral.removeChild(chatDivLateral.lastChild);
-}
+        const nome = isMaster ? 'Mestre' : (document.getElementById('nomePersonagem').value || currentUserName || 'Jogador');
+        const hora = new Date().toLocaleTimeString();
+        const msgDiv = document.createElement('div');
+        msgDiv.className = ehSecreta ? 'mensagem secreta' : 'mensagem';
+        const labelSecreto = ehSecreta ? ' <span style="color:#5a7a8a;">[SEGREDO]</span>' : '';
+        msgDiv.innerHTML = `<div class="mensagem-header"><strong>${escapeHtml(nome)}${labelSecreto}</strong><span class="mensagem-time">${hora}</span></div><div class="mensagem-texto">${escapeHtml(texto)}</div>`;
+        chatDivLateral.insertBefore(msgDiv, chatDivLateral.firstChild);
+        const empty = chatDivLateral.querySelector('.empty-chat');
+        if (empty) empty.remove();
+        while (chatDivLateral.children.length > MAX_CHAT_MESSAGES_DISPLAY) chatDivLateral.removeChild(chatDivLateral.lastChild);
+    }
     
     async function enviarRolagemFirebase(texto, ehSecreta = false) {
-    if (!currentPin) return;
-    const nome = isMaster ? 'Mestre' : (document.getElementById('nomePersonagem').value || currentUserName || 'Jogador');
-    const { error } = await supabase.from('rolagens').insert({ pin: currentPin, texto, jogador: nome, secreta: ehSecreta, timestamp: Date.now() });
-    if (error) console.error('enviarRolagem:', error);
-    if (isMaster) setTimeout(() => limparChatAntigo(), 1000);
-}
+        if (!currentPin) return;
+        const nome = isMaster ? 'Mestre' : (document.getElementById('nomePersonagem').value || currentUserName || 'Jogador');
+        const { error } = await supabase.from('rolagens').insert({ pin: currentPin, texto, jogador: nome, secreta: ehSecreta, timestamp: Date.now() });
+        if (error) console.error('enviarRolagem:', error);
+        if (isMaster) setTimeout(() => limparChatAntigo(), 1000);
+    }
     
     // ============================================================
+    // ATRIBUTOS CUSTOMIZADOS
+    // ============================================================
+    function getAtributosCustom() {
+        if (!Array.isArray(atributosCustom)) atributosCustom = [];
+        return atributosCustom;
+    }
+    function getAtributosCustomSub(subIndex) {
+        if (!atributosCustomSub[subIndex]) atributosCustomSub[subIndex] = [];
+        return atributosCustomSub[subIndex];
+    }
+    function getAtributoCustomPorId(id, isSub = false, subIndex = null) {
+        const lista = isSub && subIndex !== null ? getAtributosCustomSub(subIndex) : getAtributosCustom();
+        return lista.find(a => a.id === id) || null;
+    }
+    function calcularTotalAtributoCustom(attr, isSub = false, subIndex = null) {
+        if (!attr) return 0;
+        let total = parseInt(attr.valor) || 0;
+        const prefix = isSub && subIndex !== null ? `subficha-custom-` : `custom-`;
+        const suffix = isSub && subIndex !== null ? `-${subIndex}` : '';
+        const chk1 = document.getElementById(`${prefix}chk-${attr.id}${suffix}`);
+        const chk2 = document.getElementById(`${prefix}chk2-${attr.id}${suffix}`);
+        if (chk1?.checked !== false) total += parseInt(attr.b1) || 0;
+        if (chk2?.checked !== false) total += parseInt(attr.b2) || 0;
+        return total;
+    }
+    function isAtributoCustom(id) {
+        return id && id.startsWith('custom:');
+    }
+    function getAtributoCustomIdReal(id) {
+        return id ? id.replace(/^custom:/, '') : '';
+    }
+
+    function renderizarAtributosCustom(isSub = false, subIndex = null) {
+        const containerId = isSub && subIndex !== null ? `subficha-atributosCustom-${subIndex}` : 'atributosCustomContainer';
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        const lista = isSub && subIndex !== null ? getAtributosCustomSub(subIndex) : getAtributosCustom();
+        if (lista.length === 0) { container.innerHTML = ''; return; }
+        let html = '';
+        lista.forEach((attr) => {
+            const chk1 = attr.b1Ativo !== false;
+            const chk2 = attr.b2Ativo !== false;
+            if (isSub && subIndex !== null) {
+                html += `<div class="subficha-atributo-custom-item" data-custom-id="${attr.id}">
+                    <div class="atributo-header"><div class="atributo-titulo"><input type="text" value="${escapeHtml(attr.abrev || '')}" placeholder="ABR" maxlength="5" data-custom-field="abrev" data-custom-id="${attr.id}" data-custom-is-sub="true" data-custom-sub-idx="${subIndex}"></div><button type="button" class="btn-del-atributo" data-custom-del="${attr.id}" data-custom-is-sub="true" data-custom-sub-idx="${subIndex}">❌</button></div>
+                    <div class="atributo-linha-com-total">
+                        <div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" value="${attr.valor || 0}" data-custom-field="valor" data-custom-id="${attr.id}" data-custom-is-sub="true" data-custom-sub-idx="${subIndex}"></div>
+                        <div class="subficha-total-losango" title="Total"><span class="atributo-total-valor" id="subficha-custom-total-${attr.id}-${subIndex}">0</span></div>
+                    </div>
+                    <div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9]*" value="${attr.b1 || 0}" data-custom-field="b1" data-custom-id="${attr.id}" data-custom-is-sub="true" data-custom-sub-idx="${subIndex}"></div><input type="checkbox" class="bonus-checkbox" id="subficha-custom-chk-${attr.id}-${subIndex}" ${chk1 ? 'checked' : ''} data-custom-field="b1Ativo" data-custom-id="${attr.id}" data-custom-is-sub="true" data-custom-sub-idx="${subIndex}"></div>
+                    <div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9]*" value="${attr.b2 || 0}" data-custom-field="b2" data-custom-id="${attr.id}" data-custom-is-sub="true" data-custom-sub-idx="${subIndex}"></div><input type="checkbox" class="bonus-checkbox" id="subficha-custom-chk2-${attr.id}-${subIndex}" ${chk2 ? 'checked' : ''} data-custom-field="b2Ativo" data-custom-id="${attr.id}" data-custom-is-sub="true" data-custom-sub-idx="${subIndex}"></div>
+                </div>`;
+            } else {
+                html += `<div class="atributo-custom-item" data-custom-id="${attr.id}">
+                    <div class="atributo-header"><div class="atributo-titulo"><input type="text" value="${escapeHtml(attr.abrev || '')}" placeholder="ABR" maxlength="5" data-custom-field="abrev" data-custom-id="${attr.id}" data-custom-is-sub="false"></div><button type="button" class="btn-del-atributo" data-custom-del="${attr.id}" data-custom-is-sub="false">❌</button></div>
+                    <div class="atributo-linha-com-total">
+                        <div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" value="${attr.valor || 0}" data-custom-field="valor" data-custom-id="${attr.id}" data-custom-is-sub="false"></div>
+                        <div class="atributo-total-losango" title="Total"><span class="atributo-total-valor" id="custom-total-${attr.id}">0</span></div>
+                    </div>
+                    <div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9]*" value="${attr.b1 || 0}" data-custom-field="b1" data-custom-id="${attr.id}" data-custom-is-sub="false"></div><input type="checkbox" class="bonus-checkbox" id="custom-chk-${attr.id}" ${chk1 ? 'checked' : ''} data-custom-field="b1Ativo" data-custom-id="${attr.id}" data-custom-is-sub="false"></div>
+                    <div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9]*" value="${attr.b2 || 0}" data-custom-field="b2" data-custom-id="${attr.id}" data-custom-is-sub="false"></div><input type="checkbox" class="bonus-checkbox" id="custom-chk2-${attr.id}" ${chk2 ? 'checked' : ''} data-custom-field="b2Ativo" data-custom-id="${attr.id}" data-custom-is-sub="false"></div>
+                </div>`;
+            }
+        });
+        container.innerHTML = html;
+        container.querySelectorAll('[data-custom-field]').forEach(inp => {
+            const campo = inp.dataset.customField;
+            const handler = () => {
+                const id = inp.dataset.customId;
+                const isSubInp = inp.dataset.customIsSub === 'true';
+                const subIdx = inp.dataset.customSubIdx !== '' && inp.dataset.customSubIdx !== undefined ? parseInt(inp.dataset.customSubIdx) : null;
+                const listaAtual = isSubInp && subIdx !== null ? getAtributosCustomSub(subIdx) : getAtributosCustom();
+                const attr = listaAtual.find(a => a.id === id);
+                if (!attr) return;
+                if (campo === 'abrev') attr.abrev = (inp.value || '').toUpperCase().slice(0, 5);
+                else if (campo === 'valor' || campo === 'b1' || campo === 'b2') attr[campo] = parseInt(inp.value) || 0;
+                else if (campo === 'b1Ativo' || campo === 'b2Ativo') attr[campo] = inp.checked;
+                atualizarIndicadoresAtributosCustom(isSubInp, subIdx);
+                if (campo === 'abrev') {
+                    if (isSubInp && subIdx !== null) renderizarTestes(`subficha-testesContainer-${subIdx}`, true, subIdx);
+                    else renderizarTestes('testesContainer', false, null);
+                }
+                if (campo === 'valor') {
+                    if (isSubInp && subIdx !== null) atualizarPontosSub(subIdx);
+                    else atualizarPontos();
+                }
+                if (isSubInp) debounceSaveSubFicha(); else debounceSave();
+            };
+            if (campo === 'b1Ativo' || campo === 'b2Ativo') inp.onchange = handler; else inp.oninput = handler;
+        });
+        container.querySelectorAll('[data-custom-del]').forEach(btn => {
+            btn.onclick = () => {
+                const id = btn.dataset.customDel;
+                const isSubBtn = btn.dataset.customIsSub === 'true';
+                const subIdx = btn.dataset.customSubIdx !== '' && btn.dataset.customSubIdx !== undefined ? parseInt(btn.dataset.customSubIdx) : null;
+                if (!confirm('Excluir este atributo customizado?')) return;
+                if (isSubBtn && subIdx !== null) {
+                    const lista = getAtributosCustomSub(subIdx);
+                    const i = lista.findIndex(a => a.id === id);
+                    if (i >= 0) lista.splice(i, 1);
+                    renderizarAtributosCustom(true, subIdx);
+                    renderizarTestes(`subficha-testesContainer-${subIdx}`, true, subIdx);
+                    atualizarPontosSub(subIdx);
+                    debounceSaveSubFicha();
+                } else {
+                    const lista = getAtributosCustom();
+                    const i = lista.findIndex(a => a.id === id);
+                    if (i >= 0) lista.splice(i, 1);
+                    renderizarAtributosCustom(false, null);
+                    renderizarTestes('testesContainer', false, null);
+                    atualizarPontos();
+                    debounceSave();
+                }
+            };
+        });
+        atualizarIndicadoresAtributosCustom(isSub, subIndex);
+    }
+
+    function atualizarIndicadoresAtributosCustom(isSub = false, subIndex = null) {
+        const lista = isSub && subIndex !== null ? getAtributosCustomSub(subIndex) : getAtributosCustom();
+        lista.forEach(attr => {
+            const total = calcularTotalAtributoCustom(attr, isSub, subIndex);
+            const elId = isSub && subIndex !== null ? `subficha-custom-total-${attr.id}-${subIndex}` : `custom-total-${attr.id}`;
+            const el = document.getElementById(elId);
+            if (el) el.textContent = total;
+        });
+    }
+
+    function adicionarAtributoCustom(isSub = false, subIndex = null) {
+        const id = 'ac_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
+        const novo = { id, abrev: 'NOVO', valor: 0, b1: 0, b2: 0, b1Ativo: true, b2Ativo: true };
+        if (isSub && subIndex !== null) {
+            getAtributosCustomSub(subIndex).push(novo);
+            renderizarAtributosCustom(true, subIndex);
+            renderizarTestes(`subficha-testesContainer-${subIndex}`, true, subIndex);
+            atualizarPontosSub(subIndex);
+            debounceSaveSubFicha();
+        } else {
+            getAtributosCustom().push(novo);
+            renderizarAtributosCustom(false, null);
+            renderizarTestes('testesContainer', false, null);
+            atualizarPontos();
+            debounceSave();
+        }
+    }
+        // ============================================================
     // CÁLCULO DE TOTAIS (com B1/B2 visíveis)
-    // Usados para: magias, ofícios, testes, indicadores totais.
-    // NÃO usados para: FA/FD (ataque curto, distância e defesa).
     // ============================================================
     function calcularTotalAtributoPrincipal(attr) {
         const map = {
@@ -2195,6 +2571,7 @@
         if (pdfInput && totalPdfEl) {
             totalPdfEl.textContent = calcularTotalAtributoPrincipal('PdF');
         }
+        atualizarIndicadoresAtributosCustom(false, null);
     }
     
     function atualizarIndicadoresAtributosSub(index) {
@@ -2210,6 +2587,7 @@
         if (totalArmEl) totalArmEl.textContent = calcularTotalAtributoSub(sub, 'A');
         const totalPdfEl = document.getElementById(`subficha-totalPdf-${index}`);
         if (totalPdfEl) totalPdfEl.textContent = calcularTotalAtributoSub(sub, 'PdF');
+        atualizarIndicadoresAtributosCustom(true, index);
     }
     
     function getStatusLabel(id) { const f = STATUS_LISTA.find(s => s.id === id); return f ? f.label : id; }
@@ -2427,18 +2805,22 @@
     
     function calcularGastosTotais() {
         let gastos = 0;
-        gastos += parseInt(document.getElementById('forca').value) || 0;
-        gastos += parseInt(document.getElementById('habilidade').value) || 0;
-        gastos += parseInt(document.getElementById('resistencia').value) || 0;
-        gastos += parseInt(document.getElementById('armadura').value) || 0;
-        gastos += parseInt(document.getElementById('pdf').value) || 0;
-        gastos += parseInt(document.getElementById('vantagemRegionalCusto').value) || 0;
-        gastos += parseInt(document.getElementById('vantagemUnicaCusto').value) || 0;
-        if (fichaListas.vantagens) fichaListas.vantagens.forEach(v => gastos += parseInt(v.valor) || 0);
-        if (fichaListas.desvantagens) fichaListas.desvantagens.forEach(d => gastos += parseInt(d.valor) || 0);
-        if (fichaListas.pericias) fichaListas.pericias.forEach(p => gastos += parseInt(p.valor) || 0);
-        if (fichaListas.especializacoes) fichaListas.especializacoes.forEach(e => gastos += parseInt(e.valor) || 0);
-        if (fichaListas.kits) fichaListas.kits.forEach(kit => { gastos += parseInt(kit.custo) || 0; if (kit.habilidades) kit.habilidades.forEach(hab => gastos += parseInt(hab.custo) || 0); });
+        const somarPositivo = (v) => { const n = parseInt(v) || 0; return n > 0 ? n : 0; };
+        
+        gastos += somarPositivo(document.getElementById('forca').value);
+        gastos += somarPositivo(document.getElementById('habilidade').value);
+        gastos += somarPositivo(document.getElementById('resistencia').value);
+        gastos += somarPositivo(document.getElementById('armadura').value);
+        gastos += somarPositivo(document.getElementById('pdf').value);
+        gastos += somarPositivo(document.getElementById('vantagemRegionalCusto').value);
+        gastos += somarPositivo(document.getElementById('vantagemUnicaCusto').value);
+        if (fichaListas.vantagens) fichaListas.vantagens.forEach(v => gastos += somarPositivo(v.valor));
+        if (fichaListas.desvantagens) fichaListas.desvantagens.forEach(d => gastos += somarPositivo(d.valor));
+        if (fichaListas.pericias) fichaListas.pericias.forEach(p => gastos += somarPositivo(p.valor));
+        if (fichaListas.especializacoes) fichaListas.especializacoes.forEach(e => gastos += somarPositivo(e.valor));
+        if (fichaListas.kits) fichaListas.kits.forEach(kit => { gastos += somarPositivo(kit.custo); if (kit.habilidades) kit.habilidades.forEach(hab => gastos += somarPositivo(hab.custo)); });
+        const customs = Array.isArray(atributosCustom) ? atributosCustom : [];
+        customs.forEach(attr => { gastos += somarPositivo(attr.valor); });
         return gastos;
     }
     
@@ -2465,18 +2847,25 @@
     
     function calcularGastosTotaisSub(sub) {
         let gastos = 0;
-        gastos += parseInt(sub.forca) || 0;
-        gastos += parseInt(sub.habilidade) || 0;
-        gastos += parseInt(sub.resistencia) || 0;
-        gastos += parseInt(sub.armadura) || 0;
-        gastos += parseInt(sub.pdf) || 0;
-        gastos += parseInt(sub.vantagemRegionalCusto) || 0;
-        gastos += parseInt(sub.vantagemUnicaCusto) || 0;
-        if (sub.listas?.vantagens) sub.listas.vantagens.forEach(v => gastos += parseInt(v.valor) || 0);
-        if (sub.listas?.desvantagens) sub.listas.desvantagens.forEach(d => gastos += parseInt(d.valor) || 0);
-        if (sub.listas?.pericias) sub.listas.pericias.forEach(p => gastos += parseInt(p.valor) || 0);
-        if (sub.listas?.especializacoes) sub.listas.especializacoes.forEach(e => gastos += parseInt(e.valor) || 0);
-        if (sub.listas?.kits) sub.listas.kits.forEach(kit => { gastos += parseInt(kit.custo) || 0; if (kit.habilidades) kit.habilidades.forEach(hab => gastos += parseInt(hab.custo) || 0); });
+        const somarPositivo = (v) => { const n = parseInt(v) || 0; return n > 0 ? n : 0; };
+        
+        gastos += somarPositivo(sub.forca);
+        gastos += somarPositivo(sub.habilidade);
+        gastos += somarPositivo(sub.resistencia);
+        gastos += somarPositivo(sub.armadura);
+        gastos += somarPositivo(sub.pdf);
+        gastos += somarPositivo(sub.vantagemRegionalCusto);
+        gastos += somarPositivo(sub.vantagemUnicaCusto);
+        if (sub.listas?.vantagens) sub.listas.vantagens.forEach(v => gastos += somarPositivo(v.valor));
+        if (sub.listas?.desvantagens) sub.listas.desvantagens.forEach(d => gastos += somarPositivo(d.valor));
+        if (sub.listas?.pericias) sub.listas.pericias.forEach(p => gastos += somarPositivo(p.valor));
+        if (sub.listas?.especializacoes) sub.listas.especializacoes.forEach(e => gastos += somarPositivo(e.valor));
+        if (sub.listas?.kits) sub.listas.kits.forEach(kit => { gastos += somarPositivo(kit.custo); if (kit.habilidades) kit.habilidades.forEach(hab => gastos += somarPositivo(hab.custo)); });
+        const subIdx = subFichas.indexOf(sub);
+        const customs = subIdx >= 0
+            ? (Array.isArray(atributosCustomSub[subIdx]) ? atributosCustomSub[subIdx] : [])
+            : (Array.isArray(sub.atributosCustom) ? sub.atributosCustom : []);
+        customs.forEach(attr => { gastos += somarPositivo(attr.valor); });
         return gastos;
     }
     
@@ -2517,7 +2906,7 @@
     }
 
     // ============================================================
-    // MAGIAS — usam TOTAIS (com B1/B2) dos atributos
+    // MAGIAS
     // ============================================================
     function rolarDanoMagia(magiaIndex, isSub = false, subIndex = null) {
         animarDado();
@@ -2784,6 +3173,7 @@
         const dificuldadeNome = difNomeMap[dificuldadeVal] || 'Médio';
         const treinadoStr = treinado ? ' [TREINADO]' : '';
         const prefixo = isSub && subIndex !== null ? `[${nomePersonagem}] ` : '';
+        const attrAbrev = isAtributoCustom(attr) ? (getAtributoCustomPorId(getAtributoCustomIdReal(attr), isSub, subIndex)?.abrev || '???') : attr;
 
         if (usandoAltEsforco) {
             const cfg = regrasConfig.periciasDificuldade || { facil: 8, medio: 10, dificil: 14, impossivel: 18 };
@@ -2815,7 +3205,7 @@
             const sucesso = total >= dificuldadeValor;
             const custoStr = custoPM > 0 ? ` | 💰 Custo: ${custoPM} PE extra (${gastouPM} PM${perdeuPV ? `, ${perdeuPV} PV` : ''})` : ' | 💰 Sem custo extra';
             const limiteStr = ` [Limite grátis: ${limiteGratis} = R${rBase}+B1${rB1}+B2${rB2}${treinado ? '+4 treino' : ''}]`;
-            const texto = `${prefixo}🛠️ ${nomeOficio}${treinadoStr} (${dificuldadeNome})${limiteStr}: ⚡ ${peValor} PE | Total: ${valorAttr}+${b1Atributo}(B1)+${treinoBonus}(treino)+${peValor}(PE)+${bonus}(B)-${pen}(P) = ${total} vs ${dificuldadeValor} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}${custoStr}`;
+            const texto = `${prefixo}🛠️ ${nomeOficio}${treinadoStr} (${dificuldadeNome})${limiteStr}: ⚡ ${peValor} PE | Total: ${valorAttr} + ${b1Atributo}(B1) + ${treinoBonus}(treino) + ${peValor}(PE) + ${bonus}(B) - ${pen}(P) = ${total} vs ${dificuldadeValor} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}${custoStr}`;
             addMensagem(texto, ehSecreta);
             if (!ehSecreta) enviarRolagemFirebase(texto, false);
             if (resultadoElement) { resultadoElement.textContent = `⚡ ${peValor} PE → ${sucesso ? '✅' : '❌'} (${total} vs ${dificuldadeValor})`; resultadoElement.className = 'oficio-resultado ' + (sucesso ? 'sucesso' : 'falha'); }
@@ -2832,7 +3222,7 @@
             const alvoFinal = valorAttr + b1Atributo + treinoBonus + bonus - pen;
             const sucesso = (dado + alvoFinal) >= dificuldadeValor;
             const bpStr = `${bonus ? ` +${bonus}(B)` : ''}${pen ? ` -${pen}(P)` : ''}`;
-            const texto = `${prefixo}🛠️ ${nomeOficio}${treinadoStr} (${dificuldadeNome}): 🎲 ${dado} + ${alvoFinal} [${valorAttr}+${b1Atributo}(B1)${treinoBonus ? '+4(treino)' : ''}${bpStr}] = ${dado + alvoFinal} | Alvo: ${dificuldadeValor} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}`;
+            const texto = `${prefixo}🛠️ ${nomeOficio}${treinadoStr} (${dificuldadeNome}): 🎲 ${dado} + ${alvoFinal} [${valorAttr}(${attrAbrev})+${b1Atributo}(B1)${treinoBonus ? '+4(treino)' : ''}${bpStr}] = ${dado + alvoFinal} | Alvo: ${dificuldadeValor} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}`;
             addMensagem(texto, ehSecreta);
             if (!ehSecreta) enviarRolagemFirebase(texto, false);
             if (resultadoElement) { resultadoElement.textContent = `🎲 ${dado} + ${alvoFinal} = ${dado + alvoFinal} → ${sucesso ? '✅' : '❌'}`; resultadoElement.className = 'oficio-resultado ' + (sucesso ? 'sucesso' : 'falha'); }
@@ -2853,7 +3243,7 @@
             const bonusStr = bonus ? ` +${bonus}(B)` : '';
             const penStr = pen ? ` -${pen}(P)` : '';
             const sextoStr = dado === 6 ? ' ⚠️ [6 = falha automática]' : '';
-            const texto = `${prefixo}🛠️ ${nomeOficio}${treinadoStr} (${dificuldadeNome}): 🎲 ${dado} | Alvo: ${valorAttr}+${b1Atributo}(B1) ${modStr}(dif)${bonusStr}${penStr} = ${alvo} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}${sextoStr}`;
+            const texto = `${prefixo}🛠️ ${nomeOficio}${treinadoStr} (${dificuldadeNome}): 🎲 ${dado} | Alvo: ${valorAttr}(${attrAbrev})+${b1Atributo}(B1) ${modStr}(dif)${bonusStr}${penStr} = ${alvo} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}${sextoStr}`;
             addMensagem(texto, ehSecreta);
             if (!ehSecreta) enviarRolagemFirebase(texto, false);
             if (resultadoElement) { resultadoElement.textContent = `🎲 ${dado} → ${sucesso ? '✅' : '❌'} (Alvo: ${alvo})`; resultadoElement.className = 'oficio-resultado ' + (sucesso ? 'sucesso' : 'falha'); }
@@ -2887,7 +3277,7 @@
             const sucesso = sucessos >= sucessosNecessarios;
             const explosaoStr = explosao ? ' [💥 6 = dado extra]' : '';
             const resumoDados = dadosRolados.length > 30 ? `${dadosRolados.slice(0, 30).join(',')}... (+${dadosRolados.length - 30} dados)` : dadosRolados.join(',');
-            const texto = `${prefixo}🛠️ ${nomeOficio}${treinadoStr} (${dificuldadeNome})${explosaoStr}: 🎲 [${valorAttr}${qtdBonusTreinado ? '+4' : ''}${bonus ? '+'+bonus : ''}${pen ? '-'+pen : ''} = ${dadosRolados.length} dados] ${resumoDados} → ${sucessos} sucesso(s) | Necessários: ${sucessosNecessarios}${rolagensExtras ? ` (+${rolagensExtras} extra(s) por 6)` : ''} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}`;
+            const texto = `${prefixo}🛠️ ${nomeOficio}${treinadoStr} (${dificuldadeNome})${explosaoStr}: 🎲 [${valorAttr}(${attrAbrev})${qtdBonusTreinado ? '+4' : ''}${bonus ? '+'+bonus : ''}${pen ? '-'+pen : ''} = ${dadosRolados.length} dados] ${resumoDados} → ${sucessos} sucesso(s) | Necessários: ${sucessosNecessarios}${rolagensExtras ? ` (+${rolagensExtras} extra(s) por 6)` : ''} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}`;
             addMensagem(texto, ehSecreta);
             if (!ehSecreta) enviarRolagemFirebase(texto, false);
             if (resultadoElement) { resultadoElement.textContent = `${sucessos}/${sucessosNecessarios} sucessos → ${sucesso ? '✅' : '❌'}`; resultadoElement.className = 'oficio-resultado ' + (sucesso ? 'sucesso' : 'falha'); }
@@ -2936,7 +3326,7 @@
                 const difMap = { 'facil': cfg.facil ?? 8, 'medio': cfg.medio ?? 10, 'dificil': cfg.dificil ?? 14, 'impossivel': cfg.impossivel ?? 18 };
                 const dificuldadeValor = difMap[dificuldadeVal] ?? 10;
                 const sucesso = alvo >= dificuldadeValor;
-                const texto = `${prefixo}🛠️ ${nomeOficio}${treinadoStr} (${dificuldadeNome}): 🃏 ${cartaStr}${criticoStr} + ${valorAttr}${treinoBonus ? '+4(treino)' : ''}${bonus ? '+'+bonus : ''}${pen ? '-'+pen : ''} → Alvo: ${alvo} vs ${dificuldadeValor} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}`;
+                const texto = `${prefixo}🛠️ ${nomeOficio}${treinadoStr} (${dificuldadeNome}): 🃏 ${cartaStr}${criticoStr} + ${valorAttr}(${attrAbrev})${treinoBonus ? '+4(treino)' : ''}${bonus ? '+'+bonus : ''}${pen ? '-'+pen : ''} → Alvo: ${alvo} vs ${dificuldadeValor} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}`;
                 addMensagem(texto, ehSecreta);
                 if (!ehSecreta) enviarRolagemFirebase(texto, false);
                 if (resultadoElement) { resultadoElement.textContent = `🃏 ${cartaStr} → ${sucesso ? '✅' : '❌'}`; resultadoElement.className = 'oficio-resultado ' + (sucesso ? 'sucesso' : 'falha'); }
@@ -2953,7 +3343,7 @@
                 const treinoBonus = treinado ? 4 : 0;
                 const alvo = valorAttr + b1Atributo + modDificuldade + treinoBonus + bonus - pen;
                 const sucesso = valorRolagem !== 6 && valorRolagem <= alvo;
-                const texto = `${prefixo}🛠️ ${nomeOficio}${treinadoStr} (${dificuldadeNome}): 🃏 ${cartaStr} (rolagem ${valorRolagem}) | Alvo: ${valorAttr}+${b1Atributo}(B1)${treinoBonus ? '+4(treino)' : ''}${bonus ? '+'+bonus : ''}${pen ? '-'+pen : ''} = ${alvo} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}`;
+                const texto = `${prefixo}🛠️ ${nomeOficio}${treinadoStr} (${dificuldadeNome}): 🃏 ${cartaStr} (rolagem ${valorRolagem}) | Alvo: ${valorAttr}(${attrAbrev})+${b1Atributo}(B1)${treinoBonus ? '+4(treino)' : ''}${bonus ? '+'+bonus : ''}${pen ? '-'+pen : ''} = ${alvo} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}`;
                 addMensagem(texto, ehSecreta);
                 if (!ehSecreta) enviarRolagemFirebase(texto, false);
                 if (resultadoElement) { resultadoElement.textContent = `🃏 ${cartaStr} (${valorRolagem}) → ${sucesso ? '✅' : '❌'}`; resultadoElement.className = 'oficio-resultado ' + (sucesso ? 'sucesso' : 'falha'); }
@@ -2981,7 +3371,7 @@
             }
             const alvo = valorAttr + b1Atributo + modDificuldade + bonus - pen;
             const sucesso = valorRolagem !== 6 && valorRolagem <= alvo;
-            const texto = `${prefixo}🛠️ ${nomeOficio}${treinadoStr} (${dificuldadeNome}): 🃏 ${cartaStr} (rolagem ${valorRolagem}) | Alvo: ${valorAttr}+${b1Atributo}(B1) = ${alvo} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}`;
+            const texto = `${prefixo}🛠️ ${nomeOficio}${treinadoStr} (${dificuldadeNome}): 🃏 ${cartaStr} (rolagem ${valorRolagem}) | Alvo: ${valorAttr}(${attrAbrev})+${b1Atributo}(B1) = ${alvo} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}`;
             addMensagem(texto, ehSecreta);
             if (!ehSecreta) enviarRolagemFirebase(texto, false);
             if (resultadoElement) { resultadoElement.textContent = `🃏 ${cartaStr} (${valorRolagem}) → ${sucesso ? '✅' : '❌'}`; resultadoElement.className = 'oficio-resultado ' + (sucesso ? 'sucesso' : 'falha'); }
@@ -3045,7 +3435,7 @@
         const bonusStr = bonus ? ` +${bonus}(B)` : '';
         const penStr = pen ? ` -${pen}(P)` : '';
         const sextoStr = dado === 6 ? ' ⚠️ [6 = falha automática]' : '';
-        const resultadoTexto = `${prefixo}🛠️ ${nomeOficio}${treinadoStr} (${dificuldadeNome}): 🎲 ${dado} | Alvo: ${valorAttr}${b1Str} ${modStr}(dif)${bonusStr}${penStr} = ${alvo} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}${sextoStr}`;
+        const resultadoTexto = `${prefixo}🛠️ ${nomeOficio}${treinadoStr} (${dificuldadeNome}): 🎲 ${dado} | Alvo: ${valorAttr}(${attrAbrev})${b1Str} ${modStr}(dif)${bonusStr}${penStr} = ${alvo} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}${sextoStr}`;
         addMensagem(resultadoTexto, ehSecreta);
         if (!ehSecreta) enviarRolagemFirebase(resultadoTexto, false);
         if (resultadoElement) { resultadoElement.textContent = `🎲 ${dado} → ${sucesso ? '✅' : '❌'} (Alvo: ${alvo})`; resultadoElement.className = 'oficio-resultado ' + (sucesso ? 'sucesso' : 'falha'); }
@@ -3063,7 +3453,7 @@
     
     function getEstadoCombate(chave) {
         if (!baralhosCombate[chave]) {
-            baralhosCombate[chave] = { monte: embaralhar(criarBaralho()), mao: [], descartes: [], selecionadas: [] };
+            baralhosCombate[chave] = { monte: embaralhar(criarBaralho()), mao: [], descartes: [], selecionadas: [], cartaEscolhidaId: null };
             comprarMaoCombate(chave);
         }
         return baralhosCombate[chave];
@@ -3083,6 +3473,7 @@
             if (estado.monte.length > 0) { const c = estado.monte.shift(); c.usada = false; estado.mao.push(c); }
         }
         estado.selecionadas = [];
+        estado.cartaEscolhidaId = null;
     }
     
     function puxarCartaCombate(chave) {
@@ -3105,6 +3496,7 @@
             html += `<div class="cartas-combate-container">`;
             estado.mao.forEach((c, idx) => {
                 const sel = estado.selecionadas.some(s => s.id === c.id);
+                const escolhida = estado.cartaEscolhidaId === c.id && !c.usada;
                 if (comboPermitido) {
                     const corClasse = c.coringa ? 'coringa' : (c.vermelha ? 'vermelha' : 'preta');
                     const valorExib = c.coringa ? '★' : c.valor;
@@ -3114,8 +3506,12 @@
                         const corClasse = c.coringa ? 'coringa' : (c.vermelha ? 'vermelha' : 'preta');
                         const valorExib = c.coringa ? '★' : c.valor;
                         html += `<div class="baralho-carta ${corClasse} usada" data-carta-combate-idx="${idx}" data-carta-combate-chave="${chave}"><span class="carta-topo">${valorExib}</span><span class="carta-valor">${valorExib}</span><span class="carta-naipe">${c.naipe}</span></div>`;
+                    } else if (escolhida) {
+                        const corClasse = c.coringa ? 'coringa' : (c.vermelha ? 'vermelha' : 'preta');
+                        const valorExib = c.coringa ? '★' : c.valor;
+                        html += `<div class="baralho-carta ${corClasse} selecionada" data-carta-combate-idx="${idx}" data-carta-combate-chave="${chave}" title="Carta escolhida. Clique em 🎲 Rolar para usar."><span class="carta-topo">${valorExib}</span><span class="carta-valor">${valorExib}</span><span class="carta-naipe">${c.naipe}</span></div>`;
                     } else {
-                        html += `<div class="baralho-carta virada" data-carta-combate-idx="${idx}" data-carta-combate-chave="${chave}" title="Clique para revelar e usar"></div>`;
+                        html += `<div class="baralho-carta virada" data-carta-combate-idx="${idx}" data-carta-combate-chave="${chave}" title="Clique para revelar e escolher"></div>`;
                     }
                 }
             });
@@ -3128,7 +3524,7 @@
         }
         container.innerHTML = html;
         container.querySelectorAll('[data-comprar-combate]').forEach(b => { b.onclick = () => { comprarMaoCombate(b.dataset.comprarCombate); renderizarCartasCombate(chave, containerId); salvarForcado(); }; });
-        container.querySelectorAll('[data-limpar-combate]').forEach(b => { b.onclick = () => { const est = baralhosCombate[b.dataset.limparCombate]; if (est) { est.selecionadas = []; renderizarCartasCombate(chave, containerId); } }; });
+        container.querySelectorAll('[data-limpar-combate]').forEach(b => { b.onclick = () => { const est = baralhosCombate[b.dataset.limparCombate]; if (est) { est.selecionadas = []; est.cartaEscolhidaId = null; renderizarCartasCombate(chave, containerId); } }; });
         container.querySelectorAll('[data-nova-mao-combate]').forEach(b => { b.onclick = () => { comprarMaoCombate(b.dataset.novaMaoCombate); renderizarCartasCombate(chave, containerId); salvarForcado(); }; });
         container.querySelectorAll('[data-carta-combate-idx]').forEach(el => {
             el.onclick = () => {
@@ -3138,28 +3534,35 @@
                 const idx = parseInt(el.dataset.cartaCombateIdx);
                 const carta = est.mao[idx];
                 if (!carta || carta.usada) return;
-                if (!comboPermitido) { return; }
-                const jaSel = est.selecionadas.some(c => c.id === carta.id);
-                if (jaSel) {
-                    est.selecionadas = est.selecionadas.filter(c => c.id !== carta.id);
-                } else {
-                    if (est.selecionadas.length > 0) {
-                        const naipe = est.selecionadas[0].naipe;
-                        if (carta.naipe !== naipe && !carta.coringa && !est.selecionadas[0].coringa) {
-                            mostrarToast('⚠️ Só é possível combinar cartas do mesmo naipe!', '#c0392b');
-                            return;
+                if (comboPermitido) {
+                    const jaSel = est.selecionadas.some(c => c.id === carta.id);
+                    if (jaSel) {
+                        est.selecionadas = est.selecionadas.filter(c => c.id !== carta.id);
+                    } else {
+                        if (est.selecionadas.length > 0) {
+                            const naipe = est.selecionadas[0].naipe;
+                            if (carta.naipe !== naipe && !carta.coringa && !est.selecionadas[0].coringa) {
+                                mostrarToast('⚠️ Só é possível combinar cartas do mesmo naipe!', '#c0392b');
+                                return;
+                            }
                         }
+                        est.selecionadas.push(carta);
                     }
-                    est.selecionadas.push(carta);
+                    renderizarCartasCombate(ch, containerId);
+                    return;
+                }
+                if (est.cartaEscolhidaId === carta.id) {
+                    est.cartaEscolhidaId = null;
+                } else {
+                    est.cartaEscolhidaId = carta.id;
                 }
                 renderizarCartasCombate(ch, containerId);
+                salvarForcado();
             };
         });
     }
-    
-    // ============================================================
-    // ATAQUES — usam apenas B1/B2/BFA próprios do ataque
-    // (NÃO usam os B1/B2 do atributo; a base é F/PdF + H puros)
+        // ============================================================
+    // ATAQUES
     // ============================================================
     function rolarAtaque(tipo, ataqueIndex, isSub = false, subIndex = null) {
         let ataquesArray;
@@ -3374,6 +3777,19 @@
             let cartasUsar = [];
             if (comboPermitido && estado.selecionadas.length > 0) {
                 cartasUsar = estado.selecionadas.filter(c => !c.usada);
+            } else if (!comboPermitido) {
+                if (!estado.cartaEscolhidaId) {
+                    mostrarToast('🎯 Escolha uma carta da mão primeiro (clique nela).', '#5a7a8a');
+                    abrirPopupAtaques(tipo, isSub, subIndex);
+                    return;
+                }
+                const escolhida = estado.mao.find(c => c.id === estado.cartaEscolhidaId && !c.usada);
+                if (!escolhida) {
+                    mostrarToast('🎯 A carta escolhida não está mais disponível. Escolha outra.', '#5a7a8a');
+                    abrirPopupAtaques(tipo, isSub, subIndex);
+                    return;
+                }
+                cartasUsar = [escolhida];
             } else {
                 const disp = estado.mao.find(c => !c.usada);
                 if (disp) cartasUsar = [disp];
@@ -3408,6 +3824,7 @@
             if (!ehSecreta) enviarRolagemFirebase(texto, false);
             if (resultEl) { resultEl.textContent = `🃏 ${cartasStr.join('+')} | FA: ${fa}`; resultEl.className = 'resultado-ataque sucesso'; }
             estado.selecionadas = [];
+            estado.cartaEscolhidaId = null;
             renderizarCartasCombate(chave, `cartas-combate-${tipo}-${ataqueIndex}-${isSub ? subIndex : 'principal'}`);
             debounceSave();
             return;
@@ -3537,8 +3954,7 @@
     }
     
     // ============================================================
-    // DEFESAS — usam apenas B1/B2/BFD próprios da defesa
-    // (NÃO usam os B1/B2 do atributo; a base é A + H puros)
+    // DEFESAS
     // ============================================================
     function rolarDefesa(defesaIndex, isSub = false, subIndex = null) {
         let defesasArray;
@@ -3686,8 +4102,25 @@
             }
             const comboPermitido = subopcaoAtiva('combateCartas', 'comboCartas');
             let cartasUsar = [];
-            if (comboPermitido && estado.selecionadas.length > 0) cartasUsar = estado.selecionadas.filter(c => !c.usada);
-            else { const disp = estado.mao.find(c => !c.usada); if (disp) cartasUsar = [disp]; }
+            if (comboPermitido && estado.selecionadas.length > 0) {
+                cartasUsar = estado.selecionadas.filter(c => !c.usada);
+            } else if (!comboPermitido) {
+                if (!estado.cartaEscolhidaId) {
+                    mostrarToast('🎯 Escolha uma carta da mão primeiro (clique nela).', '#5a7a8a');
+                    abrirPopupDefesas(isSub, subIndex);
+                    return;
+                }
+                const escolhida = estado.mao.find(c => c.id === estado.cartaEscolhidaId && !c.usada);
+                if (!escolhida) {
+                    mostrarToast('🎯 A carta escolhida não está mais disponível. Escolha outra.', '#5a7a8a');
+                    abrirPopupDefesas(isSub, subIndex);
+                    return;
+                }
+                cartasUsar = [escolhida];
+            } else {
+                const disp = estado.mao.find(c => !c.usada);
+                if (disp) cartasUsar = [disp];
+            }
             if (cartasUsar.length === 0) { mostrarToast('⚠️ Sem cartas disponíveis!', '#c0392b'); return; }
             let valorCartas = 0, temFigura = false, temCoringa = false, coringaVermelho = false, cartasStr = [];
             cartasUsar.forEach(c => {
@@ -3718,6 +4151,7 @@
             if (!ehSecreta) enviarRolagemFirebase(texto, false);
             if (resultEl) { resultEl.textContent = `🃏 ${cartasStr.join('+')} | FD: ${fd}`; resultEl.className = 'resultado-defesa sucesso'; }
             estado.selecionadas = [];
+            estado.cartaEscolhidaId = null;
             renderizarCartasCombate(chave, `cartas-combate-defesa-${defesaIndex}-${isSub ? subIndex : 'principal'}`);
             debounceSave();
             return;
@@ -4096,9 +4530,7 @@
         await enviarRolagemFirebase(mensagem, false);
         atualizarBotaoConverter();
         await salvarFichaAtual();
-    }
-    
-    function getSubFichaVazia(nome, tipo, criadorId) {
+    }    function getSubFichaVazia(nome, tipo, criadorId) {
         const statusSubInicial = {};
         STATUS_LISTA.forEach(s => { statusSubInicial[s.id] = false; });
         return {
@@ -4116,6 +4548,7 @@
             listas: { vantagens: [], desvantagens: [], pericias: [], especializacoes: [], itens: [], equipamentos: [], tiposDano: [], magias: [], kits: [] },
             testes: {}, statusSub: { ...statusSubInicial },
             oficios: [],
+            atributosCustom: [],
             baralhoSubEstado: null
         };
     }
@@ -4317,7 +4750,7 @@
         subContainer.querySelectorAll('.btn-subficha.excluir').forEach(btn => {
             btn.onclick = () => {
                 const idx = parseInt(btn.dataset.idx);
-                if (confirm('Tem certeza que deseja excluir esta sub-ficha?')) { subFichas.splice(idx, 1); delete baralhosSubFichas[idx]; delete periciaSelecionadaCartaSub[idx]; delete cartaViradaAguardandoUsoSub[idx]; renderizarSubFichas(); salvarForcado(); }
+                if (confirm('Tem certeza que deseja excluir esta sub-ficha?')) { subFichas.splice(idx, 1); delete baralhosSubFichas[idx]; delete periciaSelecionadaCartaSub[idx]; delete cartaViradaAguardandoUsoSub[idx]; delete atributosCustomSub[idx]; renderizarSubFichas(); salvarForcado(); }
             };
         });
         subContainer.addEventListener('change', function(e) {
@@ -4365,6 +4798,8 @@
                                 <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">⚔️ A</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-armadura-${index}" value="${sub.armadura}"></div><div class="subficha-total-losango" title="Total de Armadura"><span class="atributo-total-valor" id="subficha-totalArmadura-${index}">0</span></div></div><div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusArmadura-${index}" value="${sub.bonusArmadura || 0}"></div><input type="checkbox" id="subficha-chkBonusArmadura-${index}" class="bonus-checkbox" checked></div><div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusArmadura2-${index}" value="${sub.bonusArmadura2 || 0}"></div><input type="checkbox" id="subficha-chkBonusArmadura2-${index}" class="bonus-checkbox" checked></div></div>
                                 <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">🔮 PdF</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-pdf-${index}" value="${sub.pdf}"></div><div class="subficha-total-losango" title="Total de Poder de Fogo"><span class="atributo-total-valor" id="subficha-totalPdf-${index}">0</span></div></div><div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusPdf-${index}" value="${sub.bonusPdf || 0}"></div><input type="checkbox" id="subficha-chkBonusPdf-${index}" class="bonus-checkbox" checked></div><div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusPdf2-${index}" value="${sub.bonusPdf2 || 0}"></div><input type="checkbox" id="subficha-chkBonusPdf2-${index}" class="bonus-checkbox" checked></div></div>
                                 <div class="subficha-rolagem-generica-item"><div class="rolagem-titulo">🎲 Rolagem Genérica</div><div class="rolagem-campos"><div class="roll-row"><label>Dados</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-qtdDados-${index}" value="1"><label>Mod</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-modRoll-${index}" value="0"></div><button class="btn-roll-sub" data-sub="${index}">🎲 Rolar</button></div></div>
+                                <div id="subficha-atributosCustom-${index}" style="display: contents;"></div>
+                                <button type="button" class="btn-add-atributo" data-custom-add-sub="${index}">➕ Novo Atributo</button>
                             </div>
                         </div>
                         <div class="subficha-recursos-3colunas">
@@ -4436,6 +4871,7 @@
         configurarEventosSubFicha(index);
         renderizarSubListas(index);
         renderizarTestes(`subficha-testesContainer-${index}`, true, index);
+        renderizarAtributosCustom(true, index);
         atualizarPontosSub(index);
         atualizarIndicadoresAtributosSub(index);
         configurarEventosStatusSub(index);
@@ -4490,14 +4926,17 @@
         });
         const escalaInput = document.getElementById(`subficha-escala-${index}`);
         if (escalaInput) escalaInput.oninput = () => { sub.escala = escalaInput.value; debounceSaveSubFicha(); };
+        // CORREÇÃO: Não re-renderizar a sub-ficha ao digitar o nome (fecha ela)
         const nomeInput = document.getElementById(`subficha-nome-${index}`);
-        if (nomeInput) nomeInput.oninput = () => { sub.nome = nomeInput.value; debounceSaveSubFicha(); renderizarSubFichas(); };
+        if (nomeInput) nomeInput.oninput = () => { sub.nome = nomeInput.value; debounceSaveSubFicha(); };
         ['Habilidade', 'Resistência', 'Forca', 'Armadura', 'Pdf'].forEach(nome => {
             const chk1 = document.getElementById(`subficha-chkBonus${nome}-${index}`);
             const chk2 = document.getElementById(`subficha-chkBonus${nome}2-${index}`);
             if (chk1) chk1.onchange = () => { debounceSaveSubFicha(); atualizarIndicadoresAtributosSub(index); };
             if (chk2) chk2.onchange = () => { debounceSaveSubFicha(); atualizarIndicadoresAtributosSub(index); };
         });
+        const btnAddAtributoSub = document.querySelector(`[data-custom-add-sub="${index}"]`);
+        if (btnAddAtributoSub) btnAddAtributoSub.onclick = () => adicionarAtributoCustom(true, index);
         const vRN = document.getElementById(`subficha-vantagemRegionalNome-${index}`);
         if (vRN) vRN.oninput = () => { sub.vantagemRegionalNome = vRN.value; debounceSaveSubFicha(); };
         const vRC = document.getElementById(`subficha-vantagemRegionalCusto-${index}`);
@@ -4849,11 +5288,25 @@
     ];
     
     function getValorAtributo(attr) {
+        if (isAtributoCustom(attr)) {
+            const realId = getAtributoCustomIdReal(attr);
+            const a = getAtributoCustomPorId(realId, false, null);
+            return a ? (parseInt(a.valor) || 0) : 0;
+        }
         const map = { 'F': 'forca', 'H': 'habilidade', 'R': 'resistencia', 'A': 'armadura', 'PdF': 'pdf' };
         const id = map[attr]; if (!id) return 0;
         return parseInt(document.getElementById(id)?.value) || 0;
     }
-    function getValorAtributoSub(sub, attr) { const map = { 'F': 'forca', 'H': 'habilidade', 'R': 'resistencia', 'A': 'armadura', 'PdF': 'pdf' }; const key = map[attr]; if (!key) return 0; return Number(sub[key]) || 0; }
+    function getValorAtributoSub(sub, attr) {
+        if (isAtributoCustom(attr)) {
+            const realId = getAtributoCustomIdReal(attr);
+            const subIdx = subFichas.indexOf(sub);
+            const a = subIdx >= 0 ? getAtributoCustomPorId(realId, true, subIdx) : null;
+            return a ? (parseInt(a.valor) || 0) : 0;
+        }
+        const map = { 'F': 'forca', 'H': 'habilidade', 'R': 'resistencia', 'A': 'armadura', 'PdF': 'pdf' };
+        const key = map[attr]; if (!key) return 0; return Number(sub[key]) || 0;
+    }
     function getResistencia(isSub = false, subIndex = null) { if (isSub && subIndex !== null) { const sub = subFichas[subIndex]; return sub ? (Number(sub.resistencia) || 0) : 0; } return parseInt(document.getElementById('resistencia')?.value) || 0; }
     function getPMAtual(isSub = false, subIndex = null) { if (isSub && subIndex !== null) { const sub = subFichas[subIndex]; return sub ? (Number(sub.pmAtual) || 0) : 0; } return parseInt(document.getElementById('pmAtual')?.value) || 0; }
     function getPVAtual(isSub = false, subIndex = null) { if (isSub && subIndex !== null) { const sub = subFichas[subIndex]; return sub ? (Number(sub.pvAtual) || 0) : 0; } return parseInt(document.getElementById('pvAtual')?.value) || 0; }
@@ -4866,6 +5319,16 @@
         else { const el = document.getElementById('pvAtual'); if (el) el.value = Math.max(0, valor); }
     }
     function getB1Atributo(attr, isSub = false, subIndex = null) {
+        if (isAtributoCustom(attr)) {
+            const realId = getAtributoCustomIdReal(attr);
+            const a = getAtributoCustomPorId(realId, isSub, subIndex);
+            if (!a) return 0;
+            const prefix = isSub && subIndex !== null ? `subficha-custom-chk-` : `custom-chk-`;
+            const suffix = isSub && subIndex !== null ? `-${subIndex}` : '';
+            const chk = document.getElementById(`${prefix}${realId}${suffix}`);
+            if (chk?.checked === false) return 0;
+            return parseInt(a.b1) || 0;
+        }
         const map = { 'H': 'bonusHabilidade', 'R': 'bonusResistencia' };
         const key = map[attr];
         if (isSub && subIndex !== null) { const sub = subFichas[subIndex]; if (!sub) return 0; return Number(sub[key]) || 0; }
@@ -4911,6 +5374,7 @@
         const dificuldadeNome = difNomeMap[dificuldade] || 'Médio';
         const treinadoStr = isTreinado ? ' [TREINADO]' : '';
         const b1Str = b1Atributo ? ` +${b1Atributo}(B1)` : '';
+        const attrAbrev = isAtributoCustom(attr) ? (getAtributoCustomPorId(getAtributoCustomIdReal(attr), isSub, subIndex)?.abrev || '???') : attr;
         if (sucessoAutomatico) { const texto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste}${treinadoStr} (${dificuldadeNome}): ⭐ SUCESSO AUTOMÁTICO (treinado, teste fácil)`; addMensagem(texto, ehSecreta); if (!ehSecreta) enviarRolagemFirebase(texto, false); if (resultadoElement) { resultadoElement.textContent = '⭐ Automático'; resultadoElement.className = 'teste-resultado sucesso'; } return; }
         if (falhaAutomatica) { const texto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste} (${dificuldadeNome}): ❌ FALHA AUTOMÁTICA (não treinado, teste difícil/impossível)`; addMensagem(texto, ehSecreta); if (!ehSecreta) enviarRolagemFirebase(texto, false); if (resultadoElement) { resultadoElement.textContent = '❌ Automático'; resultadoElement.className = 'teste-resultado falha'; } return; }
         const alvo = valorAttr + b1Atributo + modDificuldade + bp.bonus - bp.pen;
@@ -4920,7 +5384,7 @@
         const bonusStr = bp.bonus ? ` +${bp.bonus}(B)` : '';
         const penStr = bp.pen ? ` -${bp.pen}(P)` : '';
         const sextoStr = dado === 6 ? ' ⚠️ [6 = falha automática]' : '';
-        const resultadoTexto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste}${treinadoStr} (${dificuldadeNome}): 🎲 ${dado} | Alvo: ${valorAttr}${b1Str} ${modStr}(dif)${bonusStr}${penStr} = ${alvo} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}${sextoStr}`;
+        const resultadoTexto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste} (${attrAbrev})${treinadoStr} (${dificuldadeNome}): 🎲 ${dado} | Alvo: ${valorAttr}${b1Str} ${modStr}(dif)${bonusStr}${penStr} = ${alvo} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}${sextoStr}`;
         addMensagem(resultadoTexto, ehSecreta);
         if (!ehSecreta) enviarRolagemFirebase(resultadoTexto, false);
         if (resultadoElement) { resultadoElement.textContent = `🎲 ${dado} → ${sucesso ? '✅' : '❌'} (Alvo: ${alvo})`; resultadoElement.className = 'teste-resultado'; if (sucesso) resultadoElement.classList.add('sucesso'); else resultadoElement.classList.add('falha'); }
@@ -4946,7 +5410,8 @@
         const sucesso = (dado + alvoFinal) >= dificuldadeValor;
         const bonusTesteStr = (bonusTeste.bonusAzul || bonusTeste.bonusVermelho) ? ` [+${bonusTeste.bonusAzul}${bonusTeste.bonusVermelho ? `+${bonusTeste.bonusVermelho}` : ''}]` : '';
         const bpStr = `${bp.bonus ? ` +${bp.bonus}(B)` : ''}${bp.pen ? ` -${bp.pen}(P)` : ''}`;
-        const resultadoTexto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste} (${dificuldadeNome}): 🎲 ${dado} + ${alvoFinal} [${baseAtributo}${treinoBonus ? '+4' : ''}${bonusTesteStr}${bpStr}] = ${dado + alvoFinal} | Alvo: ${dificuldadeValor} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}`;
+        const attrAbrev = isAtributoCustom(attr) ? (getAtributoCustomPorId(getAtributoCustomIdReal(attr), isSub, subIndex)?.abrev || '???') : attr;
+        const resultadoTexto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste} (${attrAbrev}) (${dificuldadeNome}): 🎲 ${dado} + ${alvoFinal} [${baseAtributo}${treinoBonus ? '+4' : ''}${bonusTesteStr}${bpStr}] = ${dado + alvoFinal} | Alvo: ${dificuldadeValor} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}`;
         addMensagem(resultadoTexto, ehSecreta);
         if (!ehSecreta) enviarRolagemFirebase(resultadoTexto, false);
         if (resultadoElement) { resultadoElement.textContent = `🎲 ${dado} + ${alvoFinal} = ${dado + alvoFinal} → ${sucesso ? '✅' : '❌'}`; resultadoElement.className = 'teste-resultado'; if (sucesso) resultadoElement.classList.add('sucesso'); else resultadoElement.classList.add('falha'); }
@@ -4969,6 +5434,7 @@
         const dificuldadeNome = difNomeMap[dificuldade] || 'Médio';
         const treinadoStr = isTreinado ? ' [TREINADO]' : '';
         const b1Str = b1Atributo ? ` +${b1Atributo}(B1)` : '';
+        const attrAbrev = isAtributoCustom(attr) ? (getAtributoCustomPorId(getAtributoCustomIdReal(attr), isSub, subIndex)?.abrev || '???') : attr;
         const alvo = valorAttr + b1Atributo + modDificuldade + bp.bonus - bp.pen;
         const dado = Math.floor(Math.random() * 6) + 1;
         const sucesso = dado !== 6 && dado <= alvo;
@@ -4976,7 +5442,7 @@
         const bonusStr = bp.bonus ? ` +${bp.bonus}(B)` : '';
         const penStr = bp.pen ? ` -${bp.pen}(P)` : '';
         const sextoStr = dado === 6 ? ' ⚠️ [6 = falha automática]' : '';
-        const resultadoTexto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste}${treinadoStr} (${dificuldadeNome}): 🎲 ${dado} | Alvo: ${valorAttr}${b1Str} ${modStr}(dif)${bonusStr}${penStr} = ${alvo} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}${sextoStr}`;
+        const resultadoTexto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste} (${attrAbrev})${treinadoStr} (${dificuldadeNome}): 🎲 ${dado} | Alvo: ${valorAttr}${b1Str} ${modStr}(dif)${bonusStr}${penStr} = ${alvo} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}${sextoStr}`;
         addMensagem(resultadoTexto, ehSecreta);
         if (!ehSecreta) enviarRolagemFirebase(resultadoTexto, false);
         if (resultadoElement) { resultadoElement.textContent = `🎲 ${dado} → ${sucesso ? '✅' : '❌'} (Alvo: ${alvo})`; resultadoElement.className = 'teste-resultado'; if (sucesso) resultadoElement.classList.add('sucesso'); else resultadoElement.classList.add('falha'); }
@@ -5015,7 +5481,8 @@
         const bpStr = `${bp.bonus ? ` +${bp.bonus}(B)` : ''}${bp.pen ? ` -${bp.pen}(P)` : ''}`;
         const explosaoStr = explosao ? ' [💥 6 = dado extra]' : '';
         const resumoDados = dadosRolados.length > 30 ? `${dadosRolados.slice(0, 30).join(',')}... (+${dadosRolados.length - 30} dados)` : dadosRolados.join(',');
-        const resultadoTexto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste}${treinadoStr} (${dificuldadeNome})${explosaoStr}: 🎲 [${valorAttr}${qtdBonusTreinado ? '+4' : ''}${bpStr} = ${dadosRolados.length} dados] ${resumoDados} → ${sucessos} sucesso(s) | Necessários: ${sucessosNecessarios}${rolagensExtras ? ` (+${rolagensExtras} extra(s) por 6)` : ''} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}`;
+        const attrAbrev = isAtributoCustom(attr) ? (getAtributoCustomPorId(getAtributoCustomIdReal(attr), isSub, subIndex)?.abrev || '???') : attr;
+        const resultadoTexto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste} (${attrAbrev})${treinadoStr} (${dificuldadeNome})${explosaoStr}: 🎲 [${valorAttr}${qtdBonusTreinado ? '+4' : ''}${bpStr} = ${dadosRolados.length} dados] ${resumoDados} → ${sucessos} sucesso(s) | Necessários: ${sucessosNecessarios}${rolagensExtras ? ` (+${rolagensExtras} extra(s) por 6)` : ''} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}`;
         addMensagem(resultadoTexto, ehSecreta);
         if (!ehSecreta) enviarRolagemFirebase(resultadoTexto, false);
         if (resultadoElement) { resultadoElement.textContent = `${sucessos}/${sucessosNecessarios} sucessos → ${sucesso ? '✅' : '❌'}`; resultadoElement.className = 'teste-resultado'; if (sucesso) resultadoElement.classList.add('sucesso'); else resultadoElement.classList.add('falha'); }
@@ -5068,7 +5535,8 @@
         const custoStr = custoPM > 0 ? ` | 💰 Custo: ${custoPM} PE extra (${gastouPM} PM${perdeuPV ? `, ${perdeuPV} PV` : ''})` : ' | 💰 Sem custo extra';
         const limiteStr = ` [Limite grátis: ${limiteGratis} = R${rBase}+B1${rB1}+B2${rB2}${isTreinado ? '+4 treino' : ''}]`;
         const bpStr = `${bp.bonus ? ` +${bp.bonus}(B)` : ''}${bp.pen ? ` -${bp.pen}(P)` : ''}`;
-        const resultadoTexto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste}${treinadoStr} (${dificuldadeNome})${limiteStr}: ⚡ ${peValor} PE | Total: ${valorAttr} + ${treinoBonus}(treino) + ${peValor}(PE)${bpStr} = ${total} vs Dificuldade ${dificuldadeValor} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}${custoStr}`;
+        const attrAbrev = isAtributoCustom(attr) ? (getAtributoCustomPorId(getAtributoCustomIdReal(attr), isSub, subIndex)?.abrev || '???') : attr;
+        const resultadoTexto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste} (${attrAbrev})${treinadoStr} (${dificuldadeNome})${limiteStr}: ⚡ ${peValor} PE | Total: ${valorAttr} + ${treinoBonus}(treino) + ${peValor}(PE)${bpStr} = ${total} vs Dificuldade ${dificuldadeValor} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}${custoStr}`;
         addMensagem(resultadoTexto, ehSecreta);
         if (!ehSecreta) enviarRolagemFirebase(resultadoTexto, false);
         if (resultadoElement) { resultadoElement.textContent = `⚡ ${peValor} PE → ${sucesso ? '✅' : '❌'} (Total: ${total} vs ${dificuldadeValor})`; resultadoElement.className = 'teste-resultado'; if (sucesso) resultadoElement.classList.add('sucesso'); else resultadoElement.classList.add('falha'); }
@@ -5091,6 +5559,7 @@
         const dificuldadeNome = difNomeMap[dificuldade] || 'Médio';
         const treinadoStr = isTreinado ? ' [TREINADO]' : '';
         const b1Str = b1Atributo ? ` +${b1Atributo}(B1)` : '';
+        const attrAbrev = isAtributoCustom(attr) ? (getAtributoCustomPorId(getAtributoCustomIdReal(attr), isSub, subIndex)?.abrev || '???') : attr;
         const alvo = valorAttr + b1Atributo + modDificuldade + bp.bonus - bp.pen;
         const dado = Math.floor(Math.random() * 6) + 1;
         const sucesso = dado !== 6 && dado <= alvo;
@@ -5106,7 +5575,7 @@
         const bonusStr = bp.bonus ? ` +${bp.bonus}(B)` : '';
         const penStr = bp.pen ? ` -${bp.pen}(P)` : '';
         const sextoStr = dado === 6 ? ' ⚠️ [6 = falha automática]' : '';
-        const resultadoTexto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste}${treinadoStr} (${dificuldadeNome}): 🎲 ${dado} | Alvo: ${valorAttr}${b1Str} ${modStr}(dif)${bonusStr}${penStr} = ${alvo} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'} | Nível de Sucesso: ${nivelSucesso} (${nivelDesc})${sextoStr}`;
+        const resultadoTexto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste} (${attrAbrev})${treinadoStr} (${dificuldadeNome}): 🎲 ${dado} | Alvo: ${valorAttr}${b1Str} ${modStr}(dif)${bonusStr}${penStr} = ${alvo} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'} | Nível de Sucesso: ${nivelSucesso} (${nivelDesc})${sextoStr}`;
         addMensagem(resultadoTexto, ehSecreta);
         if (!ehSecreta) enviarRolagemFirebase(resultadoTexto, false);
         if (resultadoElement) { resultadoElement.textContent = `🎲 ${dado} → Nível ${nivelSucesso} (${nivelDesc})`; resultadoElement.className = 'teste-resultado'; if (sucesso) resultadoElement.classList.add('sucesso'); else resultadoElement.classList.add('falha'); }
@@ -5322,13 +5791,14 @@
         const treinadoStr = isTreinado ? ' [TREINADO]' : '';
         const cartaStr = `${carta.valor}${carta.naipe}`;
         const bp = getBonusPenLinha(nomeTeste, isSub, subIndex);
+        const attrAbrev = isAtributoCustom(attr) ? (getAtributoCustomPorId(getAtributoCustomIdReal(attr), isSub, subIndex)?.abrev || '???') : attr;
         
         if (carta.coringa) {
             let revelada = null;
             if (isSubBaralho && subBaralhoIndex !== null) revelada = puxarCartaDoMonteSub(subBaralhoIndex);
             else revelada = puxarCartaDoMonte();
             if (!revelada) {
-                const texto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste}${treinadoStr} (${dificuldadeNome}): 🃏 Coringa ${cartaStr} → monte vazio, sem carta de decisão.`;
+                const texto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste} (${attrAbrev})${treinadoStr} (${dificuldadeNome}): 🃏 Coringa ${cartaStr} → monte vazio, sem carta de decisão.`;
                 addMensagem(texto, ehSecreta);
                 if (!ehSecreta) enviarRolagemFirebase(texto, false);
                 if (resultadoElement) { resultadoElement.textContent = '🃏 Coringa sem decisão'; resultadoElement.className = 'teste-resultado'; }
@@ -5337,7 +5807,7 @@
             if (isSubBaralho && subBaralhoIndex !== null) { const est = baralhosSubFichas[subBaralhoIndex]; if (est) { revelada.usada = false; est.descartes.push(revelada); } }
             else baralhoEstado.descartes.push(revelada);
             const sucesso = revelada.vermelha;
-            const texto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste}${treinadoStr} (${dificuldadeNome}): 🃏 Coringa ${cartaStr} → carta revelada ${revelada.valor}${revelada.naipe} (${revelada.vermelha ? 'VERMELHA' : 'PRETA'}) → ${sucesso ? '✅ SUCESSO ABSOLUTO' : '❌ FALHA TOTAL'}`;
+            const texto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste} (${attrAbrev})${treinadoStr} (${dificuldadeNome}): 🃏 Coringa ${cartaStr} → carta revelada ${revelada.valor}${revelada.naipe} (${revelada.vermelha ? 'VERMELHA' : 'PRETA'}) → ${sucesso ? '✅ SUCESSO ABSOLUTO' : '❌ FALHA TOTAL'}`;
             addMensagem(texto, ehSecreta);
             if (!ehSecreta) enviarRolagemFirebase(texto, false);
             if (resultadoElement) { resultadoElement.textContent = `🃏 ${revelada.vermelha ? 'Vermelha → ✅ Absoluto' : 'Preta → ❌ Total'}`; resultadoElement.className = 'teste-resultado'; if (sucesso) resultadoElement.classList.add('sucesso'); else resultadoElement.classList.add('falha'); }
@@ -5357,7 +5827,7 @@
             const sucesso = alvo >= dificuldadeValor;
             const treinoStr = treinoBonus ? ` + ${treinoBonus}(treino)` : '';
             const bpStr = `${bp.bonus ? ` +${bp.bonus}(B)` : ''}${bp.pen ? ` -${bp.pen}(P)` : ''}`;
-            const texto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste}${treinadoStr} (${dificuldadeNome}): 🃏 ${cartaStr}${criticoStr} + característica ${valorAttr}${treinoStr}${bpStr} → Alvo: ${alvo} vs Dificuldade ${dificuldadeValor} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}`;
+            const texto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste} (${attrAbrev})${treinadoStr} (${dificuldadeNome}): 🃏 ${cartaStr}${criticoStr} + característica ${valorAttr}${treinoStr}${bpStr} → Alvo: ${alvo} vs Dificuldade ${dificuldadeValor} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}`;
             addMensagem(texto, ehSecreta);
             if (!ehSecreta) enviarRolagemFirebase(texto, false);
             if (resultadoElement) { resultadoElement.textContent = `🃏 ${cartaStr} → ${sucesso ? '✅' : '❌'} (Alvo: ${alvo})`; resultadoElement.className = 'teste-resultado'; if (sucesso) resultadoElement.classList.add('sucesso'); else resultadoElement.classList.add('falha'); }
@@ -5381,7 +5851,7 @@
             const treinoStr = treinoBonus ? ` +${treinoBonus}(treino)` : '';
             const bpStr = `${bp.bonus ? ` +${bp.bonus}(B)` : ''}${bp.pen ? ` -${bp.pen}(P)` : ''}`;
             const sextoStr = valorRolagem === 6 ? ' ⚠️ [6 = falha automática]' : '';
-            const texto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste}${treinadoStr} (${dificuldadeNome}): 🃏 ${cartaStr} (rolagem ${valorRolagem}) | Alvo: ${valorAttr}${b1Str} ${modStr}(dif)${treinoStr}${bpStr} = ${alvo} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}${sextoStr}`;
+            const texto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste} (${attrAbrev})${treinadoStr} (${dificuldadeNome}): 🃏 ${cartaStr} (rolagem ${valorRolagem}) | Alvo: ${valorAttr}${b1Str} ${modStr}(dif)${treinoStr}${bpStr} = ${alvo} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}${sextoStr}`;
             addMensagem(texto, ehSecreta);
             if (!ehSecreta) enviarRolagemFirebase(texto, false);
             if (resultadoElement) { resultadoElement.textContent = `🃏 ${cartaStr} (${valorRolagem}) → ${sucesso ? '✅' : '❌'} (Alvo: ${alvo})`; resultadoElement.className = 'teste-resultado'; if (sucesso) resultadoElement.classList.add('sucesso'); else resultadoElement.classList.add('falha'); }
@@ -5395,14 +5865,14 @@
         else if (dificuldade === 'dificil') { if (isTreinado) modDificuldade = -2; else falhaAutomatica = true; }
         else if (dificuldade === 'impossivel') { if (isTreinado) modDificuldade = -6; else falhaAutomatica = true; }
         if (sucessoAutomatico) {
-            const texto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste}${treinadoStr} (${dificuldadeNome}): 🃏 ${cartaStr} → ⭐ SUCESSO AUTOMÁTICO (treinado, teste fácil — carta consumida)`;
+            const texto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste} (${attrAbrev})${treinadoStr} (${dificuldadeNome}): 🃏 ${cartaStr} → ⭐ SUCESSO AUTOMÁTICO (treinado, teste fácil — carta consumida)`;
             addMensagem(texto, ehSecreta);
             if (!ehSecreta) enviarRolagemFirebase(texto, false);
             if (resultadoElement) { resultadoElement.textContent = '⭐ Automático'; resultadoElement.className = 'teste-resultado sucesso'; }
             return;
         }
         if (falhaAutomatica) {
-            const texto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste}${treinadoStr} (${dificuldadeNome}): 🃏 ${cartaStr} → ❌ FALHA AUTOMÁTICA (não treinado, teste difícil/impossível — carta consumida)`;
+            const texto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste} (${attrAbrev})${treinadoStr} (${dificuldadeNome}): 🃏 ${cartaStr} → ❌ FALHA AUTOMÁTICA (não treinado, teste difícil/impossível — carta consumida)`;
             addMensagem(texto, ehSecreta);
             if (!ehSecreta) enviarRolagemFirebase(texto, false);
             if (resultadoElement) { resultadoElement.textContent = '❌ Automático'; resultadoElement.className = 'teste-resultado falha'; }
@@ -5414,7 +5884,7 @@
         const b1Str = b1Atributo ? ` +${b1Atributo}(B1)` : '';
         const bpStr = `${bp.bonus ? ` +${bp.bonus}(B)` : ''}${bp.pen ? ` -${bp.pen}(P)` : ''}`;
         const sextoStr = valorRolagem === 6 ? ' ⚠️ [6 = falha automática]' : '';
-        const texto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste}${treinadoStr} (${dificuldadeNome}): 🃏 ${cartaStr} (rolagem ${valorRolagem}) | Alvo: ${valorAttr}${b1Str} ${modStr}(dif)${bpStr} = ${alvo} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}${sextoStr}`;
+        const texto = `[${isSub ? nomePersonagem + '] ' : ''}${nomeTeste} (${attrAbrev})${treinadoStr} (${dificuldadeNome}): 🃏 ${cartaStr} (rolagem ${valorRolagem}) | Alvo: ${valorAttr}${b1Str} ${modStr}(dif)${bpStr} = ${alvo} → ${sucesso ? '✅ SUCESSO' : '❌ FALHA'}${sextoStr}`;
         addMensagem(texto, ehSecreta);
         if (!ehSecreta) enviarRolagemFirebase(texto, false);
         if (resultadoElement) { resultadoElement.textContent = `🃏 ${cartaStr} (${valorRolagem}) → ${sucesso ? '✅' : '❌'} (Alvo: ${alvo})`; resultadoElement.className = 'teste-resultado'; if (sucesso) resultadoElement.classList.add('sucesso'); else resultadoElement.classList.add('falha'); }
@@ -5454,7 +5924,21 @@
             const resultId = isSub ? `subficha-teste-resultado-${subIndex}-${nomeSanitizado}` : `teste-resultado-${nomeSanitizado}`;
             const rollId = isSub ? `subficha-teste-roll-${subIndex}-${idx}` : `teste-roll-${idx}`;
             const isAtributo = ATRIBUTOS_BASE.some(a => a.nome === teste.nome);
-            const attrDisplay = isAtributo ? '' : `(${teste.attr})`;
+            let attrDisplay = '';
+            if (!isAtributo) {
+                const isSubSel = isSub && subIndex !== null;
+                const attrAtual = isSubSel
+                    ? (subFichas[subIndex]?.testes?.[`attr_${teste.nome}`] || teste.attr)
+                    : (window.testeAtributos?.[`attr_${teste.nome}`] || teste.attr);
+                const customList = isSubSel ? getAtributosCustomSub(subIndex) : getAtributosCustom();
+                const opcoesPadrao = [['F','F'],['H','H'],['R','R'],['A','A'],['PdF','PdF']];
+                let opcoesHtml = opcoesPadrao.map(([v, l]) => `<option value="${v}" ${attrAtual === v ? 'selected' : ''}>${l}</option>`).join('');
+                customList.forEach(a => {
+                    const val = `custom:${a.id}`;
+                    opcoesHtml += `<option value="${val}" ${attrAtual === val ? 'selected' : ''}>${escapeHtml(a.abrev || 'NOVO')}</option>`;
+                });
+                attrDisplay = `<select class="teste-atributo-select" data-teste-nome="${teste.nome}" data-is-sub="${isSub}" data-sub-idx="${isSubSel ? subIndex : ''}">${opcoesHtml}</select>`;
+            }
             
             let camposBonusPen = '';
             if (!isAtributo) {
@@ -5484,7 +5968,7 @@
             let botaoRolar = `<button class="teste-btn-roll" id="${rollId}" data-teste-nome="${teste.nome}" data-teste-attr="${teste.attr}" data-sub="${subIndex !== null ? subIndex : ''}" data-is-sub="${isSub}">🎲</button>`;
             if (usandoAltCartas) botaoRolar = '';
             
-            return `<div class="teste-item" data-teste-nome="${teste.nome}"><span class="teste-nome">${teste.nome} ${attrDisplay}</span>${camposBonusPen}${campoPE}${radioCartas}<input type="checkbox" class="teste-checkbox" id="${chkId}" ${checkedAttr}>${botaoRolar}<div class="teste-resultado" id="${resultId}"></div></div>`;
+            return `<div class="teste-item" data-teste-nome="${teste.nome}"><span class="teste-nome">${teste.nome}</span>${attrDisplay}${camposBonusPen}${campoPE}${radioCartas}<input type="checkbox" class="teste-checkbox" id="${chkId}" ${checkedAttr}>${botaoRolar}<div class="teste-resultado" id="${resultId}"></div></div>`;
         };
         html += '<div class="testes-coluna">';
         testesOrdenados.slice(0, metade).forEach((t, i) => html += renderItem(t, i));
@@ -5511,9 +5995,13 @@
         container.querySelectorAll('.teste-btn-roll').forEach(btn => {
             btn.onclick = () => {
                 const nomeTeste = btn.dataset.testeNome;
-                const attr = btn.dataset.testeAttr;
+                let attr = btn.dataset.testeAttr;
                 const isSubBtn = btn.dataset.isSub === 'true';
                 const subIdx = btn.dataset.sub !== '' ? parseInt(btn.dataset.sub) : null;
+                if (!ATRIBUTOS_BASE.some(a => a.nome === nomeTeste)) {
+                    const selEl = container.querySelector(`.teste-atributo-select[data-teste-nome="${CSS.escape(nomeTeste)}"]`);
+                    if (selEl) attr = selEl.value;
+                }
                 if (ATRIBUTOS_BASE.some(a => a.nome === nomeTeste)) { rolarTesteAtributo(nomeTeste, attr, isSubBtn, subIdx); return; }
                 let isTreinado = false, dificuldadeVal = 'medio';
                 if (isSubBtn && subIdx !== null) { const chk = document.getElementById(`subficha-teste-chk-${nomeTeste.replace(/\s/g, '')}-${subIdx}`); if (chk) isTreinado = chk.checked; dificuldadeVal = document.getElementById(`subficha-testeDificuldadeGlobal-${subIdx}`)?.value || 'medio'; }
@@ -5545,6 +6033,23 @@
                 } else {
                     periciaSelecionadaCarta = { nome: nomeTeste, attr, isTreinado, dificuldade: dificuldadeVal, isSub: false, subIndex: null };
                     renderizarBaralhoPrincipal();
+                }
+            };
+        });
+        
+        container.querySelectorAll('.teste-atributo-select').forEach(sel => {
+            sel.onchange = () => {
+                const nomeTeste = sel.dataset.testeNome;
+                const isSubSel = sel.dataset.isSub === 'true';
+                const subIdx = sel.dataset.subIdx !== '' ? parseInt(sel.dataset.subIdx) : null;
+                if (isSubSel && subIdx !== null) {
+                    if (!subFichas[subIdx].testes) subFichas[subIdx].testes = {};
+                    subFichas[subIdx].testes[`attr_${nomeTeste}`] = sel.value;
+                    debounceSaveSubFicha();
+                } else {
+                    if (!window.testeAtributos) window.testeAtributos = {};
+                    window.testeAtributos[`attr_${nomeTeste}`] = sel.value;
+                    debounceSave();
                 }
             };
         });
@@ -5719,8 +6224,7 @@
     window.adicionarHabilidade = function(kitIndex) { if (!fichaListas.kits[kitIndex].habilidades) fichaListas.kits[kitIndex].habilidades = []; fichaListas.kits[kitIndex].habilidades.push({ nome: '', custo: 0, descricao: '', visivel: false }); renderizarKits(); salvarForcado(); atualizarPontos(); };
     window.removerHabilidade = function(kitIndex, habIndex) { if (!fichaListas.kits[kitIndex]?.habilidades) return; fichaListas.kits[kitIndex].habilidades.splice(habIndex, 1); renderizarKits(); salvarForcado(); atualizarPontos(); };
     window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!fichaListas.kits[kitIndex]?.habilidades[habIndex]) return; if (campo === 'custo') fichaListas.kits[kitIndex].habilidades[habIndex][campo] = parseInt(valor) || 0; else fichaListas.kits[kitIndex].habilidades[habIndex][campo] = valor; salvarForcado(); atualizarPontos(); };
-    
-    function getFichaVazia(nome = 'Novo Personagem') {
+        function getFichaVazia(nome = 'Novo Personagem') {
         const statusInicial = {};
         STATUS_LISTA.forEach(s => { statusInicial[s.id] = false; });
         return {
@@ -5738,6 +6242,7 @@
             listas: { vantagens: [], desvantagens: [], pericias: [], especializacoes: [], itens: [], equipamentos: [], tiposDano: [], magias: [], kits: [] },
             subFichas: [], testes: {}, statusFicha: { ...statusInicial },
             oficios: [],
+            atributosCustom: [],
             baralhoEstado: null
         };
     }
@@ -5750,6 +6255,7 @@
         const subFichasSalvar = subFichas.map((sub, idx) => {
             const subCopy = JSON.parse(JSON.stringify(sub));
             if (baralhosSubFichas[idx]) subCopy.baralhoSubEstado = JSON.parse(JSON.stringify(baralhosSubFichas[idx]));
+            if (atributosCustomSub[idx]) subCopy.atributosCustom = JSON.parse(JSON.stringify(atributosCustomSub[idx]));
             return subCopy;
         });
         for (const status of STATUS_LISTA) { const chk = document.getElementById(`status-${status.id}`); if (chk) statusFicha[status.id] = chk.checked; }
@@ -5799,11 +6305,12 @@
             avatarSrc: (document.getElementById('avatarBtn').querySelector('img')?.src) || '',
             listas: fichaListas,
             subFichas: subFichasSalvar,
-            testes: { oficio1: window.oficio1 || '', oficio2: window.oficio2 || '', checkboxes: window.testeCheckboxes || {}, bonusTestes: window.bonusTestes || {}, bonusAtributosTeste: bonusAtributosTeste || {} },
+            testes: { oficio1: window.oficio1 || '', oficio2: window.oficio2 || '', checkboxes: window.testeCheckboxes || {}, bonusTestes: window.bonusTestes || {}, bonusAtributosTeste: bonusAtributosTeste || {}, atributos: window.testeAtributos || {} },
             gastosManuais: gastosManuaisLocal,
             ataquesCurto, ataquesDistancia, defesas, ataquesCurtoSub, ataquesDistanciaSub, defesasSub,
             statusFicha: statusFicha,
             oficios: getOficiosPrincipais(),
+            atributosCustom: JSON.parse(JSON.stringify(getAtributosCustom())),
             baralhoEstado: JSON.parse(JSON.stringify(baralhoEstado)),
             baralhosCombate: JSON.parse(JSON.stringify(baralhosCombate))
         };
@@ -5868,6 +6375,7 @@
             for (const k of Object.keys(baralhosCombate)) {
                 const est = baralhosCombate[k];
                 if (!est.selecionadas) est.selecionadas = [];
+                if (est.cartaEscolhidaId === undefined) est.cartaEscolhidaId = null;
                 if (est.mao) est.mao.forEach(c => { if (c.usada === undefined) c.usada = false; });
             }
         } else {
@@ -5902,6 +6410,9 @@
         if (f.listas?.kits) { fichaListas.kits.length = 0; f.listas.kits.forEach(kit => fichaListas.kits.push({ ...kit, custo: parseInt(kit.custo) || 0, habilidades: (kit.habilidades || []).map(h => ({ ...h, custo: parseInt(h.custo) || 0 })) })); }
         if (f.oficios && Array.isArray(f.oficios)) oficiosPrincipais = f.oficios.map(o => ({ ...o, bonus: parseInt(o.bonus) || 0, pen: parseInt(o.pen) || 0, pe: parseInt(o.pe) || 0, treinado: o.treinado === true }));
         else oficiosPrincipais = [];
+        if (f.atributosCustom && Array.isArray(f.atributosCustom)) {
+            atributosCustom = f.atributosCustom.map(a => ({ id: a.id, abrev: a.abrev || 'NOVO', valor: parseInt(a.valor) || 0, b1: parseInt(a.b1) || 0, b2: parseInt(a.b2) || 0, b1Ativo: a.b1Ativo !== false, b2Ativo: a.b2Ativo !== false }));
+        } else atributosCustom = [];
         if (f.subFichas && Array.isArray(f.subFichas)) {
             subFichas = f.subFichas.map(sub => {
                 const subCopy = JSON.parse(JSON.stringify(sub));
@@ -5910,11 +6421,20 @@
                 if (!subCopy.statusSub) { const s = {}; STATUS_LISTA.forEach(x => { s[x.id] = false; }); subCopy.statusSub = s; }
                 if (subCopy.escala === undefined) subCopy.escala = '';
                 if (!Number.isFinite(subCopy.pontosBase)) subCopy.pontosBase = 0;
+                if (!subCopy.atributosCustom || !Array.isArray(subCopy.atributosCustom)) subCopy.atributosCustom = [];
                 return subCopy;
             });
         } else subFichas = [];
         oficiosSub = {};
         if (f.subFichas && Array.isArray(f.subFichas)) f.subFichas.forEach((sub, idx) => { if (sub.oficios && Array.isArray(sub.oficios)) oficiosSub[idx] = sub.oficios.map(o => ({ ...o, bonus: parseInt(o.bonus) || 0, pen: parseInt(o.pen) || 0, pe: parseInt(o.pe) || 0, treinado: o.treinado === true })); });
+        atributosCustomSub = {};
+        if (f.subFichas && Array.isArray(f.subFichas)) {
+            f.subFichas.forEach((sub, idx) => {
+                if (sub.atributosCustom && Array.isArray(sub.atributosCustom)) {
+                    atributosCustomSub[idx] = sub.atributosCustom.map(a => ({ id: a.id, abrev: a.abrev || 'NOVO', valor: parseInt(a.valor) || 0, b1: parseInt(a.b1) || 0, b2: parseInt(a.b2) || 0, b1Ativo: a.b1Ativo !== false, b2Ativo: a.b2Ativo !== false }));
+                } else atributosCustomSub[idx] = [];
+            });
+        }
         baralhosSubFichas = {};
         periciaSelecionadaCartaSub = {};
         cartaViradaAguardandoUsoSub = {};
@@ -5927,10 +6447,11 @@
             }
             delete sub.baralhoSubEstado;
         });
-        if (f.testes) { window.oficio1 = f.testes.oficio1 || ''; window.oficio2 = f.testes.oficio2 || ''; window.testeCheckboxes = f.testes.checkboxes || {}; }
-        else { window.oficio1 = ''; window.oficio2 = ''; window.testeCheckboxes = {}; }
+        if (f.testes) { window.oficio1 = f.testes.oficio1 || ''; window.oficio2 = f.testes.oficio2 || ''; window.testeCheckboxes = f.testes.checkboxes || {}; window.testeAtributos = f.testes.atributos || {}; }
+        else { window.oficio1 = ''; window.oficio2 = ''; window.testeCheckboxes = {}; window.testeAtributos = {}; }
         if (f.statusFicha) { statusFicha = { ...f.statusFicha }; for (const status of STATUS_LISTA) { const chk = document.getElementById(`status-${status.id}`); if (chk) chk.checked = statusFicha[status.id] || false; } }
         else { const s = {}; STATUS_LISTA.forEach(x => { s[x.id] = false; }); statusFicha = s; for (const status of STATUS_LISTA) { const chk = document.getElementById(`status-${status.id}`); if (chk) chk.checked = false; } }
+        renderizarAtributosCustom(false, null);
         renderizarLista('vantagens', 'vantagensLista');
         renderizarLista('desvantagens', 'desvantagensLista');
         renderizarLista('pericias', 'periciasLista');
@@ -6084,6 +6605,7 @@
         if (!currentPin || !isMaster) return;
         if (_jogadoresChannel) { try { supabase.removeChannel(_jogadoresChannel); } catch(e) {} _jogadoresChannel = null; }
         if (listaJogadoresUnsubscribe) { try { listaJogadoresUnsubscribe(); } catch(e) {} listaJogadoresUnsubscribe = null; }
+        if (intervaloRefreshJogadores) { clearInterval(intervaloRefreshJogadores); intervaloRefreshJogadores = null; }
         const jogadoresCache = new Map();
         function renderizarListaJogadores() {
             const grid = document.getElementById('gmPlayersGrid');
@@ -6113,11 +6635,12 @@
             renderizarListaJogadores();
         }
         carregarTudo();
+        intervaloRefreshJogadores = setInterval(carregarTudo, 15000);
         const channelName = `jogadores-${currentPin}-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
         const channel = supabase.channel(channelName).on('postgres_changes', { event: '*', schema: 'public', table: 'jogadores', filter: `pin=eq.${currentPin}` }, carregarTudo).subscribe();
         _jogadoresChannel = channel;
         realtimeChannels.push(channel);
-        listaJogadoresUnsubscribe = () => { try { supabase.removeChannel(channel); } catch(e) {} };
+        listaJogadoresUnsubscribe = () => { try { supabase.removeChannel(channel); } catch(e) {} if (intervaloRefreshJogadores) { clearInterval(intervaloRefreshJogadores); intervaloRefreshJogadores = null; } };
     }
     
     window.copiarCodigoFicha = copiarCodigoFicha;
@@ -6158,8 +6681,7 @@
         const codigo = gerarCodigoUnico();
         supabase.from('jogadores').insert({ id: novoId, pin: currentPin, nome: `NPC - ${nomeFicha}`, personagem_nome: nomeFicha, ficha: novaFicha, is_master: false, is_npc: true, codigo_personagem: codigo, criado_por: currentUserId, ultima_atualizacao: new Date().toISOString() }).then(() => { mostrarToast(`✅ Ficha "${nomeFicha}" criada! Código: ${codigo}`, '#4a8a4a'); setTimeout(() => carregarListaJogadores(), 500); }).catch(err => console.error(err));
     }
-    
-    const avatarBtnEl = document.getElementById('avatarBtn');
+        const avatarBtnEl = document.getElementById('avatarBtn');
     const avatarUpload = document.getElementById('uploadAvatar');
     if (avatarBtnEl && avatarUpload) {
         avatarBtnEl.onclick = () => avatarUpload.click();
@@ -6216,6 +6738,7 @@
                     ataquesCurtoSub: dados.ataquesCurtoSub || {}, ataquesDistanciaSub: dados.ataquesDistanciaSub || {}, defesasSub: dados.defesasSub || {},
                     bonusAtributosTeste: dados.bonusAtributosTeste || {}, statusFicha: dados.statusFicha || {},
                     oficios: dados.oficios || [],
+                    atributosCustom: dados.atributosCustom || [],
                     baralhoEstado: dados.baralhoEstado || null, baralhosCombate: dados.baralhosCombate || null
                 };
                 addMensagem("📥 Importando ficha...", false);
@@ -6282,9 +6805,14 @@
         const resultado = await buscarJogadorPorCodigo(pin, codigo);
         if (!resultado) { mostrarToast('❌ Código não encontrado!', '#c0392b'); return; }
         currentPin = pin; currentUserName = nome; currentUserId = resultado.id; codigoPersonagemAtual = codigo; isMaster = false; isGM = false;
+        const { error: erroUpdate } = await supabase.from('jogadores').update({
+            nome: nome,
+            conectado: true,
+            is_npc: false,
+            ultima_atualizacao: new Date().toISOString()
+        }).eq('id', currentUserId);
+        if (erroUpdate) console.error('Erro ao atualizar jogador:', erroUpdate);
         const jogadorRef = ref(db, `mesas/${pin}/jogadores/${currentUserId}`);
-        const jogadorSnapshot = await get(jogadorRef);
-        if (jogadorSnapshot.exists()) { const dados = jogadorSnapshot.val(); if (dados.isNPC === true) { await update(jogadorRef, { isNPC: false, nome, conectado: true, ultimaAtualizacao: serverTimestamp() }); mostrarToast(`🎲 Ficha "${dados.personagemNome}" é sua agora!`, '#4a8a4a'); } else { await update(jogadorRef, { nome, conectado: true, ultimaAtualizacao: serverTimestamp() }); } }
         onDisconnect(jogadorRef).update({ conectado: false });
         entrarNaSala();
         mostrarToast(`🎲 Bem-vindo, ${nome}!`, '#4a8a4a');
@@ -6312,6 +6840,10 @@
             document.getElementById('btnAbrirRegras').style.display = 'none';
             carregarFichaPorId(currentUserId);
             escutarStatusGlobais();
+            // Reforça conectado: true ao entrar na sala (garantia)
+            if (currentPin && currentUserId) {
+                supabase.from('jogadores').update({ conectado: true }).eq('id', currentUserId).then(() => {}).catch(() => {});
+            }
         }
         escutarSustentadosGlobais();
         setTimeout(() => atualizarBadgeSustentadosTodos(), 1000);
@@ -6331,8 +6863,19 @@
         document.getElementById('closeStatusPopup').onclick = fecharPopupStatus;
         document.getElementById('statusPopup').addEventListener('click', (e) => { if (e.target === e.currentTarget) fecharPopupStatus(); });
         renderizarStatusCheckboxes();
-        carregarRegrasMesa().then(() => { atualizarBadgeRegras(); aplicarClassesRegras(); atualizarSelectsDificuldade(); renderizarBaralhoPrincipal(); subFichas.forEach((_, idx) => renderizarBaralhoSub(idx)); reRenderizarOficios(); });
+        // CORREÇÃO: Carregar regras e depois re-renderizar testes
+        carregarRegrasMesa().then(() => {
+            atualizarBadgeRegras();
+            aplicarClassesRegras();
+            atualizarSelectsDificuldade();
+            renderizarTestes('testesContainer', false, null);
+            subFichas.forEach((_, idx) => renderizarTestes(`subficha-testesContainer-${idx}`, true, idx));
+            renderizarBaralhoPrincipal();
+            subFichas.forEach((_, idx) => renderizarBaralhoSub(idx));
+            reRenderizarOficios();
+        });
         escutarRegrasMesa();
+        iniciarPollingRegras();
     }
     
     async function deslogar() {
@@ -6340,6 +6883,8 @@
         if (currentPin && visualizandoId) { try { await salvarFichaImediato(); } catch(e) { console.error('Falha ao salvar antes de sair:', e); } }
         if (currentPin && currentUserId) { await supabase.from('jogadores').update({ conectado: false }).eq('id', currentUserId); }
         if (intervaloLimpeza) clearInterval(intervaloLimpeza);
+        if (intervaloRefreshJogadores) { clearInterval(intervaloRefreshJogadores); intervaloRefreshJogadores = null; }
+        if (intervaloRegras) { clearInterval(intervaloRegras); intervaloRegras = null; }
         for (const ch of realtimeChannels) { try { supabase.removeChannel(ch); } catch(e) {} }
         realtimeChannels = []; _jogadoresChannel = null; _rolagensChannel = null; _mesasChannel = null; _sustentadosChannel = null;
         currentPin = null; currentUserId = null; currentUserName = null; isMaster = false; isGM = false; visualizandoId = null; periciaSelecionadaCarta = null;
@@ -6349,6 +6894,7 @@
         baralhosSubFichas = {};
         baralhosCombate = {};
         oficiosPrincipais = []; oficiosSub = {};
+        atributosCustom = []; atributosCustomSub = {};
         if (listaJogadoresUnsubscribe) { try { listaJogadoresUnsubscribe(); } catch(e) {} listaJogadoresUnsubscribe = null; }
         document.body.classList.remove('regra-pericias-dificuldade', 'regra-pericias-bonus-treinada', 'regra-pericias-pilha-dados', 'regra-pericias-cartas', 'regra-pericias-esforco', 'regra-pericias-nivel-sucesso', 'regra-combate-sem-pv');
         loginScreen.style.display = 'flex'; fichaScreen.style.display = 'none';
@@ -6381,6 +6927,7 @@
     document.getElementById('addTipoDano').onclick = () => window.adicionarItemLista('tiposDano', 'tiposDanoLista');
     document.getElementById('addMagia').onclick = () => window.adicionarItemLista('magias', 'magiasLista');
     document.getElementById('addKit').onclick = () => window.adicionarKit();
+    document.getElementById('btnAddAtributoCustom').onclick = () => adicionarAtributoCustom(false, null);
     document.getElementById('btnToggleVantagemRegional').onclick = () => { const e = document.getElementById('vantagemRegionalDescEditor'); e.style.display = e.style.display === 'none' ? 'block' : 'none'; };
     document.getElementById('vantagemRegionalNome').addEventListener('input', salvarForcado);
     document.getElementById('vantagemRegionalCusto').addEventListener('input', () => { salvarForcado(); atualizarPontos(); });
@@ -6418,11 +6965,7 @@
     renderizarStatusCheckboxes();
     window.getSupabase = () => supabase;
     window.getVisualizandoId = () => visualizandoId;
-    console.log('✅ Correções aplicadas:');
-    console.log('   1. B1/B2 visíveis em F, PdF e A da ficha principal e subfichas');
-    console.log('   2. B1/B2 de F/PdF/A usados APENAS em magias e no total (losango)');
-    console.log('   3. B1/B2 de H/R continuam afetando totais, magias, ofícios e testes');
-    console.log('   4. Ataque curto/distância e defesa usam apenas B1/B2/BFA/BFD do próprio ataque/defesa');
+    console.log('✅ Sistema carregado com atributos customizados integrados.');
 </script>
 </body>
 </html>
