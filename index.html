@@ -2792,7 +2792,8 @@
         gastos += somarPositivo(document.getElementById('vantagemRegionalCusto').value);
         gastos += somarPositivo(document.getElementById('vantagemUnicaCusto').value);
         if (fichaListas.vantagens) fichaListas.vantagens.forEach(v => gastos += somarPositivo(v.valor));
-        if (fichaListas.desvantagens) fichaListas.desvantagens.forEach(d => gastos += somarPositivo(d.valor));
+        // CORREÇÃO 2: Desvantagens NÃO contam como pontos gastos
+        // if (fichaListas.desvantagens) fichaListas.desvantagens.forEach(d => gastos += somarPositivo(d.valor));
         if (fichaListas.pericias) fichaListas.pericias.forEach(p => gastos += somarPositivo(p.valor));
         if (fichaListas.especializacoes) fichaListas.especializacoes.forEach(e => gastos += somarPositivo(e.valor));
         if (fichaListas.kits) fichaListas.kits.forEach(kit => { gastos += somarPositivo(kit.custo); if (kit.habilidades) kit.habilidades.forEach(hab => gastos += somarPositivo(hab.custo)); });
@@ -2834,7 +2835,8 @@
         gastos += somarPositivo(sub.vantagemRegionalCusto);
         gastos += somarPositivo(sub.vantagemUnicaCusto);
         if (sub.listas?.vantagens) sub.listas.vantagens.forEach(v => gastos += somarPositivo(v.valor));
-        if (sub.listas?.desvantagens) sub.listas.desvantagens.forEach(d => gastos += somarPositivo(d.valor));
+        // CORREÇÃO 2: Desvantagens NÃO contam como pontos gastos
+        // if (sub.listas?.desvantagens) sub.listas.desvantagens.forEach(d => gastos += somarPositivo(d.valor));
         if (sub.listas?.pericias) sub.listas.pericias.forEach(p => gastos += somarPositivo(p.valor));
         if (sub.listas?.especializacoes) sub.listas.especializacoes.forEach(e => gastos += somarPositivo(e.valor));
         if (sub.listas?.kits) sub.listas.kits.forEach(kit => { gastos += somarPositivo(kit.custo); if (kit.habilidades) kit.habilidades.forEach(hab => gastos += somarPositivo(hab.custo)); });
@@ -4695,7 +4697,9 @@
             container.appendChild(subContainer);
         }
         const estaExpandida = subContainer.dataset.expandida === 'true';
-        const podeEditar = isGM || sub.criadoPor === currentUserId;
+        // CORREÇÃO 1: Jogadores podem editar/excluir as subfichas que eles criaram
+        // Verifica tanto por currentUserId quanto por codigoPersonagemAtual para garantir
+        const podeEditar = isGM || isMaster || sub.criadoPor === currentUserId || (codigoPersonagemAtual && sub.criadoPor === codigoPersonagemAtual);
         const tipoDisplay = sub.tipo === 'aliado' ? '🤝 Aliado' : (sub.tipo === 'familiar' ? '🐾 Familiar' : '✨ Invocação');
         const tipoClass = sub.tipo === 'aliado' ? 'aliado' : (sub.tipo === 'familiar' ? 'familiar' : 'invocacao');
         let html = `<div class="subficha-header"><div><h3>${escapeHtml(sub.nome)} <span class="subficha-tipo ${tipoClass}">${tipoDisplay}</span></h3></div><div class="subficha-acoes">${podeEditar ? `<button class="btn-subficha-expandir" data-idx="${index}">${estaExpandida ? '📋 Resumo' : '✏️ Editar'}</button>` : ''}${podeEditar ? `<button class="btn-subficha excluir" data-idx="${index}">🗑️ Excluir</button>` : ''}</div></div><div class="subficha-resumo"><div class="subficha-detalhes"><span>💪 F: ${sub.forca}</span><span>🎯 H: ${sub.habilidade} ${sub.bonusHabilidade ? `(+${sub.bonusHabilidade})` : ''} ${sub.bonusHabilidade2 ? `(+${sub.bonusHabilidade2})` : ''}</span><span>🛡️ R: ${sub.resistencia} ${sub.bonusResistencia ? `(+${sub.bonusResistencia})` : ''} ${sub.bonusResistencia2 ? `(+${sub.bonusResistencia2})` : ''}</span><span>⚔️ A: ${sub.armadura}</span><span>🔮 PdF: ${sub.pdf}</span><span>❤️ PV: ${sub.pvAtual}/${sub.pvTotal} (Bônus: ${sub.bonusPv})</span><span>✨ PM: ${sub.pmAtual}/${sub.pmTotal} (Bônus: ${sub.bonusPm})</span>${sub.escala ? `<span>📏 Escala: ${escapeHtml(sub.escala)}</span>` : ''}</div></div>`;
