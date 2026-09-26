@@ -1727,79 +1727,57 @@
         }
         container.innerHTML = html;
         container.querySelectorAll('[data-regra-check]').forEach(chk => {
-            chk.onchange = () => {
-                const id = chk.dataset.regraCheck;
-                const marcado = chk.checked;
-                if (marcado) {
-                    const regraObj = REGRAS_DISPONIVEIS.find(r => r.id === id);
-                    const cat = regraObj?.categoria;
-                    if (cat && REGRAS_EXCLUSIVAS_POR_CATEGORIA[cat]) {
-                        for (const outro of REGRAS_EXCLUSIVAS_POR_CATEGORIA[cat]) {
-                            if (outro !== id && regrasMesa[outro]) {
-                                regrasMesa[outro] = false;
-                                const outroChk = container.querySelector(`[data-regra-check="${outro}"]`);
-                                if (outroChk) {
-                                    outroChk.checked = false;
-                                    const item = outroChk.closest('.regra-item');
-                                    if (item) { item.classList.remove('ativa'); const st = item.querySelector('.regra-status'); if (st) st.textContent = 'INATIVA'; }
-                                }
-                            }
+    chk.onchange = async () => {
+        const id = chk.dataset.regraCheck;
+        const marcado = chk.checked;
+        if (marcado) {
+            const regraObj = REGRAS_DISPONIVEIS.find(r => r.id === id);
+            const cat = regraObj?.categoria;
+            if (cat && REGRAS_EXCLUSIVAS_POR_CATEGORIA[cat]) {
+                for (const outro of REGRAS_EXCLUSIVAS_POR_CATEGORIA[cat]) {
+                    if (outro !== id && regrasMesa[outro]) {
+                        regrasMesa[outro] = false;
+                        const outroChk = container.querySelector(`[data-regra-check="${outro}"]`);
+                        if (outroChk) {
+                            outroChk.checked = false;
+                            const item = outroChk.closest('.regra-item');
+                            if (item) { item.classList.remove('ativa'); const st = item.querySelector('.regra-status'); if (st) st.textContent = 'INATIVA'; }
                         }
                     }
                 }
-                regrasMesa[id] = marcado;
-                const item = chk.closest('.regra-item');
-                if (item) { item.classList.toggle('ativa', marcado); const st = item.querySelector('.regra-status'); if (st) st.textContent = marcado ? 'ATIVA' : 'INATIVA'; }
-                aplicarClassesRegras();
-                atualizarBadgeRegras();
-                salvarRegrasMesa();
-                atualizarSelectsDificuldade();
-                if (visualizandoId) {
-                    renderizarTestes('testesContainer', false, null);
-                    subFichas.forEach((_, idx) => renderizarTestes(`subficha-testesContainer-${idx}`, true, idx));
-                    renderizarBaralhoPrincipal();
-                    subFichas.forEach((_, idx) => renderizarBaralhoSub(idx));
-                    renderizarAtaques('curto', false, null);
-                    renderizarAtaques('distancia', false, null);
-                    renderizarDefesas(false, null);
-                    subFichas.forEach((_, idx) => {
-                        renderizarAtaques('curto', true, idx);
-                        renderizarAtaques('distancia', true, idx);
-                        renderizarDefesas(true, idx);
-                    });
-                    reRenderizarOficios();
-                }
-                const msg = marcado
-                    ? `📜 Regra ativada: "${REGRAS_DISPONIVEIS.find(x => x.id === id)?.nome || id}"`
-                    : `📜 Regra desativada: "${REGRAS_DISPONIVEIS.find(x => x.id === id)?.nome || id}"`;
-                addMensagem(msg, false);
-                enviarRolagemFirebase(msg, false);
-            };
-        });
-        container.querySelectorAll('[data-regra-sub]').forEach(chk => {
-            chk.onchange = () => {
-                const regraId = chk.dataset.regraSub;
-                const subId = chk.dataset.subId;
-                if (!regrasSubopcoes[regraId]) regrasSubopcoes[regraId] = {};
-                regrasSubopcoes[regraId][subId] = chk.checked;
-                salvarRegrasMesa();
-                if (visualizandoId) {
-                    renderizarTestes('testesContainer', false, null);
-                    subFichas.forEach((_, idx) => renderizarTestes(`subficha-testesContainer-${idx}`, true, idx));
-                    renderizarBaralhoPrincipal();
-                    subFichas.forEach((_, idx) => renderizarBaralhoSub(idx));
-                    renderizarAtaques('curto', false, null);
-                    renderizarAtaques('distancia', false, null);
-                    renderizarDefesas(false, null);
-                    subFichas.forEach((_, idx) => {
-                        renderizarAtaques('curto', true, idx);
-                        renderizarAtaques('distancia', true, idx);
-                        renderizarDefesas(true, idx);
-                    });
-                    reRenderizarOficios();
-                }
-            };
-        });
+            }
+        }
+        regrasMesa[id] = marcado;
+        console.log(`📜 Regra "${id}" → ${marcado ? 'ATIVA' : 'INATIVA'}. regrasMesa:`, { ...regrasMesa });
+        const item = chk.closest('.regra-item');
+        if (item) { item.classList.toggle('ativa', marcado); const st = item.querySelector('.regra-status'); if (st) st.textContent = marcado ? 'ATIVA' : 'INATIVA'; }
+        aplicarClassesRegras();
+        atualizarBadgeRegras();
+        atualizarSelectsDificuldade();
+        await salvarRegrasMesa();
+        // Re-renderizar SEMPRE, independente de visualizandoId
+        renderizarTestes('testesContainer', false, null);
+        subFichas.forEach((_, idx) => renderizarTestes(`subficha-testesContainer-${idx}`, true, idx));
+        renderizarBaralhoPrincipal();
+        subFichas.forEach((_, idx) => renderizarBaralhoSub(idx));
+        if (visualizandoId) {
+            renderizarAtaques('curto', false, null);
+            renderizarAtaques('distancia', false, null);
+            renderizarDefesas(false, null);
+            subFichas.forEach((_, idx) => {
+                renderizarAtaques('curto', true, idx);
+                renderizarAtaques('distancia', true, idx);
+                renderizarDefesas(true, idx);
+            });
+            reRenderizarOficios();
+        }
+        const msg = marcado
+            ? `📜 Regra ativada: "${REGRAS_DISPONIVEIS.find(x => x.id === id)?.nome || id}"`
+            : `📜 Regra desativada: "${REGRAS_DISPONIVEIS.find(x => x.id === id)?.nome || id}"`;
+        addMensagem(msg, false);
+        enviarRolagemFirebase(msg, false);
+    };
+});
         container.querySelectorAll('[data-regra-cfg]').forEach(inp => {
             inp.oninput = () => {
                 const id = inp.dataset.regraCfg;
@@ -1814,7 +1792,6 @@
             };
         });
     }
-
     function atualizarSelectsDificuldade() {
         const mostrarImp = deveMostrarImpossivel();
         const ids = ['testeDificuldadeGlobal'];
