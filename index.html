@@ -1837,6 +1837,34 @@
     let _mesasChannel = null;
     let _sustentadosChannel = null;
 
+    // ===== PRESENÇA / HEARTBEAT =====
+    let intervaloHeartbeat = null;
+    const HEARTBEAT_MS = 30000;          // bate a cada 30s
+    const ONLINE_THRESHOLD_MS = 70000;   // considera offline após 70s sem batida
+    function estaOnline(ultimaAtualizacaoIso) {
+        if (!ultimaAtualizacaoIso) return false;
+        const t = new Date(ultimaAtualizacaoIso).getTime();
+        if (!Number.isFinite(t)) return false;
+        return (Date.now() - t) < ONLINE_THRESHOLD_MS;
+    }
+    async function baterPonto() {
+        if (!currentPin || !currentUserId) return;
+        try {
+            await supabase.from('jogadores').update({
+                conectado: true,
+                ultima_atualizacao: new Date().toISOString()
+            }).eq('id', currentUserId);
+        } catch (e) { /* silencioso */ }
+    }
+    function iniciarHeartbeat() {
+        if (intervaloHeartbeat) clearInterval(intervaloHeartbeat);
+        baterPonto(); // bate imediatamente
+        intervaloHeartbeat = setInterval(baterPonto, HEARTBEAT_MS);
+    }
+    function pararHeartbeat() {
+        if (intervaloHeartbeat) { clearInterval(intervaloHeartbeat); intervaloHeartbeat = null; }
+    }
+
     const CATEGORIAS_REGRAS = {
         testes: { nome: '🎯 Testes', descricao: 'Regras que substituem os testes de perícia.' },
         ataques: { nome: '⚔️ Ataques', descricao: 'Regras que substituem a resolução de ataques e defesas.' }
@@ -2324,13 +2352,26 @@
     function serverTimestamp() { return new Date().toISOString(); }
     function onDisconnect(refObj) {
         const pathAtual = refObj.path;
-        window.addEventListener('beforeunload', () => {
+        // Tenta marcar offline ao fechar a aba/navegador. Não é 100% confiável
+        // (quedas de rede, mobile, crash), então o heartbeat + timeout cobre o resto.
+        const marcarOffline = () => {
             try {
                 if (pathAtual) {
                     const info = pathToTable(pathAtual);
-                    if (info && info.table === 'jogadores' && info.id) supabase.from('jogadores').update({ conectado: false }).eq('id', info.id);
+                    if (info && info.table === 'jogadores' && info.id) {
+                        // Usa sendBeacon quando disponível (mais confiável no unload)
+                        supabase.from('jogadores').update({ conectado: false }).eq('id', info.id);
+                    }
                 }
             } catch (e) {}
+        };
+        window.addEventListener('beforeunload', marcarOffline);
+        window.addEventListener('pagehide', marcarOffline);
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') {
+                // Não marca offline só por trocar de aba, mas aproveita para salvar ficha
+                try { if (typeof salvarFichaAtual === 'function') salvarFichaAtual(); } catch (e) {}
+            }
         });
         return { update: (vals) => update(refObj, vals) };
     }
@@ -3946,32 +3987,32 @@
                     const valorExib = c.coringa ? '★' : c.valor;
                     html += `<div class="baralho-carta ${corClasse} ${c.usada ? 'usada' : ''} ${sel ? 'selecionada' : ''}" data-carta-combate-idx="${idx}" data-carta-combate-chave="${chave}"><span class="carta-topo">${valorExib}</span><span class="carta-valor">${valorExib}</span><span class="carta-naipe">${c.naipe}</span></div>`;
                 } else {
+                    // ===== MODO SEM COMBO: cartas chegam SEMPRE fechadas =====
+                    // Ao clicar numa carta fechada: ela é revelada E escolhida automaticamente.
+                    // Enquanto houver uma carta escolhida, TODAS as outras ficam travadas (fechadas ou reveladas).
+                    // Ao rolar (ou limpar), a escolha é resetada e as cartas voltam a ficar disponíveis.
                     if (c.usada) {
                         const corClasse = c.coringa ? 'coringa' : (c.vermelha ? 'vermelha' : 'preta');
                         const valorExib = c.coringa ? '★' : c.valor;
                         html += `<div class="baralho-carta ${corClasse} usada" data-carta-combate-idx="${idx}" data-carta-combate-chave="${chave}"><span class="carta-topo">${valorExib}</span><span class="carta-valor">${valorExib}</span><span class="carta-naipe">${c.naipe}</span></div>`;
                     } else if (escolhida) {
+                        // Carta escolhida: revelada com destaque
                         const corClasse = c.coringa ? 'coringa' : (c.vermelha ? 'vermelha' : 'preta');
                         const valorExib = c.coringa ? '★' : c.valor;
                         html += `<div class="baralho-carta ${corClasse} selecionada" data-carta-combate-idx="${idx}" data-carta-combate-chave="${chave}" title="Carta escolhida. Clique em 🎲 Rolar para usar."><span class="carta-topo">${valorExib}</span><span class="carta-valor">${valorExib}</span><span class="carta-naipe">${c.naipe}</span></div>`;
-                    } else if (revelada) {
-                        // Se já existe uma carta escolhida, as outras reveladas ficam TRAVADAS
-                        if (temCartaEscolhida) {
+                    } else if (temCartaEscolhida) {
+                        // Já existe uma carta escolhida → TODAS as outras ficam travadas.
+                        // Se por acaso estiver revelada (não deveria), mostra travada; senão, verso travado.
+                        if (c.revelada === true) {
                             const corClasse = c.coringa ? 'coringa' : (c.vermelha ? 'vermelha' : 'preta');
                             const valorExib = c.coringa ? '★' : c.valor;
                             html += `<div class="baralho-carta ${corClasse} travada" data-carta-combate-idx="${idx}" data-carta-combate-chave="${chave}" title="Você já escolheu uma carta. Use-a com 🎲 Rolar antes."><span class="carta-topo">${valorExib}</span><span class="carta-valor">${valorExib}</span><span class="carta-naipe">${c.naipe}</span></div>`;
                         } else {
-                            const corClasse = c.coringa ? 'coringa' : (c.vermelha ? 'vermelha' : 'preta');
-                            const valorExib = c.coringa ? '★' : c.valor;
-                            html += `<div class="baralho-carta ${corClasse}" data-carta-combate-idx="${idx}" data-carta-combate-chave="${chave}" title="Clique para escolher esta carta"><span class="carta-topo">${valorExib}</span><span class="carta-valor">${valorExib}</span><span class="carta-naipe">${c.naipe}</span></div>`;
+                            html += `<div class="baralho-carta virada travada" data-carta-combate-idx="${idx}" data-carta-combate-chave="${chave}" title="Você já escolheu uma carta. Use-a com 🎲 Rolar antes."></div>`;
                         }
                     } else {
-                        // Cartas viradas: se já há uma escolhida, travar também
-                        if (temCartaEscolhida) {
-                            html += `<div class="baralho-carta virada travada" data-carta-combate-idx="${idx}" data-carta-combate-chave="${chave}" title="Você já escolheu uma carta. Use-a com 🎲 Rolar antes."></div>`;
-                        } else {
-                            html += `<div class="baralho-carta virada" data-carta-combate-idx="${idx}" data-carta-combate-chave="${chave}" title="Clique para revelar e escolher"></div>`;
-                        }
+                        // Carta FECHADA: clique revela e escolhe automaticamente
+                        html += `<div class="baralho-carta virada" data-carta-combate-idx="${idx}" data-carta-combate-chave="${chave}" title="Clique para revelar e escolher esta carta"></div>`;
                     }
                 }
             });
@@ -7307,7 +7348,19 @@
         function renderizarListaJogadores() {
             const grid = document.getElementById('gmPlayersGrid');
             const jogadoresList = [], npcsList = [];
-            for (const [id, data] of jogadoresCache) { if (data.isMaster) continue; const item = { id, nome: data.nome || 'Anônimo', personagemNome: data.personagemNome || 'Sem ficha', isNPC: data.isNPC === true, codigo: data.codigoPersonagem || '---', conectado: data.conectado || false }; if (data.isNPC) npcsList.push(item); else jogadoresList.push(item); }
+            for (const [id, data] of jogadoresCache) {
+                if (data.isMaster) continue;
+                const online = estaOnline(data.ultimaAtualizacao);
+                const item = {
+                    id,
+                    nome: data.nome || 'Anônimo',
+                    personagemNome: data.personagemNome || 'Sem ficha',
+                    isNPC: data.isNPC === true,
+                    codigo: data.codigoPersonagem || '---',
+                    conectado: online
+                };
+                if (data.isNPC) npcsList.push(item); else jogadoresList.push(item);
+            }
             let html = '';
             if (jogadoresList.length > 0) {
                 html += `<div style="grid-column: 1/-1; margin: 5px 0;"><strong>🎲 Jogadores (${jogadoresList.filter(j => j.conectado).length} online):</strong></div>`;
@@ -7332,6 +7385,13 @@
             renderizarListaJogadores();
         }
         carregarTudo();
+        // Re-renderiza a cada 20s para atualizar o status online/offline
+        if (window._timerRefreshLista) clearInterval(window._timerRefreshLista);
+        window._timerRefreshLista = setInterval(() => {
+            if (isMaster && !visualizandoId && jogadoresCache.size > 0) {
+                renderizarListaJogadores();
+            }
+        }, 20000);
         const channelName = `jogadores-${currentPin}-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
         const channel = supabase.channel(channelName).on('postgres_changes', { event: '*', schema: 'public', table: 'jogadores', filter: `pin=eq.${currentPin}` }, carregarTudo).subscribe();
         _jogadoresChannel = channel;
@@ -7523,6 +7583,7 @@
         loginScreen.style.display = 'none';
         fichaScreen.style.display = 'block';
         document.getElementById('statusText').innerHTML = isMaster ? '👑 Mestre' : '🎲 Jogador';
+        iniciarHeartbeat();
         if (isMaster) {
             gmPanel.style.display = 'block'; editorFicha.style.display = 'none'; secretRollContainer.style.display = 'flex';
             carregarListaJogadores(); iniciarLimpezaAutomatica();
@@ -7569,6 +7630,8 @@
         if (currentPin && visualizandoId) { try { await salvarFichaImediato(); } catch(e) { console.error('Falha ao salvar antes de sair:', e); } }
         if (currentPin && currentUserId) { await supabase.from('jogadores').update({ conectado: false }).eq('id', currentUserId); }
         if (intervaloLimpeza) clearInterval(intervaloLimpeza);
+        pararHeartbeat();
+                if (window._timerRefreshLista) { clearInterval(window._timerRefreshLista); window._timerRefreshLista = null; }
         for (const ch of realtimeChannels) { try { supabase.removeChannel(ch); } catch(e) {} }
         realtimeChannels = []; _jogadoresChannel = null; _rolagensChannel = null; _mesasChannel = null; _sustentadosChannel = null;
         currentPin = null; currentUserId = null; currentUserName = null; isMaster = false; isGM = false; visualizandoId = null; periciaSelecionadaCarta = null;
