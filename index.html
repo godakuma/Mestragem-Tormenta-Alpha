@@ -3209,16 +3209,13 @@
                 : (parseInt(baseInput.value) || 0);
         }
 
-        // Bônus de pontos negativos (o "-(-y)" que soma em pontos de personagem)
-        const bonusNegativos = calcularBonusNegativos();
-
-        // Gastos efetivos (usa o que está no input, respeitando edição manual)
+        // Gastos efetivos (soma algébrica: w + (−y))
         const gastosEfetivos = gastosInput
             ? (parseInt(gastosInput.value) || 0)
             : gastosCalculados;
 
-        // PERSONAGEM exibido = basePura + bonusNegativos − gastosEfetivos
-        const baseExibida = basePura + bonusNegativos - gastosEfetivos;
+        // PERSONAGEM exibido = x − Gastos = x − (w + (−y)) = x − w − (−y)
+        const baseExibida = basePura - gastosEfetivos;
         if (!editandoBase && !baseEditadaManualmente) {
             baseInput.value = baseExibida;
         }
@@ -3231,8 +3228,8 @@
         });
         const bv = parseInt(baseInput.value) || 0;
         const gv = gastosInput ? (parseInt(gastosInput.value) || 0) : 0;
-        if (bv < 0) baseInput.classList.add('pontos-negativo'); else baseInput.classList.remove('pontos-negativo');
-        if (gastosInput) { if (gv < 0) gastosInput.classList.add('pontos-negativo'); else gastosInput.classList.remove('pontos-negativo'); }
+        baseInput.classList.toggle('pontos-negativo', bv < 0);
+        if (gastosInput) gastosInput.classList.toggle('pontos-negativo', gv < 0);
         atualizarIndicadoresAtributos();
         return bv - gv;
     }
@@ -3282,14 +3279,17 @@
     // ============================================================
     function registrarGasto(deltaGasto, isSub = false, subIndex = null) {
         if (!deltaGasto || deltaGasto === 0) return;
+        // Apenas libera o recálculo automático. NÃO mexe em _basePura.
+        // O valor exibido já é recalculado via Gastos.
         if (isSub && subIndex !== null) {
             baseEditadaManualmenteSub[subIndex] = false;
             gastosEditadoManualmenteSub[subIndex] = false;
+            atualizarPontosSub(subIndex);
         } else {
             baseEditadaManualmente = false;
             gastosEditadoManualmente = false;
+            atualizarPontos();
         }
-        aplicarDeltaBasePura(-deltaGasto, isSub, subIndex);
     }
     
     // GASTOS Sub: x + (-y) = z  →  soma ALGÉBRICA.
@@ -3347,16 +3347,13 @@
             basePura = parseInt(sub._basePura) || 0;
         }
 
-        // Bônus de pontos negativos
-        const bonusNegativos = calcularBonusNegativosSub(sub);
-
-        // Gastos efetivos
+        // Gastos efetivos (soma algébrica: w + (−y))
         const gastosEfetivos = gastosInput
             ? (parseInt(gastosInput.value) || 0)
             : gastosCalculados;
 
-        // PERSONAGEM exibido = basePura + bonusNegativos − gastosEfetivos
-        const baseExibida = basePura + bonusNegativos - gastosEfetivos;
+        // PERSONAGEM exibido = x − Gastos = x − (w + (−y))
+        const baseExibida = basePura - gastosEfetivos;
         if (!editandoBase && !baseEditadaManualmenteSub[index]) {
             baseInput.value = baseExibida;
         }
@@ -5485,9 +5482,7 @@
                     subBaseInput.dataset.masterEditing = 'false';
                     const valorAntes = parseInt(subBaseInput.dataset.valorAntesEdicao) || 0;
                     const valorAgora = parseInt(subBaseInput.value) || 0;
-                    if (valorAntes !== valorAgora) {
-                        baseEditadaManualmenteSub[index] = true;
-                    }
+                    baseEditadaManualmenteSub[index] = (valorAntes !== valorAgora);
                     atualizarPontosSub(index); debounceSaveSubFicha();
                 }
             });
@@ -5507,6 +5502,8 @@
                     if (valorAntes !== valorAgora) {
                         sub.pontosGastos = valorAgora;
                         gastosEditadoManualmenteSub[index] = true;
+                    } else {
+                        gastosEditadoManualmenteSub[index] = false;
                     }
                     atualizarPontosSub(index); debounceSaveSubFicha();
                 }
@@ -7751,9 +7748,8 @@
                     baseEl.dataset.masterEditing = 'false';
                     const valorAntes = parseInt(baseEl.dataset.valorAntesEdicao) || 0;
                     const valorAgora = parseInt(baseEl.value) || 0;
-                    if (valorAntes !== valorAgora) {
-                        baseEditadaManualmente = true;
-                    }
+                    // Se o mestre editou, marca como manual; se não editou, destrava o recálculo.
+                    baseEditadaManualmente = (valorAntes !== valorAgora);
                     atualizarPontos(); debounceSave();
                 }
             });
@@ -7773,6 +7769,8 @@
                     if (valorAntes !== valorAgora) {
                         gastosManuais = valorAgora;
                         gastosEditadoManualmente = true;
+                    } else {
+                        gastosEditadoManualmente = false;
                     }
                     atualizarPontos(); debounceSave();
                 }
