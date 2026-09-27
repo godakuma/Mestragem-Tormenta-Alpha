@@ -3895,7 +3895,7 @@
     // Clique repetido na carta escolhida não faz nada.
     // Clique em outra carta revelada troca a escolha.
     // ============================================================
-    function renderizarCartasCombate(chave, containerId) {
+        function renderizarCartasCombate(chave, containerId) {
         const container = document.getElementById(containerId);
         if (!container) return;
         const estado = getEstadoCombate(chave);
@@ -3906,10 +3906,11 @@
             html += `<button class="btn-baralho" data-comprar-combate="${chave}">🃏 Comprar mão de combate (6 cartas)</button>`;
         } else {
             html += `<div class="cartas-combate-container">`;
+            // Descobre se há carta escolhida (modo sem combo)
+            const temCartaEscolhida = !comboPermitido && estado.cartaEscolhidaId !== null && estado.cartaEscolhidaId !== undefined;
             estado.mao.forEach((c, idx) => {
                 const sel = estado.selecionadas.some(s => s.id === c.id);
                 const escolhida = estado.cartaEscolhidaId === c.id && !c.usada;
-                // MODIFICAÇÃO: cartas reveladas (não viradas) ficam "revelada"
                 const revelada = c.revelada === true && !c.usada;
                 if (comboPermitido) {
                     const corClasse = c.coringa ? 'coringa' : (c.vermelha ? 'vermelha' : 'preta');
@@ -3925,11 +3926,23 @@
                         const valorExib = c.coringa ? '★' : c.valor;
                         html += `<div class="baralho-carta ${corClasse} selecionada" data-carta-combate-idx="${idx}" data-carta-combate-chave="${chave}" title="Carta escolhida. Clique em 🎲 Rolar para usar."><span class="carta-topo">${valorExib}</span><span class="carta-valor">${valorExib}</span><span class="carta-naipe">${c.naipe}</span></div>`;
                     } else if (revelada) {
-                        const corClasse = c.coringa ? 'coringa' : (c.vermelha ? 'vermelha' : 'preta');
-                        const valorExib = c.coringa ? '★' : c.valor;
-                        html += `<div class="baralho-carta ${corClasse}" data-carta-combate-idx="${idx}" data-carta-combate-chave="${chave}" title="Clique para escolher esta carta"><span class="carta-topo">${valorExib}</span><span class="carta-valor">${valorExib}</span><span class="carta-naipe">${c.naipe}</span></div>`;
+                        // Se já existe uma carta escolhida, as outras reveladas ficam TRAVADAS
+                        if (temCartaEscolhida) {
+                            const corClasse = c.coringa ? 'coringa' : (c.vermelha ? 'vermelha' : 'preta');
+                            const valorExib = c.coringa ? '★' : c.valor;
+                            html += `<div class="baralho-carta ${corClasse} travada" data-carta-combate-idx="${idx}" data-carta-combate-chave="${chave}" title="Você já escolheu uma carta. Use-a com 🎲 Rolar antes."><span class="carta-topo">${valorExib}</span><span class="carta-valor">${valorExib}</span><span class="carta-naipe">${c.naipe}</span></div>`;
+                        } else {
+                            const corClasse = c.coringa ? 'coringa' : (c.vermelha ? 'vermelha' : 'preta');
+                            const valorExib = c.coringa ? '★' : c.valor;
+                            html += `<div class="baralho-carta ${corClasse}" data-carta-combate-idx="${idx}" data-carta-combate-chave="${chave}" title="Clique para escolher esta carta"><span class="carta-topo">${valorExib}</span><span class="carta-valor">${valorExib}</span><span class="carta-naipe">${c.naipe}</span></div>`;
+                        }
                     } else {
-                        html += `<div class="baralho-carta virada" data-carta-combate-idx="${idx}" data-carta-combate-chave="${chave}" title="Clique para revelar e escolher"></div>`;
+                        // Cartas viradas: se já há uma escolhida, travar também
+                        if (temCartaEscolhida) {
+                            html += `<div class="baralho-carta virada travada" data-carta-combate-idx="${idx}" data-carta-combate-chave="${chave}" title="Você já escolheu uma carta. Use-a com 🎲 Rolar antes."></div>`;
+                        } else {
+                            html += `<div class="baralho-carta virada" data-carta-combate-idx="${idx}" data-carta-combate-chave="${chave}" title="Clique para revelar e escolher"></div>`;
+                        }
                     }
                 }
             });
@@ -3949,6 +3962,8 @@
                 const ch = el.dataset.cartaCombateChave;
                 const est = baralhosCombate[ch];
                 if (!est) return;
+                // Bloqueia clique se a carta estiver travada
+                if (el.classList.contains('travada')) return;
                 const idx = parseInt(el.dataset.cartaCombateIdx);
                 const carta = est.mao[idx];
                 if (!carta || carta.usada) return;
@@ -3969,20 +3984,16 @@
                     renderizarCartasCombate(ch, containerId);
                     return;
                 }
-                // Modo sem combo:
-                // 1) Se já está escolhida, não faz nada (trava o clique repetido)
+                // Modo sem combo: se JÁ existe uma carta escolhida, bloqueia
+                if (est.cartaEscolhidaId !== null && est.cartaEscolhidaId !== undefined && est.cartaEscolhidaId !== carta.id) {
+                    return;
+                }
+                // Se a carta já está escolhida, não faz nada
                 if (est.cartaEscolhidaId === carta.id) {
                     return;
                 }
-                // 2) Se ainda não foi revelada, revela e escolhe
-                if (!carta.revelada) {
-                    carta.revelada = true;
-                    est.cartaEscolhidaId = carta.id;
-                    renderizarCartasCombate(ch, containerId);
-                    salvarForcado();
-                    return;
-                }
-                // 3) Se já foi revelada (mas não escolhida), escolhe (troca)
+                // Revela e escolhe
+                carta.revelada = true;
                 est.cartaEscolhidaId = carta.id;
                 renderizarCartasCombate(ch, containerId);
                 salvarForcado();
