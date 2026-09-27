@@ -1824,7 +1824,7 @@
 <div id="diceAnim" class="dice-anim">🎲</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script type="module">
-        const SUPABASE_URL = 'https://niggtfsswcywtpwkuthp.supabase.co';
+    const SUPABASE_URL = 'https://niggtfsswcywtpwkuthp.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_HI8ICc_uO3W86hLpFIrahA_BXtMT0-d';
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const db = new Proxy({}, { get: () => undefined });
@@ -2600,8 +2600,7 @@
         if (error) console.error('enviarRolagem:', error);
         if (isMaster) setTimeout(() => limparChatAntigo(), 1000);
     }
-    
-    // ============================================================
+        // ============================================================
     // ATRIBUTOS CUSTOMIZADOS
     // ============================================================
     function getAtributosCustom() {
@@ -3078,9 +3077,13 @@
     }
     
     // ============================================================
-    // CÁLCULO DE GASTOS (soma algébrica) — NÃO MEXER
+    // CÁLCULO DE GASTOS — REGRA CORRIGIDA
+    // Gastos = x + (-y) = z  →  soma ALGÉBRICA (positivos + negativos).
+    // Se um valor for negativo, ele SUBTRAI dos gastos.
     // ============================================================
     function calcularBonusNegativos() {
+        // Soma o ABSOLUTO de todos os valores negativos (pontos negativos)
+        // Isso é o "-y" que será somado em pontos de personagem: x - (-y) = x + |y|
         let bonus = 0;
         const somarNeg = (v) => { const n = parseInt(v) || 0; return n < 0 ? Math.abs(n) : 0; };
         bonus += somarNeg(document.getElementById('vantagemRegionalCusto')?.value);
@@ -3112,29 +3115,36 @@
         return bonus;
     }
     
+    // GASTOS: x + (-y) = z  →  soma ALGÉBRICA (positivos + negativos).
     function calcularGastosTotais() {
         let gastos = 0;
-        gastos += parseInt(document.getElementById('forca').value) || 0;
-        gastos += parseInt(document.getElementById('habilidade').value) || 0;
-        gastos += parseInt(document.getElementById('resistencia').value) || 0;
-        gastos += parseInt(document.getElementById('armadura').value) || 0;
-        gastos += parseInt(document.getElementById('pdf').value) || 0;
-        gastos += parseInt(document.getElementById('vantagemRegionalCusto').value) || 0;
-        gastos += parseInt(document.getElementById('vantagemUnicaCusto').value) || 0;
-        if (fichaListas.vantagens) fichaListas.vantagens.forEach(v => gastos += parseInt(v.valor) || 0);
-        if (fichaListas.desvantagens) fichaListas.desvantagens.forEach(d => gastos += parseInt(d.valor) || 0);
-        if (fichaListas.pericias) fichaListas.pericias.forEach(p => gastos += parseInt(p.valor) || 0);
-        if (fichaListas.especializacoes) fichaListas.especializacoes.forEach(e => gastos += parseInt(e.valor) || 0);
-        if (fichaListas.kits) fichaListas.kits.forEach(kit => { gastos += parseInt(kit.custo) || 0; if (kit.habilidades) kit.habilidades.forEach(hab => gastos += parseInt(hab.custo) || 0); });
+        const somar = (v) => parseInt(v) || 0;
+        gastos += somar(document.getElementById('forca').value);
+        gastos += somar(document.getElementById('habilidade').value);
+        gastos += somar(document.getElementById('resistencia').value);
+        gastos += somar(document.getElementById('armadura').value);
+        gastos += somar(document.getElementById('pdf').value);
+        gastos += somar(document.getElementById('vantagemRegionalCusto').value);
+        gastos += somar(document.getElementById('vantagemUnicaCusto').value);
+        if (fichaListas.vantagens) fichaListas.vantagens.forEach(v => gastos += somar(v.valor));
+        if (fichaListas.desvantagens) fichaListas.desvantagens.forEach(d => gastos += somar(d.valor));
+        if (fichaListas.pericias) fichaListas.pericias.forEach(p => gastos += somar(p.valor));
+        if (fichaListas.especializacoes) fichaListas.especializacoes.forEach(e => gastos += somar(e.valor));
+        if (fichaListas.kits) fichaListas.kits.forEach(kit => { gastos += somar(kit.custo); if (kit.habilidades) kit.habilidades.forEach(hab => gastos += somar(hab.custo)); });
         const customs = Array.isArray(atributosCustom) ? atributosCustom : [];
-        customs.forEach(attr => { gastos += parseInt(attr.valor) || 0; });
+        customs.forEach(attr => { gastos += somar(attr.valor); });
         return gastos;
     }
     
     // ============================================================
-    // ATUALIZAR PONTOS - Exibe direto o _basePura
+    // ATUALIZAR PONTOS - REGRA CORRIGIDA
+    // Pontos de Personagem (exibido) = basePura + bonusNegativos - gastosEfetivos
+    //   onde: x = basePura (pontos concedidos pelo mestre)
+    //         -y = pontos negativos (soma dos valores negativos, em módulo)
+    //         z = x - (-y) = x + |y|
+    // Gastos: soma algébrica x + (-y) = z (positivos + negativos).
     // ============================================================
-        function atualizarPontos() {
+    function atualizarPontos() {
         const baseInput = document.getElementById('pontosBase');
         const gastosInput = document.getElementById('pontosGastosInput');
         if (!baseInput) return 0;
@@ -3158,13 +3168,16 @@
                 : (parseInt(baseInput.value) || 0);
         }
 
+        // Bônus de pontos negativos (o "-(-y)" que soma em pontos de personagem)
+        const bonusNegativos = calcularBonusNegativos();
+
         // Gastos efetivos (usa o que está no input, respeitando edição manual)
         const gastosEfetivos = gastosInput
             ? (parseInt(gastosInput.value) || 0)
             : gastosCalculados;
 
-        // PERSONAGEM exibido = basePura − gastos (valor líquido)
-        const baseExibida = basePura - gastosEfetivos;
+        // PERSONAGEM exibido = basePura + bonusNegativos − gastosEfetivos
+        const baseExibida = basePura + bonusNegativos - gastosEfetivos;
         if (!editandoBase && !baseEditadaManualmente) {
             baseInput.value = baseExibida;
         }
@@ -3184,7 +3197,7 @@
     }
 
     // ============================================================
-    // APLICAR DELTA NO _basePura (Opção A)
+    // APLICAR DELTA NO _basePura
     // delta positivo = ganhou pontos (ex: criou desvantagem -3 → delta +3)
     // delta negativo = perdeu pontos (ex: apagou desvantagem -3 → delta -3)
     // ============================================================
@@ -3214,7 +3227,7 @@
             } else {
                 basePura = parseInt(baseInput.value) || 0;
             }
-                        basePura += delta;
+            basePura += delta;
             baseInput.dataset.basePura = String(basePura);
             liberarRecalculoPrincipal();
             atualizarPontos();
@@ -3222,7 +3235,7 @@
     }
 
     // ============================================================
-    // REGISTRAR GASTO - Opção A
+    // REGISTRAR GASTO
     // deltaGasto positivo = gastou (diminui _basePura)
     // deltaGasto negativo = devolveu (aumenta _basePura)
     // ============================================================
@@ -3238,28 +3251,34 @@
         aplicarDeltaBasePura(-deltaGasto, isSub, subIndex);
     }
     
+    // GASTOS Sub: x + (-y) = z  →  soma ALGÉBRICA.
     function calcularGastosTotaisSub(sub) {
         let gastos = 0;
-        gastos += parseInt(sub.forca) || 0;
-        gastos += parseInt(sub.habilidade) || 0;
-        gastos += parseInt(sub.resistencia) || 0;
-        gastos += parseInt(sub.armadura) || 0;
-        gastos += parseInt(sub.pdf) || 0;
-        gastos += parseInt(sub.vantagemRegionalCusto) || 0;
-        gastos += parseInt(sub.vantagemUnicaCusto) || 0;
-        if (sub.listas?.vantagens) sub.listas.vantagens.forEach(v => gastos += parseInt(v.valor) || 0);
-        if (sub.listas?.desvantagens) sub.listas.desvantagens.forEach(d => gastos += parseInt(d.valor) || 0);
-        if (sub.listas?.pericias) sub.listas.pericias.forEach(p => gastos += parseInt(p.valor) || 0);
-        if (sub.listas?.especializacoes) sub.listas.especializacoes.forEach(e => gastos += parseInt(e.valor) || 0);
-        if (sub.listas?.kits) sub.listas.kits.forEach(kit => { gastos += parseInt(kit.custo) || 0; if (kit.habilidades) kit.habilidades.forEach(hab => gastos += parseInt(hab.custo) || 0); });
+        const somar = (v) => parseInt(v) || 0;
+        gastos += somar(sub.forca);
+        gastos += somar(sub.habilidade);
+        gastos += somar(sub.resistencia);
+        gastos += somar(sub.armadura);
+        gastos += somar(sub.pdf);
+        gastos += somar(sub.vantagemRegionalCusto);
+        gastos += somar(sub.vantagemUnicaCusto);
+        if (sub.listas?.vantagens) sub.listas.vantagens.forEach(v => gastos += somar(v.valor));
+        if (sub.listas?.desvantagens) sub.listas.desvantagens.forEach(d => gastos += somar(d.valor));
+        if (sub.listas?.pericias) sub.listas.pericias.forEach(p => gastos += somar(p.valor));
+        if (sub.listas?.especializacoes) sub.listas.especializacoes.forEach(e => gastos += somar(e.valor));
+        if (sub.listas?.kits) sub.listas.kits.forEach(kit => { gastos += somar(kit.custo); if (kit.habilidades) kit.habilidades.forEach(hab => gastos += somar(hab.custo)); });
         const subIdx = subFichas.indexOf(sub);
         const customs = subIdx >= 0
             ? (Array.isArray(atributosCustomSub[subIdx]) ? atributosCustomSub[subIdx] : [])
             : (Array.isArray(sub.atributosCustom) ? sub.atributosCustom : []);
-        customs.forEach(attr => { gastos += parseInt(attr.valor) || 0; });
+        customs.forEach(attr => { gastos += somar(attr.valor); });
         return gastos;
     }
     
+    // ============================================================
+    // ATUALIZAR PONTOS SUB - REGRA CORRIGIDA
+    // Mesma regra da ficha principal: basePura + bonusNegativos - gastosEfetivos
+    // ============================================================
     function atualizarPontosSub(index) {
         const sub = subFichas[index];
         if (!sub) return;
@@ -3275,7 +3294,7 @@
             gastosInput.value = gastosCalculados;
         }
 
-        // PERSONAGEM: exibe direto o _basePura.
+        // _basePura: pontos concedidos pelo mestre.
         let basePura;
         if (editandoBase) {
             basePura = parseInt(baseInput.value) || 0;
@@ -3286,7 +3305,17 @@
             }
             basePura = parseInt(sub._basePura) || 0;
         }
-        const baseExibida = basePura;
+
+        // Bônus de pontos negativos
+        const bonusNegativos = calcularBonusNegativosSub(sub);
+
+        // Gastos efetivos
+        const gastosEfetivos = gastosInput
+            ? (parseInt(gastosInput.value) || 0)
+            : gastosCalculados;
+
+        // PERSONAGEM exibido = basePura + bonusNegativos − gastosEfetivos
+        const baseExibida = basePura + bonusNegativos - gastosEfetivos;
         if (!editandoBase && !baseEditadaManualmenteSub[index]) {
             baseInput.value = baseExibida;
         }
@@ -4948,7 +4977,7 @@
     }
     
     // ============================================================
-    // CONVERTER XP - usa aplicarDeltaBasePura (Opção A)
+    // CONVERTER XP - usa aplicarDeltaBasePura
     // ============================================================
     async function converterXP() {
         const xpFieldEl = document.getElementById('xp');
@@ -5358,7 +5387,6 @@
         atributosSub.forEach(attr => {
             const input = document.getElementById(`subficha-${attr}-${index}`);
             if (input) {
-                // Atributos principais (F, H, R, A, PdF) registram gasto
                 if (['forca', 'habilidade', 'resistencia', 'armadura', 'pdf'].includes(attr)) {
                     input.addEventListener('focus', () => { input.dataset.valorAnterior = String(parseInt(input.value) || 0); });
                     input.addEventListener('input', () => {
@@ -5397,7 +5425,14 @@
         const subBaseInput = document.getElementById(`subficha-pontosBase-${index}`);
         const subGastosInput = document.getElementById(`subficha-pontosGastos-${index}`);
         if (subBaseInput) {
-            subBaseInput.addEventListener('focus', () => { if (isGM || isMaster) subBaseInput.dataset.masterEditing = 'true'; });
+            subBaseInput.addEventListener('focus', () => {
+                if (isGM || isMaster) {
+                    subBaseInput.dataset.masterEditing = 'true';
+                    subBaseInput.dataset.valorAntesEdicao = String(parseInt(subBaseInput.value) || 0);
+                    const basePura = (sub._basePura !== undefined) ? sub._basePura : (parseInt(subBaseInput.value) || 0);
+                    subBaseInput.value = basePura;
+                }
+            });
             subBaseInput.addEventListener('input', () => {
                 if (subBaseInput.dataset.masterEditing === 'true') {
                     sub._basePura = parseInt(subBaseInput.value) || 0;
@@ -5407,18 +5442,31 @@
             subBaseInput.addEventListener('blur', () => {
                 if (isGM || isMaster) {
                     subBaseInput.dataset.masterEditing = 'false';
-                    baseEditadaManualmenteSub[index] = true;
+                    const valorAntes = parseInt(subBaseInput.dataset.valorAntesEdicao) || 0;
+                    const valorAgora = parseInt(subBaseInput.value) || 0;
+                    if (valorAntes !== valorAgora) {
+                        baseEditadaManualmenteSub[index] = true;
+                    }
                     atualizarPontosSub(index); debounceSaveSubFicha();
                 }
             });
         }
         if (subGastosInput) {
-            subGastosInput.addEventListener('focus', () => { if (isGM || isMaster) subGastosInput.dataset.masterEditing = 'true'; });
+            subGastosInput.addEventListener('focus', () => {
+                if (isGM || isMaster) {
+                    subGastosInput.dataset.masterEditing = 'true';
+                    subGastosInput.dataset.valorAntesEdicao = String(parseInt(subGastosInput.value) || 0);
+                }
+            });
             subGastosInput.addEventListener('blur', () => {
                 if (isGM || isMaster) {
                     subGastosInput.dataset.masterEditing = 'false';
-                    sub.pontosGastos = parseInt(subGastosInput.value) || 0;
-                    gastosEditadoManualmenteSub[index] = true;
+                    const valorAntes = parseInt(subGastosInput.dataset.valorAntesEdicao) || 0;
+                    const valorAgora = parseInt(subGastosInput.value) || 0;
+                    if (valorAntes !== valorAgora) {
+                        sub.pontosGastos = valorAgora;
+                        gastosEditadoManualmenteSub[index] = true;
+                    }
                     atualizarPontosSub(index); debounceSaveSubFicha();
                 }
             });
@@ -7624,7 +7672,6 @@
                 if (isGM || isMaster) {
                     baseEl.dataset.masterEditing = 'true';
                     baseEl.dataset.valorAntesEdicao = String(parseInt(baseEl.value) || 0);
-                    // Ao focar, exibe o _basePura (total concedido) para edição
                     baseEl.value = baseEl.dataset.basePura !== undefined
                         ? (parseInt(baseEl.dataset.basePura) || 0)
                         : (parseInt(baseEl.value) || 0);
@@ -7641,11 +7688,9 @@
                     baseEl.dataset.masterEditing = 'false';
                     const valorAntes = parseInt(baseEl.dataset.valorAntesEdicao) || 0;
                     const valorAgora = parseInt(baseEl.value) || 0;
-                    // Só marca como "editado manualmente" se o valor REALMENTE mudou
                     if (valorAntes !== valorAgora) {
                         baseEditadaManualmente = true;
                     }
-                    // Ao sair, restaura exibição líquida
                     atualizarPontos(); debounceSave();
                 }
             });
@@ -7686,7 +7731,7 @@
     renderizarStatusCheckboxes();
     window.getSupabase = () => supabase;
     window.getVisualizandoId = () => visualizandoId;
-    console.log('✅ Sistema carregado com pontos (Personagem + Gastos) reformulados e edição manual persistente.');
+    console.log('✅ Sistema carregado: Pontos de Personagem = x - (-y); Gastos = x + (-y) [soma algébrica].');
 </script>
 </body>
 </html>
