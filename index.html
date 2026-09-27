@@ -350,7 +350,106 @@
     .recurso-converter .converter-linha button:disabled { background: var(--borda-clara); cursor: not-allowed; }
     .recurso-converter .xp-info { font-size: 7px; color: var(--texto-medio); text-align: center; }
 
-    .botoes-acao { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+    /* ===== MÓDULO DE PONTOS REFORMULADO ===== */
+    .recurso-pontos {
+        flex: 0 0 calc(33.333% - 4px);
+        min-width: 110px;
+        background: var(--fundo-painel);
+        padding: 4px 6px;
+        border-radius: 4px;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+    .recurso-pontos label.titulo {
+        display: block;
+        font-size: 9px;
+        color: var(--texto-medio);
+        margin-bottom: 1px;
+        font-weight: bold;
+        text-align: center;
+    }
+    .recurso-pontos .pontos-linha {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+    .recurso-pontos .pontos-linha span.rotulo {
+        font-size: 9px;
+        font-weight: bold;
+        white-space: nowrap;
+        color: var(--texto-medio);
+    }
+    .recurso-pontos .pontos-linha span.rotulo.gastos { color: var(--perigo); }
+    .recurso-pontos .pontos-linha input {
+        width: 52px;
+        background: var(--fundo-input);
+        color: var(--texto);
+        border: 1px solid var(--borda-clara);
+        border-radius: 3px;
+        padding: 2px 3px;
+        text-align: center;
+        font-size: 12px;
+        font-weight: bold;
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
+    .recurso-pontos .pontos-linha input::-webkit-outer-spin-button,
+    .recurso-pontos .pontos-linha input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .recurso-pontos .pontos-linha input:focus { outline: 2px solid var(--primaria); }
+
+    /* Subficha - módulo de pontos */
+    .subficha-recurso-pontos {
+        flex: 0 0 calc(33.333% - 3px);
+        min-width: 80px;
+        background: var(--fundo-painel);
+        padding: 2px 4px;
+        border-radius: 4px;
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+    }
+    .subficha-recurso-pontos label.titulo {
+        display: block;
+        font-size: 8px;
+        color: var(--texto-medio);
+        margin-bottom: 1px;
+        font-weight: bold;
+        text-align: center;
+    }
+    .subficha-recurso-pontos .pontos-linha {
+        display: flex;
+        gap: 3px;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+    .subficha-recurso-pontos .pontos-linha span.rotulo {
+        font-size: 8px;
+        font-weight: bold;
+        white-space: nowrap;
+        color: var(--texto-medio);
+    }
+    .subficha-recurso-pontos .pontos-linha span.rotulo.gastos { color: var(--perigo); }
+    .subficha-recurso-pontos .pontos-linha input {
+        width: 44px;
+        background: var(--fundo-input);
+        color: var(--texto);
+        border: 1px solid var(--borda-clara);
+        border-radius: 3px;
+        padding: 2px;
+        text-align: center;
+        font-size: 10px;
+        font-weight: bold;
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
+    .subficha-recurso-pontos .pontos-linha input::-webkit-outer-spin-button,
+    .subficha-recurso-pontos .pontos-linha input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .subficha-recurso-pontos .pontos-linha input:focus { outline: 2px solid var(--primaria); }
+        .botoes-acao { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
     .btn-ataque-substituto {
         flex: 1; min-width: 80px; padding: 8px 12px; background: var(--secundaria); color: #fff;
         border: none; border-radius: 6px; cursor: pointer; font-weight: bold;
@@ -1111,12 +1210,12 @@
     }
     @media (max-width: 768px) {
         .atributos-3colunas, .subficha-atributos-3colunas { grid-template-columns: 1fr 1fr; }
-        .recurso, .recurso-converter, .subficha-recurso, .subficha-recurso-converter { flex: 0 0 calc(50% - 3px); min-width: auto; }
+        .recurso, .recurso-converter, .subficha-recurso, .subficha-recurso-converter, .recurso-pontos, .subficha-recurso-pontos { flex: 0 0 calc(50% - 3px); min-width: auto; }
         .status-checkbox-grid { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 500px) {
         .atributos-3colunas, .subficha-atributos-3colunas { grid-template-columns: 1fr; }
-        .recurso, .recurso-converter, .subficha-recurso, .subficha-recurso-converter { flex: 0 0 100%; }
+        .recurso, .recurso-converter, .subficha-recurso, .subficha-recurso-converter, .recurso-pontos, .subficha-recurso-pontos { flex: 0 0 100%; }
         .status-checkbox-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 900px) {
@@ -1124,6 +1223,162 @@
         .card-full { grid-column: span 1; }
         .layout-duas-colunas { flex-direction: column; }
         .coluna-esquerda { flex: 0 0 100%; }
+    }
+        /* ===== OFÍCIOS ===== */
+    .oficios-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        margin-bottom: 8px;
+        background: var(--fundo-painel-claro);
+        border-radius: 6px;
+        flex-wrap: wrap;
+    }
+    .oficios-titulo {
+        font-weight: bold;
+        color: var(--primaria-escura);
+        font-size: 13px;
+    }
+    .btn-add-oficio {
+        background: var(--primaria);
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        padding: 4px 10px;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: bold;
+    }
+    .btn-add-oficio:hover { background: var(--primaria-hover); }
+
+    .oficio-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        background: var(--fundo-painel-claro);
+        border-radius: 6px;
+        flex-wrap: wrap;
+        min-height: 34px;
+    }
+    .oficio-item .oficio-nome {
+        flex: 2;
+        min-width: 130px;
+        background: var(--fundo-input);
+        color: var(--texto);
+        border: 1px solid var(--borda-clara);
+        border-radius: 4px;
+        padding: 5px 8px;
+        font-size: 12px;
+    }
+    .oficio-item .oficio-attr {
+        background: var(--fundo-input);
+        color: var(--secundaria);
+        border: 1px solid var(--borda-clara);
+        border-radius: 4px;
+        padding: 4px 6px;
+        font-size: 11px;
+        font-weight: bold;
+        cursor: pointer;
+        min-width: 55px;
+    }
+    .oficio-item .oficio-pericia-bonus,
+    .oficio-item .oficio-pericia-pen {
+        width: 46px;
+        background: var(--fundo-input);
+        color: var(--texto);
+        border: 1px solid var(--borda-clara);
+        border-radius: 4px;
+        padding: 4px 6px;
+        text-align: center;
+        font-size: 12px;
+        font-weight: bold;
+        -moz-appearance: textfield;
+        appearance: textfield;
+        flex-shrink: 0;
+    }
+    .oficio-item .oficio-pericia-bonus {
+        border-color: var(--primaria);
+        color: var(--primaria);
+        background: var(--fundo-bonus);
+    }
+    .oficio-item .oficio-pericia-pen {
+        border-color: var(--perigo-forte);
+        color: var(--perigo-forte);
+        background: var(--fundo-pen);
+    }
+    .oficio-item .oficio-pericia-bonus::-webkit-outer-spin-button,
+    .oficio-item .oficio-pericia-bonus::-webkit-inner-spin-button,
+    .oficio-item .oficio-pericia-pen::-webkit-outer-spin-button,
+    .oficio-item .oficio-pericia-pen::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .oficio-item .oficio-pe-input {
+        width: 44px;
+        background: var(--fundo-pe);
+        color: var(--texto-pe);
+        border: 1px solid var(--borda-pe);
+        border-radius: 4px;
+        padding: 4px 6px;
+        text-align: center;
+        font-size: 12px;
+        font-weight: bold;
+        -moz-appearance: textfield;
+        appearance: textfield;
+        flex-shrink: 0;
+    }
+    .oficio-item .oficio-pe-input::-webkit-outer-spin-button,
+    .oficio-item .oficio-pe-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .oficio-item .oficio-checkbox,
+    .oficio-item .oficio-radio-carta {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+        accent-color: var(--primaria);
+        flex-shrink: 0;
+    }
+    .oficio-item .oficio-btn-roll {
+        background: var(--primaria);
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        padding: 4px 10px;
+        cursor: pointer;
+        font-size: 13px;
+        line-height: 1.4;
+        flex-shrink: 0;
+    }
+    .oficio-item .oficio-btn-roll:hover { background: var(--primaria-hover); }
+    .oficio-item .oficio-btn-del {
+        background: var(--perigo);
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        padding: 4px 8px;
+        cursor: pointer;
+        font-size: 12px;
+        flex-shrink: 0;
+    }
+    .oficio-item .oficio-btn-del:hover { background: var(--perigo-hover); }
+    .oficio-item .oficio-resultado {
+        flex: 1;
+        min-width: 90px;
+        font-size: 10px;
+        font-weight: bold;
+        padding: 3px 8px;
+        border-radius: 3px;
+        background: var(--fundo-input);
+        text-align: center;
+        border-left: 2px solid transparent;
+        color: var(--texto-suave);
+    }
+    .oficio-item .oficio-resultado.sucesso {
+        border-left-color: var(--sucesso);
+        color: var(--sucesso);
+    }
+    .oficio-item .oficio-resultado.falha {
+        border-left-color: var(--perigo-forte);
+        color: var(--perigo-forte);
     }
 </style>
 </head>
@@ -1224,7 +1479,6 @@
                                 </div>
                             </div>
                             <div class="coluna-direita">
-                                <!-- Inputs ocultos (compatibilidade com cálculos de ataque/defesa) -->
                                 <input type="hidden" id="bonusArmadura" value="0">
                                 <input type="hidden" id="bonusArmadura2" value="0">
                                 <input type="hidden" id="bonusArmaduraDefesa" value="0">
@@ -1237,7 +1491,6 @@
                                 <div class="card-atributos">
                                     <h3 style="margin-top:0;">📊 Atributos</h3>
                                     <div class="atributos-3colunas">
-                                        <!-- ===== F com B1/B2 ===== -->
                                         <div class="atributo-item">
                                             <div class="atributo-header"><span class="atributo-titulo">💪 F</span></div>
                                             <div class="atributo-linha-com-total">
@@ -1253,7 +1506,6 @@
                                                 <input type="checkbox" id="chkBonusForca2" class="bonus-checkbox" checked>
                                             </div>
                                         </div>
-                                        <!-- ===== H com B1/B2 ===== -->
                                         <div class="atributo-item">
                                             <div class="atributo-header"><span class="atributo-titulo">🎯 H</span></div>
                                             <div class="atributo-linha-com-total">
@@ -1269,7 +1521,6 @@
                                                 <input type="checkbox" id="chkBonusHabilidade2" class="bonus-checkbox" checked>
                                             </div>
                                         </div>
-                                        <!-- ===== R com B1/B2 ===== -->
                                         <div class="atributo-item">
                                             <div class="atributo-header"><span class="atributo-titulo">🛡️ R</span></div>
                                             <div class="atributo-linha-com-total">
@@ -1285,7 +1536,6 @@
                                                 <input type="checkbox" id="chkBonusResistencia2" class="bonus-checkbox" checked>
                                             </div>
                                         </div>
-                                        <!-- ===== A com B1/B2 ===== -->
                                         <div class="atributo-item">
                                             <div class="atributo-header"><span class="atributo-titulo">⚔️ A</span></div>
                                             <div class="atributo-linha-com-total">
@@ -1301,7 +1551,6 @@
                                                 <input type="checkbox" id="chkBonusArmadura2" class="bonus-checkbox" checked>
                                             </div>
                                         </div>
-                                        <!-- ===== PdF com B1/B2 ===== -->
                                         <div class="atributo-item">
                                             <div class="atributo-header"><span class="atributo-titulo">🔮 PdF</span></div>
                                             <div class="atributo-linha-com-total">
@@ -1324,7 +1573,7 @@
                                                     <label>Dados</label>
                                                     <input type="text" inputmode="numeric" pattern="[0-9]*" id="qtdDados" value="1">
                                                     <label>Mod</label>
-                                                    <input type="text" inputmode="numeric" pattern="[0-9]*" id="modRoll" value="0">
+                                                    <input type="text" inputmode="numeric" pattern="[0-9-]*" id="modRoll" value="0">
                                                 </div>
                                                 <button class="btn-roll" id="btnRolarGenerico">🎲 Rolar</button>
                                                 <div id="secretRollContainer" class="secret-row" style="display: none;">
@@ -1357,16 +1606,15 @@
                                             <input type="text" inputmode="numeric" pattern="[0-9]*" id="bonusPm" placeholder="B" class="bonus-pv-pm" value="0">
                                         </div>
                                     </div>
-                                    <div class="recurso">
-                                        <label>💰 Pontos</label>
-                                        <div class="recurso-linha" style="flex-direction: column; gap: 2px;">
-                                            <div style="display: flex; gap: 2px; justify-content: center; align-items: center; width: 100%;">
-                                                <input type="text" inputmode="numeric" pattern="[0-9]*" id="pontos" value="0" class="input-full" style="width: 60%;">
-                                            </div>
-                                            <div class="pontos-gastos" id="pontosGastosDisplay">
-                                                <span>Gastos: </span>
-                                                <input type="text" inputmode="numeric" pattern="[0-9]*" id="pontosGastosInput" value="0" class="input-gasto">
-                                            </div>
+                                    <div class="recurso-pontos">
+                                        <label class="titulo">💰 Pontos</label>
+                                        <div class="pontos-linha">
+                                            <span class="rotulo">Personagem:</span>
+                                            <input type="text" inputmode="numeric" pattern="[0-9-]*" id="pontosBase" value="0">
+                                        </div>
+                                        <div class="pontos-linha">
+                                            <span class="rotulo gastos">Gastos:</span>
+                                            <input type="text" inputmode="numeric" pattern="[0-9-]*" id="pontosGastosInput" value="0">
                                         </div>
                                     </div>
                                     <div class="recurso">
@@ -1415,7 +1663,7 @@
                                 <div class="item">
                                     <div class="item-linha">
                                         <input type="text" id="vantagemRegionalNome" placeholder="Nome da Vantagem Regional" style="flex:2;">
-                                        <input type="text" inputmode="numeric" pattern="[0-9]*" id="vantagemRegionalCusto" class="valor" placeholder="Custo" value="0">
+                                        <input type="text" inputmode="numeric" pattern="[0-9-]*" id="vantagemRegionalCusto" class="valor" placeholder="Custo" value="0">
                                         <button class="btn-desc" id="btnToggleVantagemRegional">📖</button>
                                         <button class="btn-info-item" data-info-tipo="vantagemRegional">i</button>
                                     </div>
@@ -1429,7 +1677,7 @@
                                 <div class="item">
                                     <div class="item-linha">
                                         <input type="text" id="vantagemUnicaNome" placeholder="Nome da Vantagem Única">
-                                        <input type="text" inputmode="numeric" pattern="[0-9]*" id="vantagemUnicaCusto" class="valor" placeholder="Custo" value="0">
+                                        <input type="text" inputmode="numeric" pattern="[0-9-]*" id="vantagemUnicaCusto" class="valor" placeholder="Custo" value="0">
                                         <button class="btn-desc" id="btnToggleVantagemUnica">📖</button>
                                         <button class="btn-info-item" data-info-tipo="vantagemUnica">i</button>
                                     </div>
@@ -1496,7 +1744,6 @@
         </div>
     </div>
 </div>
-
 <div id="ataquePopup" class="ataque-popup-overlay">
     <div class="ataque-popup-content">
         <div class="ataque-popup-header">
@@ -1585,8 +1832,6 @@
     let realtimeChannels = [];
     let listaJogadoresUnsubscribe = null;
     let intervaloLimpeza = null;
-    let intervaloRefreshJogadores = null;
-    let intervaloRegras = null;
     let _jogadoresChannel = null;
     let _rolagensChannel = null;
     let _mesasChannel = null;
@@ -1727,57 +1972,79 @@
         }
         container.innerHTML = html;
         container.querySelectorAll('[data-regra-check]').forEach(chk => {
-    chk.onchange = async () => {
-        const id = chk.dataset.regraCheck;
-        const marcado = chk.checked;
-        if (marcado) {
-            const regraObj = REGRAS_DISPONIVEIS.find(r => r.id === id);
-            const cat = regraObj?.categoria;
-            if (cat && REGRAS_EXCLUSIVAS_POR_CATEGORIA[cat]) {
-                for (const outro of REGRAS_EXCLUSIVAS_POR_CATEGORIA[cat]) {
-                    if (outro !== id && regrasMesa[outro]) {
-                        regrasMesa[outro] = false;
-                        const outroChk = container.querySelector(`[data-regra-check="${outro}"]`);
-                        if (outroChk) {
-                            outroChk.checked = false;
-                            const item = outroChk.closest('.regra-item');
-                            if (item) { item.classList.remove('ativa'); const st = item.querySelector('.regra-status'); if (st) st.textContent = 'INATIVA'; }
+            chk.onchange = () => {
+                const id = chk.dataset.regraCheck;
+                const marcado = chk.checked;
+                if (marcado) {
+                    const regraObj = REGRAS_DISPONIVEIS.find(r => r.id === id);
+                    const cat = regraObj?.categoria;
+                    if (cat && REGRAS_EXCLUSIVAS_POR_CATEGORIA[cat]) {
+                        for (const outro of REGRAS_EXCLUSIVAS_POR_CATEGORIA[cat]) {
+                            if (outro !== id && regrasMesa[outro]) {
+                                regrasMesa[outro] = false;
+                                const outroChk = container.querySelector(`[data-regra-check="${outro}"]`);
+                                if (outroChk) {
+                                    outroChk.checked = false;
+                                    const item = outroChk.closest('.regra-item');
+                                    if (item) { item.classList.remove('ativa'); const st = item.querySelector('.regra-status'); if (st) st.textContent = 'INATIVA'; }
+                                }
+                            }
                         }
                     }
                 }
-            }
-        }
-        regrasMesa[id] = marcado;
-        console.log(`📜 Regra "${id}" → ${marcado ? 'ATIVA' : 'INATIVA'}. regrasMesa:`, { ...regrasMesa });
-        const item = chk.closest('.regra-item');
-        if (item) { item.classList.toggle('ativa', marcado); const st = item.querySelector('.regra-status'); if (st) st.textContent = marcado ? 'ATIVA' : 'INATIVA'; }
-        aplicarClassesRegras();
-        atualizarBadgeRegras();
-        atualizarSelectsDificuldade();
-        await salvarRegrasMesa();
-        // Re-renderizar SEMPRE, independente de visualizandoId
-        renderizarTestes('testesContainer', false, null);
-        subFichas.forEach((_, idx) => renderizarTestes(`subficha-testesContainer-${idx}`, true, idx));
-        renderizarBaralhoPrincipal();
-        subFichas.forEach((_, idx) => renderizarBaralhoSub(idx));
-        if (visualizandoId) {
-            renderizarAtaques('curto', false, null);
-            renderizarAtaques('distancia', false, null);
-            renderizarDefesas(false, null);
-            subFichas.forEach((_, idx) => {
-                renderizarAtaques('curto', true, idx);
-                renderizarAtaques('distancia', true, idx);
-                renderizarDefesas(true, idx);
-            });
-            reRenderizarOficios();
-        }
-        const msg = marcado
-            ? `📜 Regra ativada: "${REGRAS_DISPONIVEIS.find(x => x.id === id)?.nome || id}"`
-            : `📜 Regra desativada: "${REGRAS_DISPONIVEIS.find(x => x.id === id)?.nome || id}"`;
-        addMensagem(msg, false);
-        enviarRolagemFirebase(msg, false);
-    };
-});
+                regrasMesa[id] = marcado;
+                const item = chk.closest('.regra-item');
+                if (item) { item.classList.toggle('ativa', marcado); const st = item.querySelector('.regra-status'); if (st) st.textContent = marcado ? 'ATIVA' : 'INATIVA'; }
+                aplicarClassesRegras();
+                atualizarBadgeRegras();
+                salvarRegrasMesa();
+                atualizarSelectsDificuldade();
+                if (visualizandoId) {
+                    renderizarTestes('testesContainer', false, null);
+                    subFichas.forEach((_, idx) => renderizarTestes(`subficha-testesContainer-${idx}`, true, idx));
+                    renderizarBaralhoPrincipal();
+                    subFichas.forEach((_, idx) => renderizarBaralhoSub(idx));
+                    renderizarAtaques('curto', false, null);
+                    renderizarAtaques('distancia', false, null);
+                    renderizarDefesas(false, null);
+                    subFichas.forEach((_, idx) => {
+                        renderizarAtaques('curto', true, idx);
+                        renderizarAtaques('distancia', true, idx);
+                        renderizarDefesas(true, idx);
+                    });
+                    reRenderizarOficios();
+                }
+                const msg = marcado
+                    ? `📜 Regra ativada: "${REGRAS_DISPONIVEIS.find(x => x.id === id)?.nome || id}"`
+                    : `📜 Regra desativada: "${REGRAS_DISPONIVEIS.find(x => x.id === id)?.nome || id}"`;
+                addMensagem(msg, false);
+                enviarRolagemFirebase(msg, false);
+            };
+        });
+        container.querySelectorAll('[data-regra-sub]').forEach(chk => {
+            chk.onchange = () => {
+                const regraId = chk.dataset.regraSub;
+                const subId = chk.dataset.subId;
+                if (!regrasSubopcoes[regraId]) regrasSubopcoes[regraId] = {};
+                regrasSubopcoes[regraId][subId] = chk.checked;
+                salvarRegrasMesa();
+                if (visualizandoId) {
+                    renderizarTestes('testesContainer', false, null);
+                    subFichas.forEach((_, idx) => renderizarTestes(`subficha-testesContainer-${idx}`, true, idx));
+                    renderizarBaralhoPrincipal();
+                    subFichas.forEach((_, idx) => renderizarBaralhoSub(idx));
+                    renderizarAtaques('curto', false, null);
+                    renderizarAtaques('distancia', false, null);
+                    renderizarDefesas(false, null);
+                    subFichas.forEach((_, idx) => {
+                        renderizarAtaques('curto', true, idx);
+                        renderizarAtaques('distancia', true, idx);
+                        renderizarDefesas(true, idx);
+                    });
+                    reRenderizarOficios();
+                }
+            };
+        });
         container.querySelectorAll('[data-regra-cfg]').forEach(inp => {
             inp.oninput = () => {
                 const id = inp.dataset.regraCfg;
@@ -1792,6 +2059,7 @@
             };
         });
     }
+
     function atualizarSelectsDificuldade() {
         const mostrarImp = deveMostrarImpossivel();
         const ids = ['testeDificuldadeGlobal'];
@@ -1855,45 +2123,28 @@
                     if (isMaster) renderizarPopupRegras();
                     if (visualizandoId) {
                         renderizarTestes('testesContainer', false, null);
-                        subFichas.forEach((_, idx) => renderizarTestes(`subficha-testesContainer-${idx}`, true, idx));
                         renderizarBaralhoPrincipal();
-                        subFichas.forEach((_, idx) => renderizarBaralhoSub(idx));
                         renderizarAtaques('curto', false, null);
                         renderizarAtaques('distancia', false, null);
                         renderizarDefesas(false, null);
+                        reRenderizarOficios();
                         subFichas.forEach((_, idx) => {
+                            const elTestes = document.getElementById(`subficha-testesContainer-${idx}`);
+                            if (elTestes) renderizarTestes(`subficha-testesContainer-${idx}`, true, idx);
+                            const elBaralho = document.getElementById(`subficha-baralhoPainel-${idx}`);
+                            if (elBaralho) renderizarBaralhoSub(idx);
+                            const elOficios = document.getElementById(`subficha-oficios-${idx}`);
+                            if (elOficios) renderizarOficios(`subficha-oficios-${idx}`, true, idx);
                             renderizarAtaques('curto', true, idx);
                             renderizarAtaques('distancia', true, idx);
                             renderizarDefesas(true, idx);
                         });
-                        reRenderizarOficios();
                     }
                 }
             })
             .subscribe();
         _mesasChannel = channel;
         realtimeChannels.push(channel);
-    }
-
-    // === NOVO: Polling de regras a cada 8s (garantia para jogadores) ===
-    function iniciarPollingRegras() {
-        if (intervaloRegras) clearInterval(intervaloRegras);
-        if (!currentPin) return;
-        intervaloRegras = setInterval(async () => {
-            const antes = JSON.stringify({ a: regrasMesa, c: regrasConfig, s: regrasSubopcoes });
-            await carregarRegrasMesa();
-            const depois = JSON.stringify({ a: regrasMesa, c: regrasConfig, s: regrasSubopcoes });
-            if (antes !== depois) {
-                // Regras mudaram — re-renderizar testes
-                if (visualizandoId) {
-                    renderizarTestes('testesContainer', false, null);
-                    subFichas.forEach((_, idx) => renderizarTestes(`subficha-testesContainer-${idx}`, true, idx));
-                    renderizarBaralhoPrincipal();
-                    subFichas.forEach((_, idx) => renderizarBaralhoSub(idx));
-                    reRenderizarOficios();
-                }
-            }
-        }, 8000);
     }
 
     function abrirPopupRegras() {
@@ -2036,6 +2287,14 @@
         const info = pathToTable(refObj.path);
         if (!info) return;
         if (info.table === 'jogadores' && info.id) {
+            if (updates.ficha !== undefined && Object.keys(updates).filter(k => k !== 'ficha' && k !== 'ultimaAtualizacao' && k !== 'ultima_atualizacao').length === 0) {
+                const { error } = await supabase.from('jogadores').update({
+                    ficha: updates.ficha,
+                    ultima_atualizacao: new Date().toISOString()
+                }).eq('id', info.id);
+                if (error) console.error('update jogador (direto):', error);
+                return;
+            }
             const { data } = await supabase.from('jogadores').select('*').eq('id', info.id).maybeSingle();
             if (!data) return;
             const row = { ...data };
@@ -2115,10 +2374,18 @@
 
     let baralhosCombate = {};
 
+    // Flags persistentes de edição manual (impedem recálculo automático até o jogador mexer)
+    let gastosEditadoManualmente = false;
+    let baseEditadaManualmente = false;
+    let gastosEditadoManualmenteSub = {};   // { [subIndex]: true }
+    let baseEditadaManualmenteSub = {};     // { [subIndex]: true }
+    // Função para "descongelar" o recálculo automático quando o jogador mexe em algo
+    function liberarRecalculoPrincipal() { gastosEditadoManualmente = false; baseEditadaManualmente = false; }
+    function liberarRecalculoSub(idx) { gastosEditadoManualmenteSub[idx] = false; baseEditadaManualmenteSub[idx] = false; }
+
     const MAX_CHAT_MESSAGES_DISPLAY = 30;
     const MAX_CHAT_MESSAGES_STORED = 50;
-    
-    const STATUS_LISTA_ORIGINAL = [
+        const STATUS_LISTA_ORIGINAL = [
         { id: 'assombrado', label: 'Assombrado', desc: 'Sempre que você entra em combate, o mestre joga um dado: um resultado 4, 5 ou 6 significa que o fantasma apareceu para assombrá-lo, e você sofre uma penalidade de –1 em todas as suas características até que ele vá embora. Um conjurador Assombrado gasta duas vezes mais PMs para lançar magias. Esta desvantagem também pode significar alguma doença ou, para construtos, algum tipo de mal-funcionamento. A critério do mestre, o "fantasma" também pode aparecer para incomodá-lo em outras ocasiões.' },
         { id: 'amaldicoado', label: 'Amaldiçoado', desc: 'Você está sob o efeito de alguma maldição' },
         { id: 'cego', label: 'Cego', desc: 'Um cego sofre um redutor de H–1 para fazer ataques corporais, e H–3 para ataques à distância e esquivas (personagens com Audição Aguçada ou Radar sofrem apenas H–1 para ataques à distância e esquivas).' },
@@ -2188,9 +2455,14 @@
     }
     
     let saveTimeout = null;
-    function debounceSave() { if (saveTimeout) clearTimeout(saveTimeout); saveTimeout = setTimeout(() => salvarForcado(), 300); }
+    let lastSavedHash = '';
+    function hashFicha(dados) {
+        try { return JSON.stringify(dados).length + '|' + (dados.nome || '') + '|' + (dados.subFichas ? dados.subFichas.length : 0); }
+        catch (e) { return String(Date.now()); }
+    }
+    function debounceSave() { if (saveTimeout) clearTimeout(saveTimeout); saveTimeout = setTimeout(() => { const d = extrairDadosDaTela(); const h = hashFicha(d); if (h === lastSavedHash) return; lastSavedHash = h; salvarForcado(); }, 2000); }
     let subFichaSaveTimeout = null;
-    function debounceSaveSubFicha() { if (subFichaSaveTimeout) clearTimeout(subFichaSaveTimeout); subFichaSaveTimeout = setTimeout(() => salvarForcado(), 300); }
+    function debounceSaveSubFicha() { if (subFichaSaveTimeout) clearTimeout(subFichaSaveTimeout); subFichaSaveTimeout = setTimeout(() => { const d = extrairDadosDaTela(); const h = hashFicha(d); if (h === lastSavedHash) return; lastSavedHash = h; salvarForcado(); }, 2000); }
     
     function gerarCodigoUnico() {
         const invalidos = ['000000','123456','111111','222222','333333','444444','555555','666666','777777','888888','999999'];
@@ -2376,21 +2648,21 @@
                 html += `<div class="subficha-atributo-custom-item" data-custom-id="${attr.id}">
                     <div class="atributo-header"><div class="atributo-titulo"><input type="text" value="${escapeHtml(attr.abrev || '')}" placeholder="ABR" maxlength="5" data-custom-field="abrev" data-custom-id="${attr.id}" data-custom-is-sub="true" data-custom-sub-idx="${subIndex}"></div><button type="button" class="btn-del-atributo" data-custom-del="${attr.id}" data-custom-is-sub="true" data-custom-sub-idx="${subIndex}">❌</button></div>
                     <div class="atributo-linha-com-total">
-                        <div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" value="${attr.valor || 0}" data-custom-field="valor" data-custom-id="${attr.id}" data-custom-is-sub="true" data-custom-sub-idx="${subIndex}"></div>
+                        <div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9-]*" value="${attr.valor || 0}" data-custom-field="valor" data-custom-id="${attr.id}" data-custom-is-sub="true" data-custom-sub-idx="${subIndex}"></div>
                         <div class="subficha-total-losango" title="Total"><span class="atributo-total-valor" id="subficha-custom-total-${attr.id}-${subIndex}">0</span></div>
                     </div>
-                    <div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9]*" value="${attr.b1 || 0}" data-custom-field="b1" data-custom-id="${attr.id}" data-custom-is-sub="true" data-custom-sub-idx="${subIndex}"></div><input type="checkbox" class="bonus-checkbox" id="subficha-custom-chk-${attr.id}-${subIndex}" ${chk1 ? 'checked' : ''} data-custom-field="b1Ativo" data-custom-id="${attr.id}" data-custom-is-sub="true" data-custom-sub-idx="${subIndex}"></div>
-                    <div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9]*" value="${attr.b2 || 0}" data-custom-field="b2" data-custom-id="${attr.id}" data-custom-is-sub="true" data-custom-sub-idx="${subIndex}"></div><input type="checkbox" class="bonus-checkbox" id="subficha-custom-chk2-${attr.id}-${subIndex}" ${chk2 ? 'checked' : ''} data-custom-field="b2Ativo" data-custom-id="${attr.id}" data-custom-is-sub="true" data-custom-sub-idx="${subIndex}"></div>
+                    <div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9-]*" value="${attr.b1 || 0}" data-custom-field="b1" data-custom-id="${attr.id}" data-custom-is-sub="true" data-custom-sub-idx="${subIndex}"></div><input type="checkbox" class="bonus-checkbox" id="subficha-custom-chk-${attr.id}-${subIndex}" ${chk1 ? 'checked' : ''} data-custom-field="b1Ativo" data-custom-id="${attr.id}" data-custom-is-sub="true" data-custom-sub-idx="${subIndex}"></div>
+                    <div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9-]*" value="${attr.b2 || 0}" data-custom-field="b2" data-custom-id="${attr.id}" data-custom-is-sub="true" data-custom-sub-idx="${subIndex}"></div><input type="checkbox" class="bonus-checkbox" id="subficha-custom-chk2-${attr.id}-${subIndex}" ${chk2 ? 'checked' : ''} data-custom-field="b2Ativo" data-custom-id="${attr.id}" data-custom-is-sub="true" data-custom-sub-idx="${subIndex}"></div>
                 </div>`;
             } else {
                 html += `<div class="atributo-custom-item" data-custom-id="${attr.id}">
                     <div class="atributo-header"><div class="atributo-titulo"><input type="text" value="${escapeHtml(attr.abrev || '')}" placeholder="ABR" maxlength="5" data-custom-field="abrev" data-custom-id="${attr.id}" data-custom-is-sub="false"></div><button type="button" class="btn-del-atributo" data-custom-del="${attr.id}" data-custom-is-sub="false">❌</button></div>
                     <div class="atributo-linha-com-total">
-                        <div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" value="${attr.valor || 0}" data-custom-field="valor" data-custom-id="${attr.id}" data-custom-is-sub="false"></div>
+                        <div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9-]*" value="${attr.valor || 0}" data-custom-field="valor" data-custom-id="${attr.id}" data-custom-is-sub="false"></div>
                         <div class="atributo-total-losango" title="Total"><span class="atributo-total-valor" id="custom-total-${attr.id}">0</span></div>
                     </div>
-                    <div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9]*" value="${attr.b1 || 0}" data-custom-field="b1" data-custom-id="${attr.id}" data-custom-is-sub="false"></div><input type="checkbox" class="bonus-checkbox" id="custom-chk-${attr.id}" ${chk1 ? 'checked' : ''} data-custom-field="b1Ativo" data-custom-id="${attr.id}" data-custom-is-sub="false"></div>
-                    <div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9]*" value="${attr.b2 || 0}" data-custom-field="b2" data-custom-id="${attr.id}" data-custom-is-sub="false"></div><input type="checkbox" class="bonus-checkbox" id="custom-chk2-${attr.id}" ${chk2 ? 'checked' : ''} data-custom-field="b2Ativo" data-custom-id="${attr.id}" data-custom-is-sub="false"></div>
+                    <div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9-]*" value="${attr.b1 || 0}" data-custom-field="b1" data-custom-id="${attr.id}" data-custom-is-sub="false"></div><input type="checkbox" class="bonus-checkbox" id="custom-chk-${attr.id}" ${chk1 ? 'checked' : ''} data-custom-field="b1Ativo" data-custom-id="${attr.id}" data-custom-is-sub="false"></div>
+                    <div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9-]*" value="${attr.b2 || 0}" data-custom-field="b2" data-custom-id="${attr.id}" data-custom-is-sub="false"></div><input type="checkbox" class="bonus-checkbox" id="custom-chk2-${attr.id}" ${chk2 ? 'checked' : ''} data-custom-field="b2Ativo" data-custom-id="${attr.id}" data-custom-is-sub="false"></div>
                 </div>`;
             }
         });
@@ -2404,8 +2676,17 @@
                 const listaAtual = isSubInp && subIdx !== null ? getAtributosCustomSub(subIdx) : getAtributosCustom();
                 const attr = listaAtual.find(a => a.id === id);
                 if (!attr) return;
+                const valorAnterior = parseInt(attr[campo]) || 0;
                 if (campo === 'abrev') attr.abrev = (inp.value || '').toUpperCase().slice(0, 5);
-                else if (campo === 'valor' || campo === 'b1' || campo === 'b2') attr[campo] = parseInt(inp.value) || 0;
+                else if (campo === 'valor' || campo === 'b1' || campo === 'b2') {
+                    const novoValor = parseInt(inp.value) || 0;
+                    attr[campo] = novoValor;
+                    if (campo === 'valor') {
+                        // Registra gasto/ganho: valor positivo = gastou, negativo = ganhou
+                        const deltaGasto = novoValor - valorAnterior;
+                        if (deltaGasto !== 0) registrarGasto(deltaGasto, isSubInp, subIdx);
+                    }
+                }
                 else if (campo === 'b1Ativo' || campo === 'b2Ativo') attr[campo] = inp.checked;
                 atualizarIndicadoresAtributosCustom(isSubInp, subIdx);
                 if (campo === 'abrev') {
@@ -2413,8 +2694,8 @@
                     else renderizarTestes('testesContainer', false, null);
                 }
                 if (campo === 'valor') {
-                    if (isSubInp && subIdx !== null) atualizarPontosSub(subIdx);
-                    else atualizarPontos();
+                    if (isSubInp && subIdx !== null) { liberarRecalculoSub(subIdx); atualizarPontosSub(subIdx); }
+                    else { liberarRecalculoPrincipal(); atualizarPontos(); }
                 }
                 if (isSubInp) debounceSaveSubFicha(); else debounceSave();
             };
@@ -2429,17 +2710,30 @@
                 if (isSubBtn && subIdx !== null) {
                     const lista = getAtributosCustomSub(subIdx);
                     const i = lista.findIndex(a => a.id === id);
-                    if (i >= 0) lista.splice(i, 1);
+                    if (i >= 0) {
+                        const attr = lista[i];
+                        const valorAttr = parseInt(attr.valor) || 0;
+                        // Ao apagar, devolve o gasto: se valor positivo era gasto, remove o gasto (-valorAttr)
+                        if (valorAttr !== 0) registrarGasto(-valorAttr, true, subIdx);
+                        lista.splice(i, 1);
+                    }
                     renderizarAtributosCustom(true, subIdx);
                     renderizarTestes(`subficha-testesContainer-${subIdx}`, true, subIdx);
+                    liberarRecalculoSub(subIdx);
                     atualizarPontosSub(subIdx);
                     debounceSaveSubFicha();
                 } else {
                     const lista = getAtributosCustom();
                     const i = lista.findIndex(a => a.id === id);
-                    if (i >= 0) lista.splice(i, 1);
+                    if (i >= 0) {
+                        const attr = lista[i];
+                        const valorAttr = parseInt(attr.valor) || 0;
+                        if (valorAttr !== 0) registrarGasto(-valorAttr, false, null);
+                        lista.splice(i, 1);
+                    }
                     renderizarAtributosCustom(false, null);
                     renderizarTestes('testesContainer', false, null);
+                    liberarRecalculoPrincipal();
                     atualizarPontos();
                     debounceSave();
                 }
@@ -2465,17 +2759,20 @@
             getAtributosCustomSub(subIndex).push(novo);
             renderizarAtributosCustom(true, subIndex);
             renderizarTestes(`subficha-testesContainer-${subIndex}`, true, subIndex);
+            liberarRecalculoSub(subIndex);
             atualizarPontosSub(subIndex);
             debounceSaveSubFicha();
         } else {
             getAtributosCustom().push(novo);
             renderizarAtributosCustom(false, null);
             renderizarTestes('testesContainer', false, null);
+            liberarRecalculoPrincipal();
             atualizarPontos();
             debounceSave();
         }
     }
-        // ============================================================
+
+    // ============================================================
     // CÁLCULO DE TOTAIS (com B1/B2 visíveis)
     // ============================================================
     function calcularTotalAtributoPrincipal(attr) {
@@ -2780,101 +3077,231 @@
         } catch (err) { console.warn('Erro ao atualizar badge de status global:', err); }
     }
     
-    function calcularGastosTotais() {
-        let gastos = 0;
-        const somarPositivo = (v) => { const n = parseInt(v) || 0; return n > 0 ? n : 0; };
-        
-        gastos += somarPositivo(document.getElementById('forca').value);
-        gastos += somarPositivo(document.getElementById('habilidade').value);
-        gastos += somarPositivo(document.getElementById('resistencia').value);
-        gastos += somarPositivo(document.getElementById('armadura').value);
-        gastos += somarPositivo(document.getElementById('pdf').value);
-        gastos += somarPositivo(document.getElementById('vantagemRegionalCusto').value);
-        gastos += somarPositivo(document.getElementById('vantagemUnicaCusto').value);
-        if (fichaListas.vantagens) fichaListas.vantagens.forEach(v => gastos += somarPositivo(v.valor));
-        // CORREÇÃO 2: Desvantagens NÃO contam como pontos gastos
-        // if (fichaListas.desvantagens) fichaListas.desvantagens.forEach(d => gastos += somarPositivo(d.valor));
-        if (fichaListas.pericias) fichaListas.pericias.forEach(p => gastos += somarPositivo(p.valor));
-        if (fichaListas.especializacoes) fichaListas.especializacoes.forEach(e => gastos += somarPositivo(e.valor));
-        if (fichaListas.kits) fichaListas.kits.forEach(kit => { gastos += somarPositivo(kit.custo); if (kit.habilidades) kit.habilidades.forEach(hab => gastos += somarPositivo(hab.custo)); });
+    // ============================================================
+    // CÁLCULO DE GASTOS (soma algébrica) — NÃO MEXER
+    // ============================================================
+    function calcularBonusNegativos() {
+        let bonus = 0;
+        const somarNeg = (v) => { const n = parseInt(v) || 0; return n < 0 ? Math.abs(n) : 0; };
+        bonus += somarNeg(document.getElementById('vantagemRegionalCusto')?.value);
+        bonus += somarNeg(document.getElementById('vantagemUnicaCusto')?.value);
+        if (fichaListas.vantagens) fichaListas.vantagens.forEach(v => bonus += somarNeg(v.valor));
+        if (fichaListas.desvantagens) fichaListas.desvantagens.forEach(d => bonus += somarNeg(d.valor));
+        if (fichaListas.pericias) fichaListas.pericias.forEach(p => bonus += somarNeg(p.valor));
+        if (fichaListas.especializacoes) fichaListas.especializacoes.forEach(e => bonus += somarNeg(e.valor));
+        if (fichaListas.kits) fichaListas.kits.forEach(kit => { bonus += somarNeg(kit.custo); if (kit.habilidades) kit.habilidades.forEach(h => bonus += somarNeg(h.custo)); });
         const customs = Array.isArray(atributosCustom) ? atributosCustom : [];
-        customs.forEach(attr => { gastos += somarPositivo(attr.valor); });
-        return gastos;
+        customs.forEach(a => bonus += somarNeg(a.valor));
+        return bonus;
     }
-    
-    function atualizarPontos() {
-        const pontosBase = parseFloat(pontosField?.getAttribute('data-base')) || 0;
-        const gastos = calcularGastosTotais();
-        const pontosRestantes = pontosBase - gastos;
-        pontosField.value = pontosRestantes;
-        if (pontosRestantes < 0) pontosField.classList.add('pontos-negativo'); else pontosField.classList.remove('pontos-negativo');
-        const pontosGastosInput = document.getElementById('pontosGastosInput');
-        if (pontosGastosInput) {
-            if (!pontosGastosInput.dataset.masterEditing || pontosGastosInput.dataset.masterEditing === 'false') {
-                pontosGastosInput.value = gastos;
-                if (gastosManuais !== null && (isGM || isMaster)) pontosGastosInput.value = gastosManuais;
-            }
-            if (isGM || isMaster) { pontosGastosInput.readOnly = false; pontosGastosInput.style.opacity = '1'; pontosGastosInput.style.cursor = 'text'; }
-            else { pontosGastosInput.readOnly = true; pontosGastosInput.style.opacity = '0.8'; pontosGastosInput.style.cursor = 'default'; }
-            const valorExibido = parseInt(pontosGastosInput.value) || 0;
-            pontosGastosInput.style.color = valorExibido > pontosBase ? '#c0392b' : '#4a8a4a';
-        }
-        atualizarIndicadoresAtributos();
-        return pontosRestantes;
-    }
-    
-    function calcularGastosTotaisSub(sub) {
-        let gastos = 0;
-        const somarPositivo = (v) => { const n = parseInt(v) || 0; return n > 0 ? n : 0; };
-        
-        gastos += somarPositivo(sub.forca);
-        gastos += somarPositivo(sub.habilidade);
-        gastos += somarPositivo(sub.resistencia);
-        gastos += somarPositivo(sub.armadura);
-        gastos += somarPositivo(sub.pdf);
-        gastos += somarPositivo(sub.vantagemRegionalCusto);
-        gastos += somarPositivo(sub.vantagemUnicaCusto);
-        if (sub.listas?.vantagens) sub.listas.vantagens.forEach(v => gastos += somarPositivo(v.valor));
-        // CORREÇÃO 2: Desvantagens NÃO contam como pontos gastos
-        // if (sub.listas?.desvantagens) sub.listas.desvantagens.forEach(d => gastos += somarPositivo(d.valor));
-        if (sub.listas?.pericias) sub.listas.pericias.forEach(p => gastos += somarPositivo(p.valor));
-        if (sub.listas?.especializacoes) sub.listas.especializacoes.forEach(e => gastos += somarPositivo(e.valor));
-        if (sub.listas?.kits) sub.listas.kits.forEach(kit => { gastos += somarPositivo(kit.custo); if (kit.habilidades) kit.habilidades.forEach(hab => gastos += somarPositivo(hab.custo)); });
+    function calcularBonusNegativosSub(sub) {
+        let bonus = 0;
+        const somarNeg = (v) => { const n = parseInt(v) || 0; return n < 0 ? Math.abs(n) : 0; };
+        bonus += somarNeg(sub.vantagemRegionalCusto);
+        bonus += somarNeg(sub.vantagemUnicaCusto);
+        if (sub.listas?.vantagens) sub.listas.vantagens.forEach(v => bonus += somarNeg(v.valor));
+        if (sub.listas?.desvantagens) sub.listas.desvantagens.forEach(d => bonus += somarNeg(d.valor));
+        if (sub.listas?.pericias) sub.listas.pericias.forEach(p => bonus += somarNeg(p.valor));
+        if (sub.listas?.especializacoes) sub.listas.especializacoes.forEach(e => bonus += somarNeg(e.valor));
+        if (sub.listas?.kits) sub.listas.kits.forEach(kit => { bonus += somarNeg(kit.custo); if (kit.habilidades) kit.habilidades.forEach(h => bonus += somarNeg(h.custo)); });
         const subIdx = subFichas.indexOf(sub);
         const customs = subIdx >= 0
             ? (Array.isArray(atributosCustomSub[subIdx]) ? atributosCustomSub[subIdx] : [])
             : (Array.isArray(sub.atributosCustom) ? sub.atributosCustom : []);
-        customs.forEach(attr => { gastos += somarPositivo(attr.valor); });
+        customs.forEach(a => bonus += somarNeg(a.valor));
+        return bonus;
+    }
+    
+    function calcularGastosTotais() {
+        let gastos = 0;
+        gastos += parseInt(document.getElementById('forca').value) || 0;
+        gastos += parseInt(document.getElementById('habilidade').value) || 0;
+        gastos += parseInt(document.getElementById('resistencia').value) || 0;
+        gastos += parseInt(document.getElementById('armadura').value) || 0;
+        gastos += parseInt(document.getElementById('pdf').value) || 0;
+        gastos += parseInt(document.getElementById('vantagemRegionalCusto').value) || 0;
+        gastos += parseInt(document.getElementById('vantagemUnicaCusto').value) || 0;
+        if (fichaListas.vantagens) fichaListas.vantagens.forEach(v => gastos += parseInt(v.valor) || 0);
+        if (fichaListas.desvantagens) fichaListas.desvantagens.forEach(d => gastos += parseInt(d.valor) || 0);
+        if (fichaListas.pericias) fichaListas.pericias.forEach(p => gastos += parseInt(p.valor) || 0);
+        if (fichaListas.especializacoes) fichaListas.especializacoes.forEach(e => gastos += parseInt(e.valor) || 0);
+        if (fichaListas.kits) fichaListas.kits.forEach(kit => { gastos += parseInt(kit.custo) || 0; if (kit.habilidades) kit.habilidades.forEach(hab => gastos += parseInt(hab.custo) || 0); });
+        const customs = Array.isArray(atributosCustom) ? atributosCustom : [];
+        customs.forEach(attr => { gastos += parseInt(attr.valor) || 0; });
+        return gastos;
+    }
+    
+    // ============================================================
+    // ATUALIZAR PONTOS - Exibe direto o _basePura
+    // ============================================================
+        function atualizarPontos() {
+        const baseInput = document.getElementById('pontosBase');
+        const gastosInput = document.getElementById('pontosGastosInput');
+        if (!baseInput) return 0;
+        const editandoBase = baseInput.dataset.masterEditing === 'true';
+        const editandoGastos = gastosInput && gastosInput.dataset.masterEditing === 'true';
+
+        // GASTOS: soma algébrica. Só recalcula se NÃO foi editado manualmente.
+        const gastosCalculados = calcularGastosTotais();
+        if (gastosInput && !editandoGastos && !gastosEditadoManualmente) {
+            gastosInput.value = gastosCalculados;
+        }
+
+        // _basePura: total de pontos concedidos pelo mestre (sem descontar gastos).
+        let basePura;
+        if (editandoBase) {
+            basePura = parseInt(baseInput.value) || 0;
+            baseInput.dataset.basePura = String(basePura);
+        } else {
+            basePura = (baseInput.dataset.basePura !== undefined)
+                ? (parseInt(baseInput.dataset.basePura) || 0)
+                : (parseInt(baseInput.value) || 0);
+        }
+
+        // Gastos efetivos (usa o que está no input, respeitando edição manual)
+        const gastosEfetivos = gastosInput
+            ? (parseInt(gastosInput.value) || 0)
+            : gastosCalculados;
+
+        // PERSONAGEM exibido = basePura − gastos (valor líquido)
+        const baseExibida = basePura - gastosEfetivos;
+        if (!editandoBase && !baseEditadaManualmente) {
+            baseInput.value = baseExibida;
+        }
+
+        const podeEditar = isGM || isMaster;
+        [baseInput, gastosInput].forEach(el => {
+            if (!el) return;
+            el.readOnly = !podeEditar;
+            el.style.opacity = podeEditar ? '1' : '0.85';
+        });
+        const bv = parseInt(baseInput.value) || 0;
+        const gv = gastosInput ? (parseInt(gastosInput.value) || 0) : 0;
+        if (bv < 0) baseInput.classList.add('pontos-negativo'); else baseInput.classList.remove('pontos-negativo');
+        if (gastosInput) { if (gv < 0) gastosInput.classList.add('pontos-negativo'); else gastosInput.classList.remove('pontos-negativo'); }
+        atualizarIndicadoresAtributos();
+        return bv - gv;
+    }
+
+    // ============================================================
+    // APLICAR DELTA NO _basePura (Opção A)
+    // delta positivo = ganhou pontos (ex: criou desvantagem -3 → delta +3)
+    // delta negativo = perdeu pontos (ex: apagou desvantagem -3 → delta -3)
+    // ============================================================
+    function aplicarDeltaBasePura(delta, isSub = false, subIndex = null) {
+        if (!delta || delta === 0) return;
+        if (isSub && subIndex !== null) {
+            const sub = subFichas[subIndex];
+            if (!sub) return;
+            if (sub._basePura === undefined || sub._basePura === null) {
+                const el = document.getElementById(`subficha-pontosBase-${subIndex}`);
+                sub._basePura = el ? (parseInt(el.value) || 0) : 0;
+            }
+            sub._basePura = (parseInt(sub._basePura) || 0) + delta;
+            sub.pontosBase = sub._basePura;
+            const el = document.getElementById(`subficha-pontosBase-${subIndex}`);
+            if (el) {
+                el.dataset.basePura = String(sub._basePura);
+            }
+            liberarRecalculoSub(subIndex);
+            atualizarPontosSub(subIndex);
+        } else {
+            const baseInput = document.getElementById('pontosBase');
+            if (!baseInput) return;
+            let basePura;
+            if (baseInput.dataset.basePura !== undefined) {
+                basePura = parseInt(baseInput.dataset.basePura) || 0;
+            } else {
+                basePura = parseInt(baseInput.value) || 0;
+            }
+                        basePura += delta;
+            baseInput.dataset.basePura = String(basePura);
+            liberarRecalculoPrincipal();
+            atualizarPontos();
+        }
+    }
+
+    // ============================================================
+    // REGISTRAR GASTO - Opção A
+    // deltaGasto positivo = gastou (diminui _basePura)
+    // deltaGasto negativo = devolveu (aumenta _basePura)
+    // ============================================================
+    function registrarGasto(deltaGasto, isSub = false, subIndex = null) {
+        if (!deltaGasto || deltaGasto === 0) return;
+        if (isSub && subIndex !== null) {
+            baseEditadaManualmenteSub[subIndex] = false;
+            gastosEditadoManualmenteSub[subIndex] = false;
+        } else {
+            baseEditadaManualmente = false;
+            gastosEditadoManualmente = false;
+        }
+        aplicarDeltaBasePura(-deltaGasto, isSub, subIndex);
+    }
+    
+    function calcularGastosTotaisSub(sub) {
+        let gastos = 0;
+        gastos += parseInt(sub.forca) || 0;
+        gastos += parseInt(sub.habilidade) || 0;
+        gastos += parseInt(sub.resistencia) || 0;
+        gastos += parseInt(sub.armadura) || 0;
+        gastos += parseInt(sub.pdf) || 0;
+        gastos += parseInt(sub.vantagemRegionalCusto) || 0;
+        gastos += parseInt(sub.vantagemUnicaCusto) || 0;
+        if (sub.listas?.vantagens) sub.listas.vantagens.forEach(v => gastos += parseInt(v.valor) || 0);
+        if (sub.listas?.desvantagens) sub.listas.desvantagens.forEach(d => gastos += parseInt(d.valor) || 0);
+        if (sub.listas?.pericias) sub.listas.pericias.forEach(p => gastos += parseInt(p.valor) || 0);
+        if (sub.listas?.especializacoes) sub.listas.especializacoes.forEach(e => gastos += parseInt(e.valor) || 0);
+        if (sub.listas?.kits) sub.listas.kits.forEach(kit => { gastos += parseInt(kit.custo) || 0; if (kit.habilidades) kit.habilidades.forEach(hab => gastos += parseInt(hab.custo) || 0); });
+        const subIdx = subFichas.indexOf(sub);
+        const customs = subIdx >= 0
+            ? (Array.isArray(atributosCustomSub[subIdx]) ? atributosCustomSub[subIdx] : [])
+            : (Array.isArray(sub.atributosCustom) ? sub.atributosCustom : []);
+        customs.forEach(attr => { gastos += parseInt(attr.valor) || 0; });
         return gastos;
     }
     
     function atualizarPontosSub(index) {
         const sub = subFichas[index];
         if (!sub) return;
-        const pontosInput = document.getElementById(`subficha-pontos-${index}`);
-        if (!pontosInput) return;
-        let pontosBase = Number(sub.pontosBase);
-        if (!Number.isFinite(pontosBase)) pontosBase = 0;
-        if (pontosBase > 100000 || pontosBase < -100000) pontosBase = 0;
-        sub.pontosBase = pontosBase;
-        const gastos = calcularGastosTotaisSub(sub);
-        const pontosRestantes = pontosBase - gastos;
-        pontosInput.value = pontosRestantes;
-        pontosInput.setAttribute('data-base', pontosBase);
-        sub.pontos = pontosRestantes;
-        if (pontosRestantes < 0) pontosInput.classList.add('pontos-negativo'); else pontosInput.classList.remove('pontos-negativo');
-        const pontosGastosInput = document.getElementById(`subficha-pontosGastos-${index}`);
-        if (pontosGastosInput) {
-            if (!pontosGastosInput.dataset.masterEditing || pontosGastosInput.dataset.masterEditing === 'false') {
-                pontosGastosInput.value = gastos;
-                if (sub.gastosManuais !== undefined && sub.gastosManuais !== null && (isGM || isMaster)) pontosGastosInput.value = sub.gastosManuais;
-            }
-            if (isGM || isMaster) { pontosGastosInput.readOnly = false; pontosGastosInput.style.opacity = '1'; pontosGastosInput.style.cursor = 'text'; }
-            else { pontosGastosInput.readOnly = true; pontosGastosInput.style.opacity = '0.8'; pontosGastosInput.style.cursor = 'default'; }
-            const valorExibido = parseInt(pontosGastosInput.value) || 0;
-            pontosGastosInput.style.color = valorExibido > pontosBase ? '#c0392b' : '#4a8a4a';
+        const baseInput = document.getElementById(`subficha-pontosBase-${index}`);
+        const gastosInput = document.getElementById(`subficha-pontosGastos-${index}`);
+        if (!baseInput) return;
+        const editandoBase = baseInput.dataset.masterEditing === 'true';
+        const editandoGastos = gastosInput && gastosInput.dataset.masterEditing === 'true';
+
+        // GASTOS: soma algébrica.
+        const gastosCalculados = calcularGastosTotaisSub(sub);
+        if (gastosInput && !editandoGastos && !gastosEditadoManualmenteSub[index]) {
+            gastosInput.value = gastosCalculados;
         }
-        return pontosRestantes;
+
+        // PERSONAGEM: exibe direto o _basePura.
+        let basePura;
+        if (editandoBase) {
+            basePura = parseInt(baseInput.value) || 0;
+            sub._basePura = basePura;
+        } else {
+            if (sub._basePura === undefined || sub._basePura === null) {
+                sub._basePura = parseInt(baseInput.value) || 0;
+            }
+            basePura = parseInt(sub._basePura) || 0;
+        }
+        const baseExibida = basePura;
+        if (!editandoBase && !baseEditadaManualmenteSub[index]) {
+            baseInput.value = baseExibida;
+        }
+        sub.pontosBase = parseInt(sub._basePura) || 0;
+        const podeEditar = isGM || isMaster;
+        [baseInput, gastosInput].forEach(el => {
+            if (!el) return;
+            el.readOnly = !podeEditar;
+            el.style.opacity = podeEditar ? '1' : '0.85';
+        });
+        const bv = parseInt(baseInput.value) || 0;
+        const gv = gastosInput ? (parseInt(gastosInput.value) || 0) : 0;
+        if (bv < 0) baseInput.classList.add('pontos-negativo'); else baseInput.classList.remove('pontos-negativo');
+        if (gastosInput) { if (gv < 0) gastosInput.classList.add('pontos-negativo'); else gastosInput.classList.remove('pontos-negativo'); }
+        return bv - gv;
     }
     
     function exibirInfo(nome, descricao) {
@@ -2883,8 +3310,7 @@
         addMensagem(texto, false);
         enviarRolagemFirebase(texto, false);
     }
-
-    // ============================================================
+        // ============================================================
     // MAGIAS
     // ============================================================
     function rolarDanoMagia(magiaIndex, isSub = false, subIndex = null) {
@@ -3047,7 +3473,7 @@
             const resultId = isSub ? `subficha-oficio-resultado-${subIndex}-${idx}` : `oficio-resultado-${idx}`;
             const attrValue = of.attr || 'H';
             const radioCartas = usandoCartas ? `<input type="radio" name="oficioCarta-${isSub ? 'sub' + subIndex : 'principal'}" class="oficio-radio-carta" data-oficio-radio="${idx}" data-oficio-is-sub="${isSub}" data-oficio-sub-idx="${isSub ? subIndex : ''}" ${of.selecionadoCarta ? 'checked' : ''} title="Selecionar para teste com cartas">` : '';
-            html += `<div class="oficio-item"><input type="text" class="oficio-nome" value="${escapeHtml(of.nome || '')}" placeholder="Nome do Ofício" data-oficio-field="nome" data-oficio-idx="${idx}" data-oficio-is-sub="${isSub}" data-oficio-sub-idx="${isSub ? subIndex : ''}"><select class="oficio-attr" data-oficio-field="attr" data-oficio-idx="${idx}" data-oficio-is-sub="${isSub}" data-oficio-sub-idx="${isSub ? subIndex : ''}">${ATRIBUTOS_OFICIO.map(a => `<option value="${a.id}" ${attrValue === a.id ? 'selected' : ''}>${a.label}</option>`).join('')}</select><input type="text" inputmode="numeric" pattern="[0-9]*" class="oficio-pericia-bonus" value="${bonusVal}" placeholder="Bônus" data-oficio-field="bonus" data-oficio-idx="${idx}" data-oficio-is-sub="${isSub}" data-oficio-sub-idx="${isSub ? subIndex : ''}"><input type="text" inputmode="numeric" pattern="[0-9]*" class="oficio-pericia-pen" value="${penVal}" placeholder="Pen." data-oficio-field="pen" data-oficio-idx="${idx}" data-oficio-is-sub="${isSub}" data-oficio-sub-idx="${isSub ? subIndex : ''}">${mostrarPE ? `<input type="text" inputmode="numeric" pattern="[0-9]*" class="oficio-pe-input" value="${peVal}" placeholder="PE" data-oficio-field="pe" data-oficio-idx="${idx}" data-oficio-is-sub="${isSub}" data-oficio-sub-idx="${isSub ? subIndex : ''}" title="Pontos de Esforço (1 a 6)">` : ''}<input type="checkbox" class="oficio-checkbox" ${treinado ? 'checked' : ''} data-oficio-field="treinado" data-oficio-idx="${idx}" data-oficio-is-sub="${isSub}" data-oficio-sub-idx="${isSub ? subIndex : ''}">${radioCartas}<button type="button" class="oficio-btn-roll" data-oficio-roll="1" data-oficio-idx="${idx}" data-oficio-is-sub="${isSub}" data-oficio-sub-idx="${isSub ? subIndex : ''}">🎲</button><div class="oficio-resultado" id="${resultId}"></div><button type="button" class="oficio-btn-del" data-oficio-del="1" data-oficio-idx="${idx}" data-oficio-is-sub="${isSub}" data-oficio-sub-idx="${isSub ? subIndex : ''}">❌</button></div>`;
+            html += `<div class="oficio-item"><input type="text" class="oficio-nome" value="${escapeHtml(of.nome || '')}" placeholder="Nome do Ofício" data-oficio-field="nome" data-oficio-idx="${idx}" data-oficio-is-sub="${isSub}" data-oficio-sub-idx="${isSub ? subIndex : ''}"><select class="oficio-attr" data-oficio-field="attr" data-oficio-idx="${idx}" data-oficio-is-sub="${isSub}" data-oficio-sub-idx="${isSub ? subIndex : ''}">${ATRIBUTOS_OFICIO.map(a => `<option value="${a.id}" ${attrValue === a.id ? 'selected' : ''}>${a.label}</option>`).join('')}</select><input type="text" inputmode="numeric" pattern="[0-9-]*" class="oficio-pericia-bonus" value="${bonusVal}" placeholder="Bônus" data-oficio-field="bonus" data-oficio-idx="${idx}" data-oficio-is-sub="${isSub}" data-oficio-sub-idx="${isSub ? subIndex : ''}"><input type="text" inputmode="numeric" pattern="[0-9-]*" class="oficio-pericia-pen" value="${penVal}" placeholder="Pen." data-oficio-field="pen" data-oficio-idx="${idx}" data-oficio-is-sub="${isSub}" data-oficio-sub-idx="${isSub ? subIndex : ''}">${mostrarPE ? `<input type="text" inputmode="numeric" pattern="[0-9]*" class="oficio-pe-input" value="${peVal}" placeholder="PE" data-oficio-field="pe" data-oficio-idx="${idx}" data-oficio-is-sub="${isSub}" data-oficio-sub-idx="${isSub ? subIndex : ''}" title="Pontos de Esforço (1 a 6)">` : ''}<input type="checkbox" class="oficio-checkbox" ${treinado ? 'checked' : ''} data-oficio-field="treinado" data-oficio-idx="${idx}" data-oficio-is-sub="${isSub}" data-oficio-sub-idx="${isSub ? subIndex : ''}">${radioCartas}<button type="button" class="oficio-btn-roll" data-oficio-roll="1" data-oficio-idx="${idx}" data-oficio-is-sub="${isSub}" data-oficio-sub-idx="${isSub ? subIndex : ''}">🎲</button><div class="oficio-resultado" id="${resultId}"></div><button type="button" class="oficio-btn-del" data-oficio-del="1" data-oficio-idx="${idx}" data-oficio-is-sub="${isSub}" data-oficio-sub-idx="${isSub ? subIndex : ''}">❌</button></div>`;
         });
         container.innerHTML = html;
         container.querySelectorAll('[data-oficio-add]').forEach(btn => {
@@ -3462,6 +3888,13 @@
         return estado.monte.shift() || null;
     }
     
+    // ============================================================
+    // RENDERIZAR CARTAS DE COMBATE - CORRIGIDO
+    // Ao revelar carta, ela é marcada como "revelada" (não vira mais).
+    // Ao escolher uma carta revelada, ela é marcada como escolhida.
+    // Clique repetido na carta escolhida não faz nada.
+    // Clique em outra carta revelada troca a escolha.
+    // ============================================================
     function renderizarCartasCombate(chave, containerId) {
         const container = document.getElementById(containerId);
         if (!container) return;
@@ -3476,6 +3909,8 @@
             estado.mao.forEach((c, idx) => {
                 const sel = estado.selecionadas.some(s => s.id === c.id);
                 const escolhida = estado.cartaEscolhidaId === c.id && !c.usada;
+                // MODIFICAÇÃO: cartas reveladas (não viradas) ficam "revelada"
+                const revelada = c.revelada === true && !c.usada;
                 if (comboPermitido) {
                     const corClasse = c.coringa ? 'coringa' : (c.vermelha ? 'vermelha' : 'preta');
                     const valorExib = c.coringa ? '★' : c.valor;
@@ -3489,6 +3924,10 @@
                         const corClasse = c.coringa ? 'coringa' : (c.vermelha ? 'vermelha' : 'preta');
                         const valorExib = c.coringa ? '★' : c.valor;
                         html += `<div class="baralho-carta ${corClasse} selecionada" data-carta-combate-idx="${idx}" data-carta-combate-chave="${chave}" title="Carta escolhida. Clique em 🎲 Rolar para usar."><span class="carta-topo">${valorExib}</span><span class="carta-valor">${valorExib}</span><span class="carta-naipe">${c.naipe}</span></div>`;
+                    } else if (revelada) {
+                        const corClasse = c.coringa ? 'coringa' : (c.vermelha ? 'vermelha' : 'preta');
+                        const valorExib = c.coringa ? '★' : c.valor;
+                        html += `<div class="baralho-carta ${corClasse}" data-carta-combate-idx="${idx}" data-carta-combate-chave="${chave}" title="Clique para escolher esta carta"><span class="carta-topo">${valorExib}</span><span class="carta-valor">${valorExib}</span><span class="carta-naipe">${c.naipe}</span></div>`;
                     } else {
                         html += `<div class="baralho-carta virada" data-carta-combate-idx="${idx}" data-carta-combate-chave="${chave}" title="Clique para revelar e escolher"></div>`;
                     }
@@ -3503,7 +3942,7 @@
         }
         container.innerHTML = html;
         container.querySelectorAll('[data-comprar-combate]').forEach(b => { b.onclick = () => { comprarMaoCombate(b.dataset.comprarCombate); renderizarCartasCombate(chave, containerId); salvarForcado(); }; });
-        container.querySelectorAll('[data-limpar-combate]').forEach(b => { b.onclick = () => { const est = baralhosCombate[b.dataset.limparCombate]; if (est) { est.selecionadas = []; est.cartaEscolhidaId = null; renderizarCartasCombate(chave, containerId); } }; });
+        container.querySelectorAll('[data-limpar-combate]').forEach(b => { b.onclick = () => { const est = baralhosCombate[b.dataset.limparCombate]; if (est) { est.selecionadas = []; est.cartaEscolhidaId = null; est.mao.forEach(c => { if (!c.usada && !comboPermitido) c.revelada = false; }); renderizarCartasCombate(chave, containerId); } }; });
         container.querySelectorAll('[data-nova-mao-combate]').forEach(b => { b.onclick = () => { comprarMaoCombate(b.dataset.novaMaoCombate); renderizarCartasCombate(chave, containerId); salvarForcado(); }; });
         container.querySelectorAll('[data-carta-combate-idx]').forEach(el => {
             el.onclick = () => {
@@ -3530,11 +3969,21 @@
                     renderizarCartasCombate(ch, containerId);
                     return;
                 }
+                // Modo sem combo:
+                // 1) Se já está escolhida, não faz nada (trava o clique repetido)
                 if (est.cartaEscolhidaId === carta.id) {
-                    est.cartaEscolhidaId = null;
-                } else {
-                    est.cartaEscolhidaId = carta.id;
+                    return;
                 }
+                // 2) Se ainda não foi revelada, revela e escolhe
+                if (!carta.revelada) {
+                    carta.revelada = true;
+                    est.cartaEscolhidaId = carta.id;
+                    renderizarCartasCombate(ch, containerId);
+                    salvarForcado();
+                    return;
+                }
+                // 3) Se já foi revelada (mas não escolhida), escolhe (troca)
+                est.cartaEscolhidaId = carta.id;
                 renderizarCartasCombate(ch, containerId);
                 salvarForcado();
             };
@@ -4420,8 +4869,7 @@
             });
         }
     }
-    
-    function adicionarAtaque(tipo, isSub = false, subIndex = null) {
+        function adicionarAtaque(tipo, isSub = false, subIndex = null) {
         const novo = { nome: 'Novo Ataque', b1: 0, b2: 0, bfa: 0, chkB1: true, chkB2: true, chkBFA: true, qtdDados: 1, criticoAutomatico: false, criticoAprimorado: false };
         if (isSub && subIndex !== null) { if (tipo === 'curto') { if (!ataquesCurtoSub[subIndex]) ataquesCurtoSub[subIndex] = []; ataquesCurtoSub[subIndex].push({ ...novo }); } else { if (!ataquesDistanciaSub[subIndex]) ataquesDistanciaSub[subIndex] = []; ataquesDistanciaSub[subIndex].push({ ...novo }); } }
         else { if (tipo === 'curto') ataquesCurto.push({ ...novo }); else ataquesDistancia.push({ ...novo }); }
@@ -4488,6 +4936,9 @@
         if (btnConverter) btnConverter.disabled = (xp < 10);
     }
     
+    // ============================================================
+    // CONVERTER XP - usa aplicarDeltaBasePura (Opção A)
+    // ============================================================
     async function converterXP() {
         const xpFieldEl = document.getElementById('xp');
         const converterAmount = document.getElementById('xpConverterAmount');
@@ -4499,9 +4950,8 @@
         const pontosGanhos = qtdConverter / 10;
         xpFieldEl.value = xpAtual - qtdConverter;
         converterAmount.value = '';
-        const baseAtual = parseFloat(pontosField.getAttribute('data-base')) || 0;
-        pontosField.setAttribute('data-base', baseAtual + pontosGanhos);
-        atualizarPontos();
+        // Soma direto no _basePura via aplicarDeltaBasePura
+        aplicarDeltaBasePura(pontosGanhos, false, null);
         const nomePersonagem = document.getElementById('nomePersonagem').value || currentUserName || 'Jogador';
         const quem = isGM ? 'Mestre' : nomePersonagem;
         const mensagem = `🎲 ${quem} converteu ${qtdConverter} XP e ganhou ${pontosGanhos} ponto(s) de personagem!`;
@@ -4509,7 +4959,9 @@
         await enviarRolagemFirebase(mensagem, false);
         atualizarBotaoConverter();
         await salvarFichaAtual();
-    }    function getSubFichaVazia(nome, tipo, criadorId) {
+    }
+    
+    function getSubFichaVazia(nome, tipo, criadorId) {
         const statusSubInicial = {};
         STATUS_LISTA.forEach(s => { statusSubInicial[s.id] = false; });
         return {
@@ -4521,7 +4973,7 @@
             bonusForca: 0, bonusForca2: 0, bonusForcaDefesa: 0,
             bonusPdf: 0, bonusPdf2: 0, bonusPdfDefesa: 0,
             pdf: 0, pvTotal: 0, pvAtual: 0, bonusPv: 0, pmTotal: 0, pmAtual: 0, bonusPm: 0,
-            pontosBase: 0, pontos: 0, xp: 0, dinheiro: 0, gastosManuais: null,
+            pontosBase: 0, _basePura: 0, xp: 0, dinheiro: 0, gastosManuais: null,
             vantagemRegionalNome: '', vantagemRegionalCusto: 0, vantagemRegionalDesc: '',
             vantagemUnicaNome: '', vantagemUnicaCusto: 0, vantagemUnicaDesc: '',
             listas: { vantagens: [], desvantagens: [], pericias: [], especializacoes: [], itens: [], equipamentos: [], tiposDano: [], magias: [], kits: [] },
@@ -4697,9 +5149,7 @@
             container.appendChild(subContainer);
         }
         const estaExpandida = subContainer.dataset.expandida === 'true';
-        // CORREÇÃO 1: Jogadores podem editar/excluir as subfichas que eles criaram
-        // Verifica tanto por currentUserId quanto por codigoPersonagemAtual para garantir
-        const podeEditar = isGM || isMaster || sub.criadoPor === currentUserId || (codigoPersonagemAtual && sub.criadoPor === codigoPersonagemAtual);
+        const podeEditar = isGM || isMaster || sub.criadoPor === currentUserId || sub.criadoPor === codigoPersonagemAtual || (visualizandoId && visualizandoId === currentUserId);
         const tipoDisplay = sub.tipo === 'aliado' ? '🤝 Aliado' : (sub.tipo === 'familiar' ? '🐾 Familiar' : '✨ Invocação');
         const tipoClass = sub.tipo === 'aliado' ? 'aliado' : (sub.tipo === 'familiar' ? 'familiar' : 'invocacao');
         let html = `<div class="subficha-header"><div><h3>${escapeHtml(sub.nome)} <span class="subficha-tipo ${tipoClass}">${tipoDisplay}</span></h3></div><div class="subficha-acoes">${podeEditar ? `<button class="btn-subficha-expandir" data-idx="${index}">${estaExpandida ? '📋 Resumo' : '✏️ Editar'}</button>` : ''}${podeEditar ? `<button class="btn-subficha excluir" data-idx="${index}">🗑️ Excluir</button>` : ''}</div></div><div class="subficha-resumo"><div class="subficha-detalhes"><span>💪 F: ${sub.forca}</span><span>🎯 H: ${sub.habilidade} ${sub.bonusHabilidade ? `(+${sub.bonusHabilidade})` : ''} ${sub.bonusHabilidade2 ? `(+${sub.bonusHabilidade2})` : ''}</span><span>🛡️ R: ${sub.resistencia} ${sub.bonusResistencia ? `(+${sub.bonusResistencia})` : ''} ${sub.bonusResistencia2 ? `(+${sub.bonusResistencia2})` : ''}</span><span>⚔️ A: ${sub.armadura}</span><span>🔮 PdF: ${sub.pdf}</span><span>❤️ PV: ${sub.pvAtual}/${sub.pvTotal} (Bônus: ${sub.bonusPv})</span><span>✨ PM: ${sub.pmAtual}/${sub.pmTotal} (Bônus: ${sub.bonusPm})</span>${sub.escala ? `<span>📏 Escala: ${escapeHtml(sub.escala)}</span>` : ''}</div></div>`;
@@ -4773,12 +5223,12 @@
                         <div class="card-atributos">
                             <h3 style="margin-top:0; font-size:12px;">📊 Atributos</h3>
                             <div class="subficha-atributos-3colunas">
-                                <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">💪 F</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-forca-${index}" value="${sub.forca}"></div><div class="subficha-total-losango" title="Total de Força"><span class="atributo-total-valor" id="subficha-totalForca-${index}">0</span></div></div><div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusForca-${index}" value="${sub.bonusForca || 0}"></div><input type="checkbox" id="subficha-chkBonusForca-${index}" class="bonus-checkbox" checked></div><div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusForca2-${index}" value="${sub.bonusForca2 || 0}"></div><input type="checkbox" id="subficha-chkBonusForca2-${index}" class="bonus-checkbox" checked></div></div>
-                                <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">🎯 H</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-habilidade-${index}" value="${sub.habilidade}"></div><div class="subficha-total-losango" title="Total de Habilidade"><span class="atributo-total-valor" id="subficha-totalHabilidade-${index}">0</span></div></div><div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusHabilidade-${index}" value="${sub.bonusHabilidade}"></div><input type="checkbox" id="subficha-chkBonusHabilidade-${index}" class="bonus-checkbox" checked></div><div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusHabilidade2-${index}" value="${sub.bonusHabilidade2}"></div><input type="checkbox" id="subficha-chkBonusHabilidade2-${index}" class="bonus-checkbox" checked></div></div>
-                                <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">🛡️ R</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-resistencia-${index}" value="${sub.resistencia}"></div><div class="subficha-total-losango" title="Total de Resistência"><span class="atributo-total-valor" id="subficha-totalResistencia-${index}">0</span></div></div><div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusResistencia-${index}" value="${sub.bonusResistencia}"></div><input type="checkbox" id="subficha-chkBonusResistencia-${index}" class="bonus-checkbox" checked></div><div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusResistencia2-${index}" value="${sub.bonusResistencia2}"></div><input type="checkbox" id="subficha-chkBonusResistencia2-${index}" class="bonus-checkbox" checked></div></div>
-                                <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">⚔️ A</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-armadura-${index}" value="${sub.armadura}"></div><div class="subficha-total-losango" title="Total de Armadura"><span class="atributo-total-valor" id="subficha-totalArmadura-${index}">0</span></div></div><div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusArmadura-${index}" value="${sub.bonusArmadura || 0}"></div><input type="checkbox" id="subficha-chkBonusArmadura-${index}" class="bonus-checkbox" checked></div><div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusArmadura2-${index}" value="${sub.bonusArmadura2 || 0}"></div><input type="checkbox" id="subficha-chkBonusArmadura2-${index}" class="bonus-checkbox" checked></div></div>
-                                <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">🔮 PdF</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-pdf-${index}" value="${sub.pdf}"></div><div class="subficha-total-losango" title="Total de Poder de Fogo"><span class="atributo-total-valor" id="subficha-totalPdf-${index}">0</span></div></div><div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusPdf-${index}" value="${sub.bonusPdf || 0}"></div><input type="checkbox" id="subficha-chkBonusPdf-${index}" class="bonus-checkbox" checked></div><div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusPdf2-${index}" value="${sub.bonusPdf2 || 0}"></div><input type="checkbox" id="subficha-chkBonusPdf2-${index}" class="bonus-checkbox" checked></div></div>
-                                <div class="subficha-rolagem-generica-item"><div class="rolagem-titulo">🎲 Rolagem Genérica</div><div class="rolagem-campos"><div class="roll-row"><label>Dados</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-qtdDados-${index}" value="1"><label>Mod</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-modRoll-${index}" value="0"></div><button class="btn-roll-sub" data-sub="${index}">🎲 Rolar</button></div></div>
+                                <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">💪 F</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-forca-${index}" value="${sub.forca}"></div><div class="subficha-total-losango" title="Total de Força"><span class="atributo-total-valor" id="subficha-totalForca-${index}">0</span></div></div><div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-bonusForca-${index}" value="${sub.bonusForca || 0}"></div><input type="checkbox" id="subficha-chkBonusForca-${index}" class="bonus-checkbox" checked></div><div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-bonusForca2-${index}" value="${sub.bonusForca2 || 0}"></div><input type="checkbox" id="subficha-chkBonusForca2-${index}" class="bonus-checkbox" checked></div></div>
+                                <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">🎯 H</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-habilidade-${index}" value="${sub.habilidade}"></div><div class="subficha-total-losango" title="Total de Habilidade"><span class="atributo-total-valor" id="subficha-totalHabilidade-${index}">0</span></div></div><div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-bonusHabilidade-${index}" value="${sub.bonusHabilidade}"></div><input type="checkbox" id="subficha-chkBonusHabilidade-${index}" class="bonus-checkbox" checked></div><div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-bonusHabilidade2-${index}" value="${sub.bonusHabilidade2}"></div><input type="checkbox" id="subficha-chkBonusHabilidade2-${index}" class="bonus-checkbox" checked></div></div>
+                                <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">🛡️ R</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-resistencia-${index}" value="${sub.resistencia}"></div><div class="subficha-total-losango" title="Total de Resistência"><span class="atributo-total-valor" id="subficha-totalResistencia-${index}">0</span></div></div><div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-bonusResistencia-${index}" value="${sub.bonusResistencia}"></div><input type="checkbox" id="subficha-chkBonusResistencia-${index}" class="bonus-checkbox" checked></div><div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-bonusResistencia2-${index}" value="${sub.bonusResistencia2}"></div><input type="checkbox" id="subficha-chkBonusResistencia2-${index}" class="bonus-checkbox" checked></div></div>
+                                <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">⚔️ A</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-armadura-${index}" value="${sub.armadura}"></div><div class="subficha-total-losango" title="Total de Armadura"><span class="atributo-total-valor" id="subficha-totalArmadura-${index}">0</span></div></div><div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-bonusArmadura-${index}" value="${sub.bonusArmadura || 0}"></div><input type="checkbox" id="subficha-chkBonusArmadura-${index}" class="bonus-checkbox" checked></div><div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-bonusArmadura2-${index}" value="${sub.bonusArmadura2 || 0}"></div><input type="checkbox" id="subficha-chkBonusArmadura2-${index}" class="bonus-checkbox" checked></div></div>
+                                <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">🔮 PdF</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-pdf-${index}" value="${sub.pdf}"></div><div class="subficha-total-losango" title="Total de Poder de Fogo"><span class="atributo-total-valor" id="subficha-totalPdf-${index}">0</span></div></div><div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-bonusPdf-${index}" value="${sub.bonusPdf || 0}"></div><input type="checkbox" id="subficha-chkBonusPdf-${index}" class="bonus-checkbox" checked></div><div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-bonusPdf2-${index}" value="${sub.bonusPdf2 || 0}"></div><input type="checkbox" id="subficha-chkBonusPdf2-${index}" class="bonus-checkbox" checked></div></div>
+                                <div class="subficha-rolagem-generica-item"><div class="rolagem-titulo">🎲 Rolagem Genérica</div><div class="rolagem-campos"><div class="roll-row"><label>Dados</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-qtdDados-${index}" value="1"><label>Mod</label><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-modRoll-${index}" value="0"></div><button class="btn-roll-sub" data-sub="${index}">🎲 Rolar</button></div></div>
                                 <div id="subficha-atributosCustom-${index}" style="display: contents;"></div>
                                 <button type="button" class="btn-add-atributo" data-custom-add-sub="${index}">➕ Novo Atributo</button>
                             </div>
@@ -4786,7 +5236,7 @@
                         <div class="subficha-recursos-3colunas">
                             <div class="subficha-recurso subficha-recurso-pv"><label>❤️ PV</label><div class="recurso-linha"><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-pvTotal-${index}" value="${sub.pvTotal}"><span>/</span><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-pvAtual-${index}" value="${sub.pvAtual}"><span>+</span><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusPv-${index}" class="bonus-pv-pm" value="${sub.bonusPv}"></div></div>
                             <div class="subficha-recurso"><label>✨ PM</label><div class="recurso-linha"><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-pmTotal-${index}" value="${sub.pmTotal}"><span>/</span><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-pmAtual-${index}" value="${sub.pmAtual}"><span>+</span><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusPm-${index}" class="bonus-pv-pm" value="${sub.bonusPm}"></div></div>
-                            <div class="subficha-recurso"><label>💰 Pontos</label><div class="recurso-linha" style="flex-direction: column; gap: 2px;"><div style="display: flex; gap: 2px; justify-content: center; align-items: center; width: 100%;"><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-pontos-${index}" value="${sub.pontos || 0}" class="input-full" data-base="${sub.pontosBase || 0}" style="width: 60%;"></div><div class="pontos-gastos"><span>Gastos: </span><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-pontosGastos-${index}" value="${sub.gastosManuais !== null ? sub.gastosManuais : 0}" class="input-gasto"></div></div></div>
+                            <div class="subficha-recurso-pontos"><label class="titulo">💰 Pontos</label><div class="pontos-linha"><span class="rotulo">Personagem:</span><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-pontosBase-${index}" value="${sub.pontosBase ?? 0}"></div><div class="pontos-linha"><span class="rotulo gastos">Gastos:</span><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-pontosGastos-${index}" value="${sub.pontosGastos ?? 0}"></div></div>
                             <div class="subficha-recurso"><label>⭐ XP</label><div class="recurso-linha"><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-xp-${index}" value="${sub.xp}" class="input-full"></div></div>
                             <div class="subficha-recurso-converter"><label>🔄 Converter</label><div class="converter-linha"><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-xpConverterAmount-${index}" placeholder="XP"><button id="subficha-btnConverterXP-${index}" disabled>Conv</button></div><div class="xp-info">10 XP = 1 ponto</div></div>
                             <div class="subficha-recurso"><label>🪙 T$</label><div class="recurso-linha"><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-dinheiro-${index}" value="${sub.dinheiro}" class="input-full"></div></div>
@@ -4813,8 +5263,8 @@
             </div>
             <div id="subficha-aba-vantagens-${index}" class="subficha-aba-conteudo">
                 <div class="grid-4">
-                    <div class="card-full" style="margin-bottom: 20px;"><h3>🌟 Vantagem Regional</h3><div class="item"><div class="item-linha"><input type="text" id="subficha-vantagemRegionalNome-${index}" placeholder="Nome da Vantagem Regional" style="flex:2;" value="${escapeHtml(sub.vantagemRegionalNome || '')}"><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-vantagemRegionalCusto-${index}" class="valor" placeholder="Custo" value="${sub.vantagemRegionalCusto || 0}"><button class="btn-desc-sub" id="subficha-btnToggleVantagemRegional-${index}">📖</button><button class="btn-info-sub-item subficha-info-btn" data-sub-info-tipo="vantagemRegional" data-sub-info-idx="${index}">i</button></div><div id="subficha-vantagemRegionalDescEditor-${index}" style="display:none;" class="desc-editor"><textarea id="subficha-vantagemRegionalDesc-${index}" rows="3" placeholder="Descrição da Vantagem Regional...">${escapeHtml(sub.vantagemRegionalDesc || '')}</textarea></div></div></div>
-                    <div class="card-full" style="margin-bottom: 20px;"><h3>🌟 Vantagem Única</h3><div class="item"><div class="item-linha"><input type="text" id="subficha-vantagemUnicaNome-${index}" placeholder="Nome da Vantagem Única" value="${escapeHtml(sub.vantagemUnicaNome)}"><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-vantagemUnicaCusto-${index}" class="valor" placeholder="Custo" value="${sub.vantagemUnicaCusto}"><button class="btn-desc-sub" id="subficha-btnToggleVantagemUnica-${index}">📖</button><button class="btn-info-sub-item subficha-info-btn" data-sub-info-tipo="vantagemUnica" data-sub-info-idx="${index}">i</button></div><div id="subficha-vantagemUnicaDescEditor-${index}" style="display:none;" class="desc-editor"><textarea id="subficha-vantagemUnicaDesc-${index}" rows="3" placeholder="Descrição da Vantagem Única...">${escapeHtml(sub.vantagemUnicaDesc)}</textarea></div></div></div>
+                    <div class="card-full" style="margin-bottom: 20px;"><h3>🌟 Vantagem Regional</h3><div class="item"><div class="item-linha"><input type="text" id="subficha-vantagemRegionalNome-${index}" placeholder="Nome da Vantagem Regional" style="flex:2;" value="${escapeHtml(sub.vantagemRegionalNome || '')}"><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-vantagemRegionalCusto-${index}" class="valor" placeholder="Custo" value="${sub.vantagemRegionalCusto || 0}"><button class="btn-desc-sub" id="subficha-btnToggleVantagemRegional-${index}">📖</button><button class="btn-info-sub-item subficha-info-btn" data-sub-info-tipo="vantagemRegional" data-sub-info-idx="${index}">i</button></div><div id="subficha-vantagemRegionalDescEditor-${index}" style="display:none;" class="desc-editor"><textarea id="subficha-vantagemRegionalDesc-${index}" rows="3" placeholder="Descrição da Vantagem Regional...">${escapeHtml(sub.vantagemRegionalDesc || '')}</textarea></div></div></div>
+                    <div class="card-full" style="margin-bottom: 20px;"><h3>🌟 Vantagem Única</h3><div class="item"><div class="item-linha"><input type="text" id="subficha-vantagemUnicaNome-${index}" placeholder="Nome da Vantagem Única" value="${escapeHtml(sub.vantagemUnicaNome)}"><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-vantagemUnicaCusto-${index}" class="valor" placeholder="Custo" value="${sub.vantagemUnicaCusto}"><button class="btn-desc-sub" id="subficha-btnToggleVantagemUnica-${index}">📖</button><button class="btn-info-sub-item subficha-info-btn" data-sub-info-tipo="vantagemUnica" data-sub-info-idx="${index}">i</button></div><div id="subficha-vantagemUnicaDescEditor-${index}" style="display:none;" class="desc-editor"><textarea id="subficha-vantagemUnicaDesc-${index}" rows="3" placeholder="Descrição da Vantagem Única...">${escapeHtml(sub.vantagemUnicaDesc)}</textarea></div></div></div>
                     <div class="card-lista"><h3>✅ Vantagens</h3><div id="subficha-vantagensLista-${index}" class="lista"></div><button class="btn-add" onclick="window.adicionarItemSubLista(${index}, 'vantagens')">+ Adicionar Vantagem</button></div>
                     <div class="card-lista"><h3>❌ Desvantagens</h3><div id="subficha-desvantagensLista-${index}" class="lista"></div><button class="btn-add" onclick="window.adicionarItemSubLista(${index}, 'desvantagens')">+ Adicionar Desvantagem</button></div>
                     <div class="card-lista"><h3>⚡ Perícias</h3><div id="subficha-periciasLista-${index}" class="lista"></div><button class="btn-add" onclick="window.adicionarItemSubLista(${index}, 'pericias')">+ Adicionar Perícia</button></div>
@@ -4897,17 +5347,32 @@
         atributosSub.forEach(attr => {
             const input = document.getElementById(`subficha-${attr}-${index}`);
             if (input) {
-                input.oninput = () => {
-                    const field = input.id.split('-')[1];
-                    sub[field] = input.type === 'number' ? (parseInt(input.value) || 0) : input.value;
-                    if (['forca', 'habilidade', 'resistencia', 'armadura', 'pdf'].includes(field)) atualizarPontosSub(index);
-                    atualizarIndicadoresAtributosSub(index); debounceSaveSubFicha();
-                };
+                // Atributos principais (F, H, R, A, PdF) registram gasto
+                if (['forca', 'habilidade', 'resistencia', 'armadura', 'pdf'].includes(attr)) {
+                    input.addEventListener('focus', () => { input.dataset.valorAnterior = String(parseInt(input.value) || 0); });
+                    input.addEventListener('input', () => {
+                        sub[attr] = parseInt(input.value) || 0;
+                        liberarRecalculoSub(index); atualizarPontosSub(index);
+                        atualizarIndicadoresAtributosSub(index); debounceSaveSubFicha();
+                    });
+                    input.addEventListener('blur', () => {
+                        const valorAnterior = parseInt(input.dataset.valorAnterior) || 0;
+                        const valorNovo = parseInt(input.value) || 0;
+                        const deltaGasto = valorNovo - valorAnterior;
+                        if (deltaGasto !== 0) registrarGasto(deltaGasto, true, index);
+                        input.dataset.valorAnterior = String(valorNovo);
+                    });
+                } else {
+                    input.oninput = () => {
+                        const field = input.id.split('-')[1];
+                        sub[field] = input.type === 'number' ? (parseInt(input.value) || 0) : input.value;
+                        atualizarIndicadoresAtributosSub(index); debounceSaveSubFicha();
+                    };
+                }
             }
         });
         const escalaInput = document.getElementById(`subficha-escala-${index}`);
         if (escalaInput) escalaInput.oninput = () => { sub.escala = escalaInput.value; debounceSaveSubFicha(); };
-        // CORREÇÃO: Não re-renderizar a sub-ficha ao digitar o nome (fecha ela)
         const nomeInput = document.getElementById(`subficha-nome-${index}`);
         if (nomeInput) nomeInput.oninput = () => { sub.nome = nomeInput.value; debounceSaveSubFicha(); };
         ['Habilidade', 'Resistência', 'Forca', 'Armadura', 'Pdf'].forEach(nome => {
@@ -4918,10 +5383,49 @@
         });
         const btnAddAtributoSub = document.querySelector(`[data-custom-add-sub="${index}"]`);
         if (btnAddAtributoSub) btnAddAtributoSub.onclick = () => adicionarAtributoCustom(true, index);
+        const subBaseInput = document.getElementById(`subficha-pontosBase-${index}`);
+        const subGastosInput = document.getElementById(`subficha-pontosGastos-${index}`);
+        if (subBaseInput) {
+            subBaseInput.addEventListener('focus', () => { if (isGM || isMaster) subBaseInput.dataset.masterEditing = 'true'; });
+            subBaseInput.addEventListener('input', () => {
+                if (subBaseInput.dataset.masterEditing === 'true') {
+                    sub._basePura = parseInt(subBaseInput.value) || 0;
+                }
+                atualizarPontosSub(index); debounceSaveSubFicha();
+            });
+            subBaseInput.addEventListener('blur', () => {
+                if (isGM || isMaster) {
+                    subBaseInput.dataset.masterEditing = 'false';
+                    baseEditadaManualmenteSub[index] = true;
+                    atualizarPontosSub(index); debounceSaveSubFicha();
+                }
+            });
+        }
+        if (subGastosInput) {
+            subGastosInput.addEventListener('focus', () => { if (isGM || isMaster) subGastosInput.dataset.masterEditing = 'true'; });
+            subGastosInput.addEventListener('blur', () => {
+                if (isGM || isMaster) {
+                    subGastosInput.dataset.masterEditing = 'false';
+                    sub.pontosGastos = parseInt(subGastosInput.value) || 0;
+                    gastosEditadoManualmenteSub[index] = true;
+                    atualizarPontosSub(index); debounceSaveSubFicha();
+                }
+            });
+        }
         const vRN = document.getElementById(`subficha-vantagemRegionalNome-${index}`);
         if (vRN) vRN.oninput = () => { sub.vantagemRegionalNome = vRN.value; debounceSaveSubFicha(); };
         const vRC = document.getElementById(`subficha-vantagemRegionalCusto-${index}`);
-        if (vRC) vRC.oninput = () => { sub.vantagemRegionalCusto = parseInt(vRC.value) || 0; atualizarPontosSub(index); debounceSaveSubFicha(); };
+        if (vRC) {
+            vRC.addEventListener('focus', () => { vRC.dataset.valorAnterior = String(parseInt(vRC.value) || 0); });
+            vRC.addEventListener('input', () => { sub.vantagemRegionalCusto = parseInt(vRC.value) || 0; liberarRecalculoSub(index); atualizarPontosSub(index); debounceSaveSubFicha(); });
+            vRC.addEventListener('blur', () => {
+                const valorAnterior = parseInt(vRC.dataset.valorAnterior) || 0;
+                const valorNovo = parseInt(vRC.value) || 0;
+                const deltaGasto = valorNovo - valorAnterior;
+                if (deltaGasto !== 0) registrarGasto(deltaGasto, true, index);
+                vRC.dataset.valorAnterior = String(valorNovo);
+            });
+        }
         const vRD = document.getElementById(`subficha-vantagemRegionalDesc-${index}`);
         if (vRD) vRD.oninput = () => { sub.vantagemRegionalDesc = vRD.value; debounceSaveSubFicha(); };
         const btnTR = document.getElementById(`subficha-btnToggleVantagemRegional-${index}`);
@@ -4929,7 +5433,17 @@
         const vUN = document.getElementById(`subficha-vantagemUnicaNome-${index}`);
         if (vUN) vUN.oninput = () => { sub.vantagemUnicaNome = vUN.value; debounceSaveSubFicha(); };
         const vUC = document.getElementById(`subficha-vantagemUnicaCusto-${index}`);
-        if (vUC) vUC.oninput = () => { sub.vantagemUnicaCusto = parseInt(vUC.value) || 0; atualizarPontosSub(index); debounceSaveSubFicha(); };
+        if (vUC) {
+            vUC.addEventListener('focus', () => { vUC.dataset.valorAnterior = String(parseInt(vUC.value) || 0); });
+            vUC.addEventListener('input', () => { sub.vantagemUnicaCusto = parseInt(vUC.value) || 0; liberarRecalculoSub(index); atualizarPontosSub(index); debounceSaveSubFicha(); });
+            vUC.addEventListener('blur', () => {
+                const valorAnterior = parseInt(vUC.dataset.valorAnterior) || 0;
+                const valorNovo = parseInt(vUC.value) || 0;
+                const deltaGasto = valorNovo - valorAnterior;
+                if (deltaGasto !== 0) registrarGasto(deltaGasto, true, index);
+                vUC.dataset.valorAnterior = String(valorNovo);
+            });
+        }
         const vUD = document.getElementById(`subficha-vantagemUnicaDesc-${index}`);
         if (vUD) vUD.oninput = () => { sub.vantagemUnicaDesc = vUD.value; debounceSaveSubFicha(); };
         const btnTU = document.getElementById(`subficha-btnToggleVantagemUnica-${index}`);
@@ -4951,28 +5465,12 @@
                 const novaXP = xpAtual - qtdConverter;
                 subXpField.value = novaXP;
                 subConverterAmount.value = '';
-                const pontosBaseAtual = sub.pontosBase || 0;
-                const novaBase = pontosBaseAtual + pontosGanhos;
-                sub.pontosBase = novaBase;
-                atualizarPontosSub(index);
+                aplicarDeltaBasePura(pontosGanhos, true, index);
                 const mensagem = `🎲 [${sub.nome}] converteu ${qtdConverter} XP e ganhou ${pontosGanhos} ${pontosGanhos === 1 ? 'ponto' : 'pontos'} de personagem!`;
                 addMensagem(mensagem, false);
                 await enviarRolagemFirebase(mensagem, false);
                 atualizarBotaoConverterSub(); debounceSaveSubFicha();
             };
-        }
-        const pontosGastosSubInput = document.getElementById(`subficha-pontosGastos-${index}`);
-        if (pontosGastosSubInput) {
-            pontosGastosSubInput.addEventListener('focus', () => { if (isGM || isMaster) pontosGastosSubInput.dataset.masterEditing = 'true'; });
-            pontosGastosSubInput.addEventListener('blur', () => {
-                if (isGM || isMaster) {
-                    pontosGastosSubInput.dataset.masterEditing = 'false';
-                    const valorDigitado = parseInt(pontosGastosSubInput.value) || 0;
-                    sub.gastosManuais = valorDigitado;
-                    const pontosInput = document.getElementById(`subficha-pontos-${index}`);
-                    if (pontosInput) { const gastosCalculados = calcularGastosTotaisSub(sub); const novaBase = parseInt(pontosInput.value) + gastosCalculados; sub.pontosBase = novaBase; pontosInput.setAttribute('data-base', novaBase); atualizarPontosSub(index); debounceSaveSubFicha(); }
-                }
-            });
         }
         const btnRolar = document.querySelector(`.btn-roll-sub[data-sub="${index}"]`);
         if (btnRolar) btnRolar.onclick = () => rolarGenericoSub(index);
@@ -4980,18 +5478,6 @@
         const avatarDiv = document.getElementById(`subficha-avatar-${index}`);
         if (uploadInput && avatarDiv) {
             uploadInput.onchange = async (e) => { const file = e.target.files[0]; if (!file) return; const avatarComprimido = await comprimirAvatar(file); sub.avatarSrc = avatarComprimido; avatarDiv.innerHTML = `<img src="${sub.avatarSrc}">`; debounceSaveSubFicha(); };
-        }
-        const subPontosInput = document.getElementById(`subficha-pontos-${index}`);
-        if (subPontosInput) {
-            subPontosInput.addEventListener('input', () => {
-                const valorDigitado = parseInt(subPontosInput.value) || 0;
-                const gastos = calcularGastosTotaisSub(sub);
-                const novaBase = valorDigitado + gastos;
-                sub.pontosBase = novaBase;
-                subPontosInput.setAttribute('data-base', novaBase);
-                if (valorDigitado < 0) subPontosInput.classList.add('pontos-negativo'); else subPontosInput.classList.remove('pontos-negativo');
-                debounceSaveSubFicha();
-            });
         }
         document.querySelectorAll(`.subficha-info-btn[data-sub-info-tipo="vantagemRegional"]`).forEach(btn => {
             btn.onclick = () => { const s = subFichas[parseInt(btn.dataset.subInfoIdx)]; if (s) exibirInfo(s.vantagemRegionalNome || 'Vantagem Regional', s.vantagemRegionalDesc || ''); };
@@ -5050,28 +5536,49 @@
             };
         });
     }
-    
-    function renderizarKitsSubFicha(sub, container, subIndex) {
+        function renderizarKitsSubFicha(sub, container, subIndex) {
         const kits = sub.listas.kits || [];
         if (!container) return;
         container.innerHTML = '';
         kits.forEach((kit, kitIndex) => {
             const kitDiv = document.createElement('div');
             kitDiv.className = 'kit-container';
-            kitDiv.innerHTML = `<div class="kit-header"><input type="text" value="${escapeHtml(kit.nome || '')}" placeholder="Nome do Kit" data-kit-sub-field="nome" data-kit-sub-idx="${kitIndex}" data-sub-idx="${subIndex}" style="flex:2;"><input type="text" inputmode="numeric" pattern="[0-9]*" class="kit-custo" value="${kit.custo || 0}" placeholder="Custo" data-kit-sub-field="custo" data-kit-sub-idx="${kitIndex}" data-sub-idx="${subIndex}" style="width:80px;"><button class="btn-desc-sub" data-kit-sub-desc-idx="${kitIndex}" data-sub-idx="${subIndex}">📖</button><button class="btn-info-sub" data-info-tipo="kitSub" data-sub-idx="${subIndex}" data-kit-idx="${kitIndex}">i</button><button class="btn-remove-kit-sub" data-kit-sub-idx="${kitIndex}" data-sub-idx="${subIndex}">❌ Remover Kit</button></div><div class="kit-desc-editor" id="kitsub-desc-${subIndex}-${kitIndex}" style="display:${kit.visivel ? 'block' : 'none'};"><textarea rows="3" placeholder="Descrição do kit..." data-kit-sub-field="descricao" data-kit-sub-idx="${kitIndex}" data-sub-idx="${subIndex}">${escapeHtml(kit.descricao || '')}</textarea></div><div class="kit-habilidades" id="kitsub-habilidades-${subIndex}-${kitIndex}">${renderizarHabilidadesKitSub(sub, kit, kitIndex, subIndex)}</div><button class="btn-add-habilidade-sub" data-kit-sub-idx="${kitIndex}" data-sub-idx="${subIndex}">+ Adicionar Habilidade</button>`;
+            kitDiv.innerHTML = `<div class="kit-header"><input type="text" value="${escapeHtml(kit.nome || '')}" placeholder="Nome do Kit" data-kit-sub-field="nome" data-kit-sub-idx="${kitIndex}" data-sub-idx="${subIndex}" style="flex:2;"><input type="text" inputmode="numeric" pattern="[0-9-]*" class="kit-custo" value="${kit.custo || 0}" placeholder="Custo" data-kit-sub-field="custo" data-kit-sub-idx="${kitIndex}" data-sub-idx="${subIndex}" style="width:80px;"><button class="btn-desc-sub" data-kit-sub-desc-idx="${kitIndex}" data-sub-idx="${subIndex}">📖</button><button class="btn-info-sub" data-info-tipo="kitSub" data-sub-idx="${subIndex}" data-kit-idx="${kitIndex}">i</button><button class="btn-remove-kit-sub" data-kit-sub-idx="${kitIndex}" data-sub-idx="${subIndex}">❌ Remover Kit</button></div><div class="kit-desc-editor" id="kitsub-desc-${subIndex}-${kitIndex}" style="display:${kit.visivel ? 'block' : 'none'};"><textarea rows="3" placeholder="Descrição do kit..." data-kit-sub-field="descricao" data-kit-sub-idx="${kitIndex}" data-sub-idx="${subIndex}">${escapeHtml(kit.descricao || '')}</textarea></div><div class="kit-habilidades" id="kitsub-habilidades-${subIndex}-${kitIndex}">${renderizarHabilidadesKitSub(sub, kit, kitIndex, subIndex)}</div><button class="btn-add-habilidade-sub" data-kit-sub-idx="${kitIndex}" data-sub-idx="${subIndex}">+ Adicionar Habilidade</button>`;
             container.appendChild(kitDiv);
         });
         container.querySelectorAll('input[data-kit-sub-field="nome"]').forEach(input => { input.oninput = () => { const kitIdx = parseInt(input.dataset.kitSubIdx); const sIdx = parseInt(input.dataset.subIdx); if (subFichas[sIdx]?.listas?.kits?.[kitIdx]) { subFichas[sIdx].listas.kits[kitIdx].nome = input.value; debounceSaveSubFicha(); } }; });
-        container.querySelectorAll('input[data-kit-sub-field="custo"]').forEach(input => { input.oninput = () => { const kitIdx = parseInt(input.dataset.kitSubIdx); const sIdx = parseInt(input.dataset.subIdx); if (subFichas[sIdx]?.listas?.kits?.[kitIdx]) { subFichas[sIdx].listas.kits[kitIdx].custo = parseInt(input.value) || 0; atualizarPontosSub(sIdx); debounceSaveSubFicha(); } }; });
+        container.querySelectorAll('input[data-kit-sub-field="custo"]').forEach(input => {
+            input.addEventListener('focus', () => { input.dataset.valorAnterior = String(parseInt(input.value) || 0); });
+            input.addEventListener('input', () => { const kitIdx = parseInt(input.dataset.kitSubIdx); const sIdx = parseInt(input.dataset.subIdx); if (subFichas[sIdx]?.listas?.kits?.[kitIdx]) { subFichas[sIdx].listas.kits[kitIdx].custo = parseInt(input.value) || 0; liberarRecalculoSub(sIdx); atualizarPontosSub(sIdx); debounceSaveSubFicha(); } });
+            input.addEventListener('blur', () => {
+                const kitIdx = parseInt(input.dataset.kitSubIdx); const sIdx = parseInt(input.dataset.subIdx);
+                const valorAnterior = parseInt(input.dataset.valorAnterior) || 0;
+                const valorNovo = parseInt(input.value) || 0;
+                const deltaGasto = valorNovo - valorAnterior;
+                if (deltaGasto !== 0) registrarGasto(deltaGasto, true, sIdx);
+                input.dataset.valorAnterior = String(valorNovo);
+            });
+        });
         container.querySelectorAll('textarea[data-kit-sub-field="descricao"]').forEach(textarea => { textarea.oninput = () => { const kitIdx = parseInt(textarea.dataset.kitSubIdx); const sIdx = parseInt(textarea.dataset.subIdx); if (subFichas[sIdx]?.listas?.kits?.[kitIdx]) { subFichas[sIdx].listas.kits[kitIdx].descricao = textarea.value; debounceSaveSubFicha(); } }; });
         container.querySelectorAll('[data-kit-sub-desc-idx]').forEach(btn => { btn.onclick = () => { const kitIdx = parseInt(btn.dataset.kitSubDescIdx); const sIdx = parseInt(btn.dataset.subIdx); if (subFichas[sIdx]?.listas?.kits?.[kitIdx]) { subFichas[sIdx].listas.kits[kitIdx].visivel = !subFichas[sIdx].listas.kits[kitIdx].visivel; const el = document.getElementById(`kitsub-desc-${sIdx}-${kitIdx}`); if (el) el.style.display = subFichas[sIdx].listas.kits[kitIdx].visivel ? 'block' : 'none'; debounceSaveSubFicha(); } }; });
-        container.querySelectorAll('.btn-remove-kit-sub').forEach(btn => { btn.onclick = () => { const kitIdx = parseInt(btn.dataset.kitSubIdx); const sIdx = parseInt(btn.dataset.subIdx); if (subFichas[sIdx]?.listas?.kits) { subFichas[sIdx].listas.kits.splice(kitIdx, 1); renderizarKitsSubFicha(subFichas[sIdx], container, sIdx); atualizarPontosSub(sIdx); debounceSaveSubFicha(); } }; });
+        container.querySelectorAll('.btn-remove-kit-sub').forEach(btn => { btn.onclick = () => { const kitIdx = parseInt(btn.dataset.kitSubIdx); const sIdx = parseInt(btn.dataset.subIdx); if (subFichas[sIdx]?.listas?.kits) { const kit = subFichas[sIdx].listas.kits[kitIdx]; if (kit) { let valorKit = parseInt(kit.custo) || 0; if (kit.habilidades) kit.habilidades.forEach(h => { valorKit += parseInt(h.custo) || 0; }); if (valorKit !== 0) registrarGasto(-valorKit, true, sIdx); } subFichas[sIdx].listas.kits.splice(kitIdx, 1); renderizarKitsSubFicha(subFichas[sIdx], container, sIdx); liberarRecalculoSub(sIdx); atualizarPontosSub(sIdx); debounceSaveSubFicha(); } }; });
         container.querySelectorAll('input[data-hab-sub-field="nome"]').forEach(input => { input.oninput = () => { const kitIdx = parseInt(input.dataset.kitIdx); const habIdx = parseInt(input.dataset.habIdx); const sIdx = parseInt(input.dataset.subIdx); if (subFichas[sIdx]?.listas?.kits?.[kitIdx]?.habilidades?.[habIdx]) { subFichas[sIdx].listas.kits[kitIdx].habilidades[habIdx].nome = input.value; debounceSaveSubFicha(); } }; });
-        container.querySelectorAll('input[data-hab-sub-field="custo"]').forEach(input => { input.oninput = () => { const kitIdx = parseInt(input.dataset.kitIdx); const habIdx = parseInt(input.dataset.habIdx); const sIdx = parseInt(input.dataset.subIdx); if (subFichas[sIdx]?.listas?.kits?.[kitIdx]?.habilidades?.[habIdx]) { subFichas[sIdx].listas.kits[kitIdx].habilidades[habIdx].custo = parseInt(input.value) || 0; atualizarPontosSub(sIdx); debounceSaveSubFicha(); } }; });
+        container.querySelectorAll('input[data-hab-sub-field="custo"]').forEach(input => {
+            input.addEventListener('focus', () => { input.dataset.valorAnterior = String(parseInt(input.value) || 0); });
+            input.addEventListener('input', () => { const kitIdx = parseInt(input.dataset.kitIdx); const habIdx = parseInt(input.dataset.habIdx); const sIdx = parseInt(input.dataset.subIdx); if (subFichas[sIdx]?.listas?.kits?.[kitIdx]?.habilidades?.[habIdx]) { subFichas[sIdx].listas.kits[kitIdx].habilidades[habIdx].custo = parseInt(input.value) || 0; liberarRecalculoSub(sIdx); atualizarPontosSub(sIdx); debounceSaveSubFicha(); } });
+            input.addEventListener('blur', () => {
+                const kitIdx = parseInt(input.dataset.kitIdx); const habIdx = parseInt(input.dataset.habIdx); const sIdx = parseInt(input.dataset.subIdx);
+                const valorAnterior = parseInt(input.dataset.valorAnterior) || 0;
+                const valorNovo = parseInt(input.value) || 0;
+                const deltaGasto = valorNovo - valorAnterior;
+                if (deltaGasto !== 0) registrarGasto(deltaGasto, true, sIdx);
+                input.dataset.valorAnterior = String(valorNovo);
+            });
+        });
         container.querySelectorAll('textarea[data-hab-sub-field="descricao"]').forEach(textarea => { textarea.oninput = () => { const kitIdx = parseInt(textarea.dataset.kitIdx); const habIdx = parseInt(textarea.dataset.habIdx); const sIdx = parseInt(textarea.dataset.subIdx); if (subFichas[sIdx]?.listas?.kits?.[kitIdx]?.habilidades?.[habIdx]) { subFichas[sIdx].listas.kits[kitIdx].habilidades[habIdx].descricao = textarea.value; debounceSaveSubFicha(); } }; });
         container.querySelectorAll('.btn-desc-hab-sub').forEach(btn => { btn.onclick = () => { const kitIdx = parseInt(btn.dataset.kitIdx); const habIdx = parseInt(btn.dataset.habIdx); const sIdx = parseInt(btn.dataset.subIdx); if (subFichas[sIdx]?.listas?.kits?.[kitIdx]?.habilidades?.[habIdx]) { const hab = subFichas[sIdx].listas.kits[kitIdx].habilidades[habIdx]; hab.visivel = !hab.visivel; const descDiv = document.getElementById(`hab-desc-sub-${sIdx}-${kitIdx}-${habIdx}`); if (descDiv) descDiv.style.display = hab.visivel ? 'block' : 'none'; debounceSaveSubFicha(); } }; });
-        container.querySelectorAll('.btn-del-hab-sub').forEach(btn => { btn.onclick = () => { const kitIdx = parseInt(btn.dataset.kitIdx); const habIdx = parseInt(btn.dataset.habIdx); const sIdx = parseInt(btn.dataset.subIdx); if (subFichas[sIdx]?.listas?.kits?.[kitIdx]?.habilidades) { subFichas[sIdx].listas.kits[kitIdx].habilidades.splice(habIdx, 1); renderizarKitsSubFicha(subFichas[sIdx], container, sIdx); atualizarPontosSub(sIdx); debounceSaveSubFicha(); } }; });
-        container.querySelectorAll('.btn-add-habilidade-sub').forEach(btn => { btn.onclick = () => { const kitIdx = parseInt(btn.dataset.kitSubIdx); const sIdx = parseInt(btn.dataset.subIdx); if (subFichas[sIdx]?.listas?.kits?.[kitIdx]) { if (!subFichas[sIdx].listas.kits[kitIdx].habilidades) subFichas[sIdx].listas.kits[kitIdx].habilidades = []; subFichas[sIdx].listas.kits[kitIdx].habilidades.push({ nome: '', custo: 0, descricao: '', visivel: false }); renderizarKitsSubFicha(subFichas[sIdx], container, sIdx); atualizarPontosSub(sIdx); debounceSaveSubFicha(); } }; });
+        container.querySelectorAll('.btn-del-hab-sub').forEach(btn => { btn.onclick = () => { const kitIdx = parseInt(btn.dataset.kitIdx); const habIdx = parseInt(btn.dataset.habIdx); const sIdx = parseInt(btn.dataset.subIdx); if (subFichas[sIdx]?.listas?.kits?.[kitIdx]?.habilidades) { const hab = subFichas[sIdx].listas.kits[kitIdx].habilidades[habIdx]; if (hab) { const valorHab = parseInt(hab.custo) || 0; if (valorHab !== 0) registrarGasto(-valorHab, true, sIdx); } subFichas[sIdx].listas.kits[kitIdx].habilidades.splice(habIdx, 1); renderizarKitsSubFicha(subFichas[sIdx], container, sIdx); liberarRecalculoSub(sIdx); atualizarPontosSub(sIdx); debounceSaveSubFicha(); } }; });
+        container.querySelectorAll('.btn-add-habilidade-sub').forEach(btn => { btn.onclick = () => { const kitIdx = parseInt(btn.dataset.kitSubIdx); const sIdx = parseInt(btn.dataset.subIdx); if (subFichas[sIdx]?.listas?.kits?.[kitIdx]) { if (!subFichas[sIdx].listas.kits[kitIdx].habilidades) subFichas[sIdx].listas.kits[kitIdx].habilidades = []; subFichas[sIdx].listas.kits[kitIdx].habilidades.push({ nome: '', custo: 0, descricao: '', visivel: false }); renderizarKitsSubFicha(subFichas[sIdx], container, sIdx); liberarRecalculoSub(sIdx); atualizarPontosSub(sIdx); debounceSaveSubFicha(); } }; });
         container.querySelectorAll('.btn-info-sub[data-info-tipo="kitSub"]').forEach(btn => { btn.onclick = () => { const sIdx = parseInt(btn.dataset.subIdx); const kitIdx = parseInt(btn.dataset.kitIdx); const k = subFichas[sIdx]?.listas?.kits?.[kitIdx]; if (k) exibirInfo(k.nome || 'Kit sem nome', k.descricao || ''); }; });
         container.querySelectorAll('.btn-info-sub[data-info-tipo="habKitSub"]').forEach(btn => { btn.onclick = () => { const sIdx = parseInt(btn.dataset.subIdx); const kitIdx = parseInt(btn.dataset.kitIdx); const habIdx = parseInt(btn.dataset.habIdx); const hab = subFichas[sIdx]?.listas?.kits?.[kitIdx]?.habilidades?.[habIdx]; if (hab) exibirInfo(hab.nome || 'Habilidade sem nome', hab.descricao || ''); }; });
     }
@@ -5083,7 +5590,7 @@
         habilidades.forEach((hab, habIndex) => {
             const descId = `hab-desc-sub-${subIndex}-${kitIndex}-${habIndex}`;
             const visivel = hab.visivel ? 'block' : 'none';
-            html += `<div class="habilidade-item"><input type="text" value="${escapeHtml(hab.nome || '')}" placeholder="Habilidade" data-hab-sub-field="nome" data-kit-idx="${kitIndex}" data-hab-idx="${habIndex}" data-sub-idx="${subIndex}" style="flex:2;"><input type="text" inputmode="numeric" pattern="[0-9]*" class="habilidade-custo" value="${hab.custo || 0}" placeholder="Custo" data-hab-sub-field="custo" data-kit-idx="${kitIndex}" data-hab-idx="${habIndex}" data-sub-idx="${subIndex}" style="width:60px;"><button class="btn-desc-hab-sub" data-kit-idx="${kitIndex}" data-hab-idx="${habIndex}" data-sub-idx="${subIndex}">📖</button><button class="btn-info-sub" data-info-tipo="habKitSub" data-sub-idx="${subIndex}" data-kit-idx="${kitIndex}" data-hab-idx="${habIndex}">i</button><button class="btn-del-hab-sub" data-kit-idx="${kitIndex}" data-hab-idx="${habIndex}" data-sub-idx="${subIndex}">❌</button></div><div id="${descId}" class="habilidade-desc-editor" style="display: ${visivel};"><textarea rows="3" placeholder="Descrição da habilidade..." data-hab-sub-field="descricao" data-kit-idx="${kitIndex}" data-hab-idx="${habIndex}" data-sub-idx="${subIndex}">${escapeHtml(hab.descricao || '')}</textarea></div>`;
+            html += `<div class="habilidade-item"><input type="text" value="${escapeHtml(hab.nome || '')}" placeholder="Habilidade" data-hab-sub-field="nome" data-kit-idx="${kitIndex}" data-hab-idx="${habIndex}" data-sub-idx="${subIndex}" style="flex:2;"><input type="text" inputmode="numeric" pattern="[0-9-]*" class="habilidade-custo" value="${hab.custo || 0}" placeholder="Custo" data-hab-sub-field="custo" data-kit-idx="${kitIndex}" data-hab-idx="${habIndex}" data-sub-idx="${subIndex}" style="width:60px;"><button class="btn-desc-hab-sub" data-kit-idx="${kitIndex}" data-hab-idx="${habIndex}" data-sub-idx="${subIndex}">📖</button><button class="btn-info-sub" data-info-tipo="habKitSub" data-sub-idx="${subIndex}" data-kit-idx="${kitIndex}" data-hab-idx="${habIndex}">i</button><button class="btn-del-hab-sub" data-kit-idx="${kitIndex}" data-hab-idx="${habIndex}" data-sub-idx="${subIndex}">❌</button></div><div id="${descId}" class="habilidade-desc-editor" style="display: ${visivel};"><textarea rows="3" placeholder="Descrição da habilidade..." data-hab-sub-field="descricao" data-kit-idx="${kitIndex}" data-hab-idx="${habIndex}" data-sub-idx="${subIndex}">${escapeHtml(hab.descricao || '')}</textarea></div>`;
         });
         return html;
     }
@@ -5099,7 +5606,7 @@
                 const isSustentado = elemento.sustentado === true;
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'item';
-                itemDiv.innerHTML = `<div class="item-linha"><input type="checkbox" class="chk-sustentado" id="sub-vantagem-sustentado-${index}-${idx}" ${isSustentado ? 'checked' : ''} title="Marcar como sustentado"><input type="text" value="${escapeHtml(elemento.nome || '')}" placeholder="Nome" oninput="window.atualizarItemSubLista(${index}, 'vantagens', ${idx}, 'nome', this.value)"><input type="text" class="valor" value="${escapeHtml(String(elemento.valor || 0))}" placeholder="Custo" oninput="window.atualizarItemSubLista(${index}, 'vantagens', ${idx}, 'valor', this.value)"><button class="btn-desc-sub" onclick="window.toggleDescSubLista(${index}, 'vantagens', ${idx})">📖</button><button class="btn-info-sub-item" data-info-tipo="vantagemSub" data-sub-idx="${index}" data-item-idx="${idx}">i</button><button class="btn-del-sub" onclick="window.removerItemSubLista(${index}, 'vantagens', ${idx})">❌</button></div><div id="subficha-desc-vantagens-${index}-${idx}" class="desc-editor" style="display: ${elemento.visivel ? 'block' : 'none'};"><textarea rows="3" placeholder="Descrição detalhada..." oninput="window.atualizarItemSubLista(${index}, 'vantagens', ${idx}, 'desc', this.value)">${escapeHtml(elemento.desc || '')}</textarea></div>`;
+                itemDiv.innerHTML = `<div class="item-linha"><input type="checkbox" class="chk-sustentado" id="sub-vantagem-sustentado-${index}-${idx}" ${isSustentado ? 'checked' : ''} title="Marcar como sustentado"><input type="text" value="${escapeHtml(elemento.nome || '')}" placeholder="Nome" oninput="window.atualizarItemSubLista(${index}, 'vantagens', ${idx}, 'nome', this.value)"><input type="text" class="valor" value="${escapeHtml(String(elemento.valor || 0))}" placeholder="Custo" onfocus="window.focarValorSubLista(${index}, 'vantagens', ${idx}, this)" oninput="window.atualizarItemSubLista(${index}, 'vantagens', ${idx}, 'valor', this.value)" onblur="window.blurValorSubLista(${index}, 'vantagens', ${idx}, this)"><button class="btn-desc-sub" onclick="window.toggleDescSubLista(${index}, 'vantagens', ${idx})">📖</button><button class="btn-info-sub-item" data-info-tipo="vantagemSub" data-sub-idx="${index}" data-item-idx="${idx}">i</button><button class="btn-del-sub" onclick="window.removerItemSubLista(${index}, 'vantagens', ${idx})">❌</button></div><div id="subficha-desc-vantagens-${index}-${idx}" class="desc-editor" style="display: ${elemento.visivel ? 'block' : 'none'};"><textarea rows="3" placeholder="Descrição detalhada..." oninput="window.atualizarItemSubLista(${index}, 'vantagens', ${idx}, 'desc', this.value)">${escapeHtml(elemento.desc || '')}</textarea></div>`;
                 vantagensContainer.appendChild(itemDiv);
             });
         }
@@ -5110,7 +5617,7 @@
             lista.forEach((elemento, idx) => {
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'item';
-                itemDiv.innerHTML = `<div class="item-linha"><input type="text" value="${escapeHtml(elemento.nome || '')}" placeholder="Nome" oninput="window.atualizarItemSubLista(${index}, 'desvantagens', ${idx}, 'nome', this.value)"><input type="text" class="valor" value="${escapeHtml(String(elemento.valor || 0))}" placeholder="Custo" oninput="window.atualizarItemSubLista(${index}, 'desvantagens', ${idx}, 'valor', this.value)"><button class="btn-desc-sub" onclick="window.toggleDescSubLista(${index}, 'desvantagens', ${idx})">📖</button><button class="btn-info-sub-item" data-info-tipo="desvantagemSub" data-sub-idx="${index}" data-item-idx="${idx}">i</button><button class="btn-del-sub" onclick="window.removerItemSubLista(${index}, 'desvantagens', ${idx})">❌</button></div><div id="subficha-desc-desvantagens-${index}-${idx}" class="desc-editor" style="display: ${elemento.visivel ? 'block' : 'none'};"><textarea rows="3" placeholder="Descrição detalhada..." oninput="window.atualizarItemSubLista(${index}, 'desvantagens', ${idx}, 'desc', this.value)">${escapeHtml(elemento.desc || '')}</textarea></div>`;
+                itemDiv.innerHTML = `<div class="item-linha"><input type="text" value="${escapeHtml(elemento.nome || '')}" placeholder="Nome" oninput="window.atualizarItemSubLista(${index}, 'desvantagens', ${idx}, 'nome', this.value)"><input type="text" class="valor" value="${escapeHtml(String(elemento.valor || 0))}" placeholder="Custo" onfocus="window.focarValorSubLista(${index}, 'desvantagens', ${idx}, this)" oninput="window.atualizarItemSubLista(${index}, 'desvantagens', ${idx}, 'valor', this.value)" onblur="window.blurValorSubLista(${index}, 'desvantagens', ${idx}, this)"><button class="btn-desc-sub" onclick="window.toggleDescSubLista(${index}, 'desvantagens', ${idx})">📖</button><button class="btn-info-sub-item" data-info-tipo="desvantagemSub" data-sub-idx="${index}" data-item-idx="${idx}">i</button><button class="btn-del-sub" onclick="window.removerItemSubLista(${index}, 'desvantagens', ${idx})">❌</button></div><div id="subficha-desc-desvantagens-${index}-${idx}" class="desc-editor" style="display: ${elemento.visivel ? 'block' : 'none'};"><textarea rows="3" placeholder="Descrição detalhada..." oninput="window.atualizarItemSubLista(${index}, 'desvantagens', ${idx}, 'desc', this.value)">${escapeHtml(elemento.desc || '')}</textarea></div>`;
                 desvantagensContainer.appendChild(itemDiv);
             });
         }
@@ -5121,7 +5628,7 @@
             lista.forEach((pericia, idx) => {
                 const periciaDiv = document.createElement('div');
                 periciaDiv.className = 'kit-container';
-                periciaDiv.innerHTML = `<div class="kit-header"><input type="text" value="${escapeHtml(pericia.nome || '')}" placeholder="Nome da Perícia" oninput="window.atualizarItemSubLista(${index}, 'pericias', ${idx}, 'nome', this.value)" style="flex:2;"><input type="text" inputmode="numeric" pattern="[0-9]*" class="kit-custo" value="${pericia.valor || 0}" placeholder="Custo" oninput="window.atualizarItemSubLista(${index}, 'pericias', ${idx}, 'valor', this.value)" style="width:80px;"><button class="btn-desc-sub" onclick="window.toggleDescPericiaSub(${index}, ${idx})">📖</button><button class="btn-info-sub" data-info-tipo="periciaSub" data-sub-idx="${index}" data-item-idx="${idx}">i</button><button class="btn-remove-kit" onclick="window.removerItemSubLista(${index}, 'pericias', ${idx})">❌ Remover Perícia</button></div><div class="kit-desc-editor" id="subficha-pericia-desc-${index}-${idx}" style="display:${pericia.visivel ? 'block' : 'none'};"><textarea rows="3" placeholder="Descrição da Perícia..." oninput="window.atualizarItemSubLista(${index}, 'pericias', ${idx}, 'desc', this.value)">${escapeHtml(pericia.desc || '')}</textarea></div><div class="kit-habilidades" id="subficha-pericia-habilidades-${index}-${idx}">${renderizarHabilidadesPericia(pericia, idx, true, index)}</div><button class="btn-add-habilidade" onclick="window.adicionarHabilidadeSubPericia(${index}, ${idx})">+ Adicionar Habilidade (sem custo)</button>`;
+                periciaDiv.innerHTML = `<div class="kit-header"><input type="text" value="${escapeHtml(pericia.nome || '')}" placeholder="Nome da Perícia" oninput="window.atualizarItemSubLista(${index}, 'pericias', ${idx}, 'nome', this.value)" style="flex:2;"><input type="text" inputmode="numeric" pattern="[0-9-]*" class="kit-custo" value="${pericia.valor || 0}" placeholder="Custo" onfocus="window.focarValorSubLista(${index}, 'pericias', ${idx}, this)" oninput="window.atualizarItemSubLista(${index}, 'pericias', ${idx}, 'valor', this.value)" onblur="window.blurValorSubLista(${index}, 'pericias', ${idx}, this)" style="width:80px;"><button class="btn-desc-sub" onclick="window.toggleDescPericiaSub(${index}, ${idx})">📖</button><button class="btn-info-sub" data-info-tipo="periciaSub" data-sub-idx="${index}" data-item-idx="${idx}">i</button><button class="btn-remove-kit" onclick="window.removerItemSubLista(${index}, 'pericias', ${idx})">❌ Remover Perícia</button></div><div class="kit-desc-editor" id="subficha-pericia-desc-${index}-${idx}" style="display:${pericia.visivel ? 'block' : 'none'};"><textarea rows="3" placeholder="Descrição da Perícia..." oninput="window.atualizarItemSubLista(${index}, 'pericias', ${idx}, 'desc', this.value)">${escapeHtml(pericia.desc || '')}</textarea></div><div class="kit-habilidades" id="subficha-pericia-habilidades-${index}-${idx}">${renderizarHabilidadesPericia(pericia, idx, true, index)}</div><button class="btn-add-habilidade" onclick="window.adicionarHabilidadeSubPericia(${index}, ${idx})">+ Adicionar Habilidade (sem custo)</button>`;
                 periciasContainer.appendChild(periciaDiv);
             });
             configurarEventosHabilidadesPericia(periciasContainer, true, index);
@@ -5134,7 +5641,7 @@
             lista.forEach((elemento, idx) => {
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'item';
-                itemDiv.innerHTML = `<div class="item-linha"><input type="text" value="${escapeHtml(elemento.nome || '')}" placeholder="Nome" oninput="window.atualizarItemSubLista(${index}, 'especializacoes', ${idx}, 'nome', this.value)"><input type="text" class="valor" value="${escapeHtml(String(elemento.valor || 0))}" placeholder="Custo" oninput="window.atualizarItemSubLista(${index}, 'especializacoes', ${idx}, 'valor', this.value)"><button class="btn-desc-sub" onclick="window.toggleDescSubLista(${index}, 'especializacoes', ${idx})">📖</button><button class="btn-info-sub-item" data-info-tipo="especializacaoSub" data-sub-idx="${index}" data-item-idx="${idx}">i</button><button class="btn-del-sub" onclick="window.removerItemSubLista(${index}, 'especializacoes', ${idx})">❌</button></div><div id="subficha-desc-especializacoes-${index}-${idx}" class="desc-editor" style="display: ${elemento.visivel ? 'block' : 'none'};"><textarea rows="3" placeholder="Descrição detalhada..." oninput="window.atualizarItemSubLista(${index}, 'especializacoes', ${idx}, 'desc', this.value)">${escapeHtml(elemento.desc || '')}</textarea></div>`;
+                itemDiv.innerHTML = `<div class="item-linha"><input type="text" value="${escapeHtml(elemento.nome || '')}" placeholder="Nome" oninput="window.atualizarItemSubLista(${index}, 'especializacoes', ${idx}, 'nome', this.value)"><input type="text" class="valor" value="${escapeHtml(String(elemento.valor || 0))}" placeholder="Custo" onfocus="window.focarValorSubLista(${index}, 'especializacoes', ${idx}, this)" oninput="window.atualizarItemSubLista(${index}, 'especializacoes', ${idx}, 'valor', this.value)" onblur="window.blurValorSubLista(${index}, 'especializacoes', ${idx}, this)"><button class="btn-desc-sub" onclick="window.toggleDescSubLista(${index}, 'especializacoes', ${idx})">📖</button><button class="btn-info-sub-item" data-info-tipo="especializacaoSub" data-sub-idx="${index}" data-item-idx="${idx}">i</button><button class="btn-del-sub" onclick="window.removerItemSubLista(${index}, 'especializacoes', ${idx})">❌</button></div><div id="subficha-desc-especializacoes-${index}-${idx}" class="desc-editor" style="display: ${elemento.visivel ? 'block' : 'none'};"><textarea rows="3" placeholder="Descrição detalhada..." oninput="window.atualizarItemSubLista(${index}, 'especializacoes', ${idx}, 'desc', this.value)">${escapeHtml(elemento.desc || '')}</textarea></div>`;
                 especializacoesContainer.appendChild(itemDiv);
             });
         }
@@ -5188,6 +5695,9 @@
         if (kitsContainer) renderizarKitsSubFicha(sub, kitsContainer, index);
     }
     
+    // ============================================================
+    // ITENS DA SUBFICHA - COM registrarGasto
+    // ============================================================
     window.adicionarItemSubLista = function(index, tipo) {
         const sub = subFichas[index];
         if (!sub) return;
@@ -5203,17 +5713,55 @@
         sub.listas[tipo].push(novo);
         if (tipo === 'kits') { const kitsContainer = document.getElementById(`subficha-kitsLista-${index}`); if (kitsContainer) renderizarKitsSubFicha(sub, kitsContainer, index); }
         else { renderizarSubListas(index); }
+        liberarRecalculoSub(index);
         atualizarPontosSub(index); debounceSaveSubFicha();
     };
-    window.removerItemSubLista = function(index, tipo, idx) { const sub = subFichas[index]; if (!sub || !sub.listas[tipo]) return; sub.listas[tipo].splice(idx, 1); renderizarSubListas(index); atualizarPontosSub(index); debounceSaveSubFicha(); };
+    
+    window.removerItemSubLista = function(index, tipo, idx) {
+        const sub = subFichas[index];
+        if (!sub || !sub.listas[tipo]) return;
+        const item = sub.listas[tipo][idx];
+        if (item && (tipo === 'vantagens' || tipo === 'desvantagens' || tipo === 'pericias' || tipo === 'especializacoes')) {
+            const valorItem = parseInt(item.valor) || 0;
+            if (valorItem !== 0) registrarGasto(-valorItem, true, index);
+        }
+        sub.listas[tipo].splice(idx, 1);
+        renderizarSubListas(index);
+        liberarRecalculoSub(index);
+        atualizarPontosSub(index);
+        debounceSaveSubFicha();
+    };
+    
     window.atualizarItemSubLista = function(index, tipo, idx, campo, valor) {
         const sub = subFichas[index];
         if (!sub || !sub.listas[tipo] || !sub.listas[tipo][idx]) return;
-        if (campo === 'valor') sub.listas[tipo][idx][campo] = parseInt(valor) || 0;
-        else sub.listas[tipo][idx][campo] = valor;
-        if (['vantagens', 'desvantagens', 'pericias', 'especializacoes', 'kits'].includes(tipo)) atualizarPontosSub(index);
+        const item = sub.listas[tipo][idx];
+        if (campo === 'valor') {
+            item[campo] = parseInt(valor) || 0;
+        } else {
+            item[campo] = valor;
+        }
+        if (['vantagens', 'desvantagens', 'pericias', 'especializacoes', 'kits'].includes(tipo)) {
+            liberarRecalculoSub(index);
+            atualizarPontosSub(index);
+        }
         debounceSaveSubFicha();
     };
+    
+    window.focarValorSubLista = function(index, tipo, idx, input) {
+        input.dataset.valorAnterior = String(parseInt(input.value) || 0);
+    };
+    
+    window.blurValorSubLista = function(index, tipo, idx, input) {
+        const valorAnterior = parseInt(input.dataset.valorAnterior) || 0;
+        const valorNovo = parseInt(input.value) || 0;
+        const deltaGasto = valorNovo - valorAnterior;
+        if (deltaGasto !== 0 && (tipo === 'vantagens' || tipo === 'desvantagens' || tipo === 'pericias' || tipo === 'especializacoes')) {
+            registrarGasto(deltaGasto, true, index);
+        }
+        input.dataset.valorAnterior = String(valorNovo);
+    };
+    
     window.toggleDescSubLista = function(index, tipo, idx) { const sub = subFichas[index]; if (!sub || !sub.listas[tipo] || !sub.listas[tipo][idx]) return; sub.listas[tipo][idx].visivel = !sub.listas[tipo][idx].visivel; renderizarSubListas(index); debounceSaveSubFicha(); };
     window.toggleDescPericiaSub = function(index, periciaIdx) { const sub = subFichas[index]; if (!sub || !sub.listas.pericias || !sub.listas.pericias[periciaIdx]) return; sub.listas.pericias[periciaIdx].visivel = !sub.listas.pericias[periciaIdx].visivel; const el = document.getElementById(`subficha-pericia-desc-${index}-${periciaIdx}`); if (el) el.style.display = sub.listas.pericias[periciaIdx].visivel ? 'block' : 'none'; debounceSaveSubFicha(); };
     window.adicionarHabilidadeSubPericia = function(index, periciaIdx) { const sub = subFichas[index]; if (!sub || !sub.listas.pericias || !sub.listas.pericias[periciaIdx]) return; if (!sub.listas.pericias[periciaIdx].habilidades) sub.listas.pericias[periciaIdx].habilidades = []; sub.listas.pericias[periciaIdx].habilidades.push({ nome: '', descricao: '', visivel: false }); renderizarSubListas(index); debounceSaveSubFicha(); };
@@ -5338,8 +5886,7 @@
     }
     
     function rolarTesteAtributo(nomeTeste, attr, isSub = false, subIndex = null) { rolarAtributoComBonus(attr, isSub, subIndex); }
-    
-    function rolarTestePericiaGeral(nomeTeste, attr, isTreinado, dificuldade, isSub = false, subIndex = null) {
+        function rolarTestePericiaGeral(nomeTeste, attr, isTreinado, dificuldade, isSub = false, subIndex = null) {
         animarDado();
         let valorAttr, nomePersonagem, ehSecreta = isGM && document.getElementById('chkSecretRoll')?.checked === true, resultadoElement;
         if (isSub && subIndex !== null) { const sub = subFichas[subIndex]; if (!sub) return; valorAttr = getValorAtributoSub(sub, attr); nomePersonagem = sub.nome || 'Sub-ficha'; resultadoElement = document.getElementById(`subficha-teste-resultado-${subIndex}-${nomeTeste.replace(/\s/g, '')}`); ehSecreta = false; }
@@ -5927,7 +6474,7 @@
                 const penVal = isSub ? (subFichas[subIndex]?.testes?.[`periciaPen_${teste.nome}`] || 0) : (window.bonusTestes?.[`periciaPen_${teste.nome}`] || 0);
                 const bonusId = isSub ? `subficha-teste-pericia-bonus-${nomeSanitizado}-${subIndex}` : `teste-pericia-bonus-${nomeSanitizado}`;
                 const penId = isSub ? `subficha-teste-pericia-pen-${nomeSanitizado}-${subIndex}` : `teste-pericia-pen-${nomeSanitizado}`;
-                camposBonusPen = `<input type="text" inputmode="numeric" pattern="[0-9]*" class="teste-pericia-input teste-pericia-bonus" id="${bonusId}" value="${bonusVal}" placeholder="Bônus" title="Bônus (soma ao alvo)"><input type="text" inputmode="numeric" pattern="[0-9]*" class="teste-pericia-input teste-pericia-pen" id="${penId}" value="${penVal}" placeholder="Pen." title="Penalidade (subtrai do alvo)">`;
+                camposBonusPen = `<input type="text" inputmode="numeric" pattern="[0-9-]*" class="teste-pericia-input teste-pericia-bonus" id="${bonusId}" value="${bonusVal}" placeholder="Bônus" title="Bônus (soma ao alvo)"><input type="text" inputmode="numeric" pattern="[0-9-]*" class="teste-pericia-input teste-pericia-pen" id="${penId}" value="${penVal}" placeholder="Pen." title="Penalidade (subtrai do alvo)">`;
             }
             
             let campoPE = '';
@@ -5966,7 +6513,7 @@
             let b1Val = 0, b2Val = 0;
             if (isSub && subIndex !== null) { const bonusKey = `subficha_bonus_${attr.attr}_${subIndex}`; if (bonusAtributosTeste[bonusKey]) { b1Val = bonusAtributosTeste[bonusKey].b1 || 0; b2Val = bonusAtributosTeste[bonusKey].b2 || 0; } }
             else { const bonusKey = `bonus_${attr.attr}`; if (bonusAtributosTeste[bonusKey]) { b1Val = bonusAtributosTeste[bonusKey].b1 || 0; b2Val = bonusAtributosTeste[bonusKey].b2 || 0; } }
-            html += `<div style="display: flex; align-items: center; gap: 8px; background: var(--fundo-painel); padding: 4px 12px; border-radius: 6px; flex-wrap: wrap;"><span style="font-weight: bold; font-size: 13px; color: #5a7a8a; min-width: 80px;">${attr.nome} (${attr.attr})</span><div style="display: flex; align-items: center; gap: 4px;"><label style="font-size:10px; color:var(--texto-suave);">B1:</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="${b1Id}" value="${b1Val}" style="width:30px; background:var(--fundo-input); border:1px solid var(--borda-clara); border-radius:3px; padding:2px; text-align:center; font-size:11px;"><label style="font-size:10px; color:var(--texto-suave);">B2:</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="${b2Id}" value="${b2Val}" style="width:30px; background:var(--fundo-input); border:1px solid var(--borda-clara); border-radius:3px; padding:2px; text-align:center; font-size:11px;"></div><button class="teste-btn-roll" id="${rollId}" data-teste-nome="${attr.nome}" data-teste-attr="${attr.attr}" data-sub="${subIndex !== null ? subIndex : ''}" data-is-sub="${isSub}">🎲</button><div class="teste-resultado" id="${resultId}" style="min-width:100px;"></div></div>`;
+            html += `<div style="display: flex; align-items: center; gap: 8px; background: var(--fundo-painel); padding: 4px 12px; border-radius: 6px; flex-wrap: wrap;"><span style="font-weight: bold; font-size: 13px; color: #5a7a8a; min-width: 80px;">${attr.nome} (${attr.attr})</span><div style="display: flex; align-items: center; gap: 4px;"><label style="font-size:10px; color:var(--texto-suave);">B1:</label><input type="text" inputmode="numeric" pattern="[0-9-]*" id="${b1Id}" value="${b1Val}" style="width:30px; background:var(--fundo-input); border:1px solid var(--borda-clara); border-radius:3px; padding:2px; text-align:center; font-size:11px;"><label style="font-size:10px; color:var(--texto-suave);">B2:</label><input type="text" inputmode="numeric" pattern="[0-9-]*" id="${b2Id}" value="${b2Val}" style="width:30px; background:var(--fundo-input); border:1px solid var(--borda-clara); border-radius:3px; padding:2px; text-align:center; font-size:11px;"></div><button class="teste-btn-roll" id="${rollId}" data-teste-nome="${attr.nome}" data-teste-attr="${attr.attr}" data-sub="${subIndex !== null ? subIndex : ''}" data-is-sub="${isSub}">🎲</button><div class="teste-resultado" id="${resultId}" style="min-width:100px;"></div></div>`;
         });
         html += '</div>';
         
@@ -6076,8 +6623,7 @@
             }
         }
     }
-    
-    function renderizarLista(tipo, containerId) {
+        function renderizarLista(tipo, containerId) {
         const container = document.getElementById(containerId);
         if (!container) return;
         const lista = fichaListas[tipo];
@@ -6087,13 +6633,34 @@
             lista.forEach((pericia, periciaIndex) => {
                 const div = document.createElement('div');
                 div.className = 'kit-container';
-                div.innerHTML = `<div class="kit-header"><input type="text" value="${escapeHtml(pericia.nome || '')}" placeholder="Nome" data-pericia-field="nome" data-pericia-idx="${periciaIndex}" style="flex:2;"><input type="text" class="kit-custo" value="${pericia.valor || 0}" placeholder="Custo" data-pericia-field="valor" data-pericia-idx="${periciaIndex}" style="width:80px;"><button class="btn-desc-sub" data-pericia-desc-idx="${periciaIndex}">📖</button><button class="btn-info-sub" data-info-tipo="pericia" data-item-idx="${periciaIndex}">i</button><button class="btn-remove-kit" data-pericia-idx="${periciaIndex}">❌ Remover</button></div><div class="kit-desc-editor" id="pericia-desc-${periciaIndex}" style="display:${pericia.visivel ? 'block' : 'none'};"><textarea rows="3" placeholder="Descrição da Perícia..." data-pericia-field="desc" data-pericia-idx="${periciaIndex}">${escapeHtml(pericia.desc || '')}</textarea></div><div class="kit-habilidades" id="pericia-habilidades-${periciaIndex}">${renderizarHabilidadesPericia(pericia, periciaIndex, false, null)}</div><button class="btn-add-habilidade" data-pericia-add-hab="${periciaIndex}">+ Adicionar Habilidade (sem custo)</button>`;
+                div.innerHTML = `<div class="kit-header"><input type="text" value="${escapeHtml(pericia.nome || '')}" placeholder="Nome" data-pericia-field="nome" data-pericia-idx="${periciaIndex}" style="flex:2;"><input type="text" inputmode="numeric" pattern="[0-9-]*" class="kit-custo" value="${pericia.valor || 0}" placeholder="Custo" data-pericia-field="valor" data-pericia-idx="${periciaIndex}" style="width:80px;"><button class="btn-desc-sub" data-pericia-desc-idx="${periciaIndex}">📖</button><button class="btn-info-sub" data-info-tipo="pericia" data-item-idx="${periciaIndex}">i</button><button class="btn-remove-kit" data-pericia-idx="${periciaIndex}">❌ Remover</button></div><div class="kit-desc-editor" id="pericia-desc-${periciaIndex}" style="display:${pericia.visivel ? 'block' : 'none'};"><textarea rows="3" placeholder="Descrição da Perícia..." data-pericia-field="desc" data-pericia-idx="${periciaIndex}">${escapeHtml(pericia.desc || '')}</textarea></div><div class="kit-habilidades" id="pericia-habilidades-${periciaIndex}">${renderizarHabilidadesPericia(pericia, periciaIndex, false, null)}</div><button class="btn-add-habilidade" data-pericia-add-hab="${periciaIndex}">+ Adicionar Habilidade (sem custo)</button>`;
                 container.appendChild(div);
             });
             container.querySelectorAll('input[data-pericia-field="nome"]').forEach(i => { i.oninput = () => { fichaListas.pericias[parseInt(i.dataset.periciaIdx)].nome = i.value; salvarForcado(); }; });
-            container.querySelectorAll('input[data-pericia-field="valor"]').forEach(i => { i.oninput = () => { fichaListas.pericias[parseInt(i.dataset.periciaIdx)].valor = parseInt(i.value) || 0; salvarForcado(); atualizarPontos(); }; });
+            container.querySelectorAll('input[data-pericia-field="valor"]').forEach(i => {
+                i.addEventListener('focus', () => { i.dataset.valorAnterior = String(parseInt(i.value) || 0); });
+                i.addEventListener('input', () => { fichaListas.pericias[parseInt(i.dataset.periciaIdx)].valor = parseInt(i.value) || 0; liberarRecalculoPrincipal(); salvarForcado(); atualizarPontos(); });
+                i.addEventListener('blur', () => {
+                    const idx = parseInt(i.dataset.periciaIdx);
+                    const valorAnterior = parseInt(i.dataset.valorAnterior) || 0;
+                    const valorNovo = parseInt(i.value) || 0;
+                    const deltaGasto = valorNovo - valorAnterior;
+                    if (deltaGasto !== 0) registrarGasto(deltaGasto, false, null);
+                    i.dataset.valorAnterior = String(valorNovo);
+                });
+            });
             container.querySelectorAll('textarea[data-pericia-field="desc"]').forEach(t => { t.oninput = () => { fichaListas.pericias[parseInt(t.dataset.periciaIdx)].desc = t.value; salvarForcado(); }; });
-            container.querySelectorAll('.btn-remove-kit').forEach(b => { b.onclick = () => { fichaListas.pericias.splice(parseInt(b.dataset.periciaIdx), 1); renderizarLista('pericias', 'periciasLista'); salvarForcado(); atualizarPontos(); }; });
+            container.querySelectorAll('.btn-remove-kit').forEach(b => {
+                b.onclick = () => {
+                    const idx = parseInt(b.dataset.periciaIdx);
+                    const p = fichaListas.pericias[idx];
+                    if (p) { const valorP = parseInt(p.valor) || 0; if (valorP !== 0) registrarGasto(-valorP, false, null); }
+                    fichaListas.pericias.splice(idx, 1);
+                    renderizarLista('pericias', 'periciasLista');
+                    liberarRecalculoPrincipal();
+                    salvarForcado(); atualizarPontos();
+                };
+            });
             container.querySelectorAll('[data-pericia-desc-idx]').forEach(b => { b.onclick = () => { const idx = parseInt(b.dataset.periciaDescIdx); if (!fichaListas.pericias[idx]) return; fichaListas.pericias[idx].visivel = !fichaListas.pericias[idx].visivel; const el = document.getElementById(`pericia-desc-${idx}`); if (el) el.style.display = fichaListas.pericias[idx].visivel ? 'block' : 'none'; salvarForcado(); }; });
             container.querySelectorAll('[data-info-tipo="pericia"]').forEach(b => { b.onclick = () => { const p = fichaListas.pericias[parseInt(b.dataset.itemIdx)]; if (p) exibirInfo(p.nome || 'Perícia sem nome', p.desc || ''); }; });
             container.querySelectorAll('[data-pericia-add-hab]').forEach(b => { b.onclick = () => { const idx = parseInt(b.dataset.periciaAddHab); if (!fichaListas.pericias[idx]) return; if (!fichaListas.pericias[idx].habilidades) fichaListas.pericias[idx].habilidades = []; fichaListas.pericias[idx].habilidades.push({ nome: '', descricao: '', visivel: false }); renderizarLista('pericias', 'periciasLista'); salvarForcado(); atualizarPontos(); }; });
@@ -6112,7 +6679,7 @@
             if (tipo === 'vantagens') infoTipo = 'vantagem'; else if (tipo === 'desvantagens') infoTipo = 'desvantagem'; else if (tipo === 'especializacoes') infoTipo = 'especializacao'; else if (tipo === 'magias') infoTipo = 'magia';
             let controlesMagia = '';
             if (tipo === 'magias') controlesMagia = renderizarControlesMagia(elemento, index, false, null);
-            itemDiv.innerHTML = `<div class="item-linha">${chkHtml}<input type="text" value="${escapeHtml(elemento.nome || '')}" placeholder="Nome" oninput="window.atualizarItemLista('${tipo}', ${index}, 'nome', this.value)">${tipo === 'magias' ? '' : `<input type="text" class="valor" value="${escapeHtml(String(elemento.valor || 0))}" placeholder="Custo" oninput="window.atualizarItemLista('${tipo}', ${index}, 'valor', this.value)">`}<button class="btn-desc" onclick="window.toggleDescLista('${tipo}', ${index})">📖</button><button class="btn-info-item" data-info-tipo="${infoTipo}" data-item-idx="${index}">i</button><button class="btn-del" onclick="window.removerItemLista('${tipo}', ${index}, '${containerId}')">❌</button></div><div id="desc-${tipo}-${index}" class="desc-editor" style="display: ${elemento.visivel ? 'block' : 'none'};"><textarea rows="3" oninput="window.atualizarItemLista('${tipo}', ${index}, 'desc', this.value)">${escapeHtml(elemento.desc || '')}</textarea></div>${controlesMagia}`;
+            itemDiv.innerHTML = `<div class="item-linha">${chkHtml}<input type="text" value="${escapeHtml(elemento.nome || '')}" placeholder="Nome" oninput="window.atualizarItemLista('${tipo}', ${index}, 'nome', this.value)">${tipo === 'magias' ? '' : `<input type="text" class="valor" value="${escapeHtml(String(elemento.valor || 0))}" placeholder="Custo" onfocus="window.focarValorItemLista('${tipo}', ${index}, this)" oninput="window.atualizarItemLista('${tipo}', ${index}, 'valor', this.value)" onblur="window.blurValorItemLista('${tipo}', ${index}, this)">`}<button class="btn-desc" onclick="window.toggleDescLista('${tipo}', ${index})">📖</button><button class="btn-info-item" data-info-tipo="${infoTipo}" data-item-idx="${index}">i</button><button class="btn-del" onclick="window.removerItemLista('${tipo}', ${index}, '${containerId}')">❌</button></div><div id="desc-${tipo}-${index}" class="desc-editor" style="display: ${elemento.visivel ? 'block' : 'none'};"><textarea rows="3" oninput="window.atualizarItemLista('${tipo}', ${index}, 'desc', this.value)">${escapeHtml(elemento.desc || '')}</textarea></div>${controlesMagia}`;
             container.appendChild(itemDiv);
         });
         if (tipo === 'magias') configurarEventosMagia(container, false, null);
@@ -6147,18 +6714,48 @@
         });
     }
     
+    // ============================================================
+    // ITENS DA FICHA PRINCIPAL - COM registrarGasto
+    // ============================================================
+    window.focarValorItemLista = function(tipo, index, input) {
+        input.dataset.valorAnterior = String(parseInt(input.value) || 0);
+    };
+    
+    window.blurValorItemLista = function(tipo, index, input) {
+        const valorAnterior = parseInt(input.dataset.valorAnterior) || 0;
+        const valorNovo = parseInt(input.value) || 0;
+        const deltaGasto = valorNovo - valorAnterior;
+        if (deltaGasto !== 0 && (tipo === 'vantagens' || tipo === 'desvantagens' || tipo === 'pericias' || tipo === 'especializacoes')) {
+            registrarGasto(deltaGasto, false, null);
+        }
+        input.dataset.valorAnterior = String(valorNovo);
+    };
+    
     window.atualizarItemLista = function(tipo, index, campo, valor) {
         if (!fichaListas[tipo] || !fichaListas[tipo][index]) return;
-        if (campo === 'valor') fichaListas[tipo][index][campo] = parseInt(valor) || 0;
-        else fichaListas[tipo][index][campo] = valor;
+        const item = fichaListas[tipo][index];
+        if (campo === 'valor') {
+            item[campo] = parseInt(valor) || 0;
+        } else {
+            item[campo] = valor;
+        }
+        liberarRecalculoPrincipal();
         salvarForcado(); atualizarPontos();
     };
+    
     window.removerItemLista = function(tipo, index, containerId) {
         if (!fichaListas[tipo]) return;
+        const item = fichaListas[tipo][index];
+        if (item && (tipo === 'vantagens' || tipo === 'desvantagens' || tipo === 'pericias' || tipo === 'especializacoes')) {
+            const valorItem = parseInt(item.valor) || 0;
+            if (valorItem !== 0) registrarGasto(-valorItem, false, null);
+        }
         fichaListas[tipo].splice(index, 1);
         if (tipo === 'kits') renderizarKits(); else renderizarLista(tipo, containerId);
+        liberarRecalculoPrincipal();
         salvarForcado(); atualizarPontos(); atualizarBadgeSustentados();
     };
+    
     window.toggleDescLista = function(tipo, index) {
         if (!fichaListas[tipo] || !fichaListas[tipo][index]) return;
         fichaListas[tipo][index].visivel = !fichaListas[tipo][index].visivel;
@@ -6166,6 +6763,7 @@
         if (el) el.style.display = fichaListas[tipo][index].visivel ? 'block' : 'none';
         salvarForcado();
     };
+    
     window.adicionarItemLista = function(tipo, containerId) {
         if (!fichaListas[tipo]) fichaListas[tipo] = [];
         const novo = { nome: '', valor: 0, desc: '', visivel: false };
@@ -6178,6 +6776,7 @@
         }
         fichaListas[tipo].push(novo);
         if (tipo === 'kits') renderizarKits(); else renderizarLista(tipo, containerId);
+        liberarRecalculoPrincipal();
         salvarForcado(); atualizarPontos();
     };
     
@@ -6194,18 +6793,50 @@
         kits.forEach((kit, kitIndex) => {
             const div = document.createElement('div');
             div.className = 'kit-container';
-            div.innerHTML = `<div class="kit-header"><input type="text" value="${escapeHtml(kit.nome || '')}" placeholder="Nome do Kit" oninput="window.atualizarKit(${kitIndex}, 'nome', this.value)"><input type="text" class="kit-custo" value="${kit.custo || 0}" placeholder="Custo" oninput="window.atualizarKit(${kitIndex}, 'custo', this.value)"><button class="btn-desc-sub" onclick="window.toggleDescKit(${kitIndex})">📖</button><button class="btn-info-sub" onclick="window.exibirInfoKit(${kitIndex})">i</button><button class="btn-remove-kit" onclick="window.removerKit(${kitIndex})">❌ Remover</button></div><div class="kit-desc-editor" id="kit-desc-${kitIndex}" style="display:${kit.visivel ? 'block' : 'none'};"><textarea rows="3" placeholder="Descrição do kit..." oninput="window.atualizarKit(${kitIndex}, 'descricao', this.value)">${escapeHtml(kit.descricao || '')}</textarea></div><div class="kit-habilidades">${(kit.habilidades || []).map((hab, hi) => `<div class="habilidade-item"><input type="text" value="${escapeHtml(hab.nome || '')}" placeholder="Habilidade" oninput="window.atualizarHabilidade(${kitIndex}, ${hi}, 'nome', this.value)"><input type="text" class="habilidade-custo" value="${hab.custo || 0}" placeholder="Custo" oninput="window.atualizarHabilidade(${kitIndex}, ${hi}, 'custo', this.value)"><button class="btn-desc-sub" onclick="window.toggleDescHabilidadeKit(${kitIndex}, ${hi})">📖</button><button class="btn-info-sub" onclick="window.exibirInfoHabilidadeKit(${kitIndex}, ${hi})">i</button><button class="btn-del" onclick="window.removerHabilidade(${kitIndex}, ${hi})">❌</button></div><div class="habilidade-desc-editor" id="hab-kit-desc-${kitIndex}-${hi}" style="display:${hab.visivel ? 'block' : 'none'};"><textarea rows="3" placeholder="Descrição da habilidade..." oninput="window.atualizarHabilidade(${kitIndex}, ${hi}, 'descricao', this.value)">${escapeHtml(hab.descricao || '')}</textarea></div>`).join('')}</div><button class="btn-add-habilidade" onclick="window.adicionarHabilidade(${kitIndex})">+ Adicionar Habilidade</button>`;
+            div.innerHTML = `<div class="kit-header"><input type="text" value="${escapeHtml(kit.nome || '')}" placeholder="Nome do Kit" oninput="window.atualizarKit(${kitIndex}, 'nome', this.value)"><input type="text" inputmode="numeric" pattern="[0-9-]*" class="kit-custo" value="${kit.custo || 0}" placeholder="Custo" onfocus="window.focarValorKit(${kitIndex}, this)" oninput="window.atualizarKit(${kitIndex}, 'custo', this.value)" onblur="window.blurValorKit(${kitIndex}, this)"><button class="btn-desc-sub" onclick="window.toggleDescKit(${kitIndex})">📖</button><button class="btn-info-sub" onclick="window.exibirInfoKit(${kitIndex})">i</button><button class="btn-remove-kit" onclick="window.removerKit(${kitIndex})">❌ Remover</button></div><div class="kit-desc-editor" id="kit-desc-${kitIndex}" style="display:${kit.visivel ? 'block' : 'none'};"><textarea rows="3" placeholder="Descrição do kit..." oninput="window.atualizarKit(${kitIndex}, 'descricao', this.value)">${escapeHtml(kit.descricao || '')}</textarea></div><div class="kit-habilidades">${(kit.habilidades || []).map((hab, hi) => `<div class="habilidade-item"><input type="text" value="${escapeHtml(hab.nome || '')}" placeholder="Habilidade" oninput="window.atualizarHabilidade(${kitIndex}, ${hi}, 'nome', this.value)"><input type="text" inputmode="numeric" pattern="[0-9-]*" class="habilidade-custo" value="${hab.custo || 0}" placeholder="Custo" onfocus="window.focarValorHabilidade(${kitIndex}, ${hi}, this)" oninput="window.atualizarHabilidade(${kitIndex}, ${hi}, 'custo', this.value)" onblur="window.blurValorHabilidade(${kitIndex}, ${hi}, this)"><button class="btn-desc-sub" onclick="window.toggleDescHabilidadeKit(${kitIndex}, ${hi})">📖</button><button class="btn-info-sub" onclick="window.exibirInfoHabilidadeKit(${kitIndex}, ${hi})">i</button><button class="btn-del" onclick="window.removerHabilidade(${kitIndex}, ${hi})">❌</button></div><div class="habilidade-desc-editor" id="hab-kit-desc-${kitIndex}-${hi}" style="display:${hab.visivel ? 'block' : 'none'};"><textarea rows="3" placeholder="Descrição da habilidade..." oninput="window.atualizarHabilidade(${kitIndex}, ${hi}, 'descricao', this.value)">${escapeHtml(hab.descricao || '')}</textarea></div>`).join('')}</div><button class="btn-add-habilidade" onclick="window.adicionarHabilidade(${kitIndex})">+ Adicionar Habilidade</button>`;
             container.appendChild(div);
         });
     }
     
-    window.adicionarKit = function() { if (!fichaListas.kits) fichaListas.kits = []; fichaListas.kits.push({ nome: '', custo: 0, descricao: '', habilidades: [], visivel: false }); renderizarKits(); salvarForcado(); atualizarPontos(); };
-    window.removerKit = function(kitIndex) { fichaListas.kits.splice(kitIndex, 1); renderizarKits(); salvarForcado(); atualizarPontos(); };
-    window.atualizarKit = function(kitIndex, campo, valor) { if (!fichaListas.kits[kitIndex]) return; if (campo === 'custo') fichaListas.kits[kitIndex][campo] = parseInt(valor) || 0; else fichaListas.kits[kitIndex][campo] = valor; salvarForcado(); atualizarPontos(); };
-    window.adicionarHabilidade = function(kitIndex) { if (!fichaListas.kits[kitIndex].habilidades) fichaListas.kits[kitIndex].habilidades = []; fichaListas.kits[kitIndex].habilidades.push({ nome: '', custo: 0, descricao: '', visivel: false }); renderizarKits(); salvarForcado(); atualizarPontos(); };
-    window.removerHabilidade = function(kitIndex, habIndex) { if (!fichaListas.kits[kitIndex]?.habilidades) return; fichaListas.kits[kitIndex].habilidades.splice(habIndex, 1); renderizarKits(); salvarForcado(); atualizarPontos(); };
-    window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!fichaListas.kits[kitIndex]?.habilidades[habIndex]) return; if (campo === 'custo') fichaListas.kits[kitIndex].habilidades[habIndex][campo] = parseInt(valor) || 0; else fichaListas.kits[kitIndex].habilidades[habIndex][campo] = valor; salvarForcado(); atualizarPontos(); };
-        function getFichaVazia(nome = 'Novo Personagem') {
+    window.focarValorKit = function(kitIndex, input) { input.dataset.valorAnterior = String(parseInt(input.value) || 0); };
+    window.blurValorKit = function(kitIndex, input) {
+        const valorAnterior = parseInt(input.dataset.valorAnterior) || 0;
+        const valorNovo = parseInt(input.value) || 0;
+        const deltaGasto = valorNovo - valorAnterior;
+        if (deltaGasto !== 0) registrarGasto(deltaGasto, false, null);
+        input.dataset.valorAnterior = String(valorNovo);
+    };
+    
+    window.focarValorHabilidade = function(kitIndex, habIndex, input) { input.dataset.valorAnterior = String(parseInt(input.value) || 0); };
+    window.blurValorHabilidade = function(kitIndex, habIndex, input) {
+        const valorAnterior = parseInt(input.dataset.valorAnterior) || 0;
+        const valorNovo = parseInt(input.value) || 0;
+        const deltaGasto = valorNovo - valorAnterior;
+        if (deltaGasto !== 0) registrarGasto(deltaGasto, false, null);
+        input.dataset.valorAnterior = String(valorNovo);
+    };
+    
+    window.adicionarKit = function() { if (!fichaListas.kits) fichaListas.kits = []; fichaListas.kits.push({ nome: '', custo: 0, descricao: '', habilidades: [], visivel: false }); renderizarKits(); liberarRecalculoPrincipal(); salvarForcado(); atualizarPontos(); };
+    window.removerKit = function(kitIndex) {
+        const kit = fichaListas.kits[kitIndex];
+        if (kit) {
+            let valorTotal = parseInt(kit.custo) || 0;
+            if (kit.habilidades) kit.habilidades.forEach(h => { valorTotal += parseInt(h.custo) || 0; });
+            if (valorTotal !== 0) registrarGasto(-valorTotal, false, null);
+        }
+        fichaListas.kits.splice(kitIndex, 1); renderizarKits(); liberarRecalculoPrincipal(); salvarForcado(); atualizarPontos();
+    };
+    window.atualizarKit = function(kitIndex, campo, valor) { if (!fichaListas.kits[kitIndex]) return; if (campo === 'custo') fichaListas.kits[kitIndex][campo] = parseInt(valor) || 0; else fichaListas.kits[kitIndex][campo] = valor; liberarRecalculoPrincipal(); salvarForcado(); atualizarPontos(); };
+    window.adicionarHabilidade = function(kitIndex) { if (!fichaListas.kits[kitIndex].habilidades) fichaListas.kits[kitIndex].habilidades = []; fichaListas.kits[kitIndex].habilidades.push({ nome: '', custo: 0, descricao: '', visivel: false }); renderizarKits(); liberarRecalculoPrincipal(); salvarForcado(); atualizarPontos(); };
+    window.removerHabilidade = function(kitIndex, habIndex) {
+        if (!fichaListas.kits[kitIndex]?.habilidades) return;
+        const hab = fichaListas.kits[kitIndex].habilidades[habIndex];
+        if (hab) { const valorHab = parseInt(hab.custo) || 0; if (valorHab !== 0) registrarGasto(-valorHab, false, null); }
+        fichaListas.kits[kitIndex].habilidades.splice(habIndex, 1); renderizarKits(); liberarRecalculoPrincipal(); salvarForcado(); atualizarPontos();
+    };
+    window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!fichaListas.kits[kitIndex]?.habilidades[habIndex]) return; if (campo === 'custo') fichaListas.kits[kitIndex].habilidades[habIndex][campo] = parseInt(valor) || 0; else fichaListas.kits[kitIndex].habilidades[habIndex][campo] = valor; liberarRecalculoPrincipal(); salvarForcado(); atualizarPontos(); };
+    
+    function getFichaVazia(nome = 'Novo Personagem') {
         const statusInicial = {};
         STATUS_LISTA.forEach(s => { statusInicial[s.id] = false; });
         return {
@@ -6216,7 +6847,7 @@
             bonusForca: 0, bonusForca2: 0, bonusForcaDefesa: 0,
             bonusPdf: 0, bonusPdf2: 0, bonusPdfDefesa: 0,
             pdf: 0, pvTotal: 0, pvAtual: 0, bonusPv: 0, pmTotal: 0, pmAtual: 0, bonusPm: 0,
-            pontos: 0, xp: 0, dinheiro: 0, gastosManuais: null,
+            pontosBase: 0, xp: 0, dinheiro: 0, gastosManuais: null,
             vantagemRegionalNome: '', vantagemRegionalCusto: 0, vantagemRegionalDesc: '',
             vantagemUnicaNome: '', vantagemUnicaCusto: 0, vantagemUnicaDesc: '',
             avatarSrc: '',
@@ -6229,7 +6860,13 @@
     }
     
     function extrairDadosDaTela() {
-        const pontosBase = parseFloat(pontosField?.getAttribute('data-base')) || 0;
+        const pontosBaseEl = document.getElementById('pontosBase');
+        const pontosBase = pontosBaseEl ? (
+            (pontosBaseEl.dataset.basePura !== undefined)
+                ? (parseInt(pontosBaseEl.dataset.basePura) || 0)
+                : (parseInt(pontosBaseEl.value) || 0)
+        ) : 0;
+        const pontosGastosVal = (() => { const el = document.getElementById('pontosGastosInput'); return el ? (parseInt(el.value) || 0) : 0; })();
         const pontosGastosInput = document.getElementById('pontosGastosInput');
         let gastosManuaisLocal = null;
         if (pontosGastosInput && (isGM || isMaster)) gastosManuaisLocal = parseInt(pontosGastosInput.value) || 0;
@@ -6275,6 +6912,7 @@
             pmAtual: parseInt(document.getElementById('pmAtual').value) || 0,
             bonusPm: parseInt(document.getElementById('bonusPm').value) || 0,
             pontosBase,
+            pontosGastos: pontosGastosVal,
             xp: parseInt(document.getElementById('xp').value) || 0,
             dinheiro: parseInt(document.getElementById('dinheiro').value) || 0,
             vantagemRegionalNome: document.getElementById('vantagemRegionalNome').value,
@@ -6335,7 +6973,15 @@
         document.getElementById('vantagemUnicaCusto').value = f.vantagemUnicaCusto ?? 0;
         document.getElementById('vantagemUnicaDesc').value = f.vantagemUnicaDesc || '';
         const pontosBase = f.pontosBase !== undefined ? f.pontosBase : (parseFloat(f.pontos) || 0);
-        pontosField.setAttribute('data-base', pontosBase);
+        const pontosGastos = f.pontosGastos !== undefined ? f.pontosGastos : 0;
+        const pontosBaseEl = document.getElementById('pontosBase');
+        const pontosGastosEl = document.getElementById('pontosGastosInput');
+        if (pontosBaseEl) {
+            pontosBaseEl.dataset.basePura = String(pontosBase);
+            pontosBaseEl.value = pontosBase;
+        }
+        if (pontosGastosEl) pontosGastosEl.value = pontosGastos;
+        if (pontosField) pontosField.setAttribute('data-base', pontosBase);
         if (f.gastosManuais !== undefined && f.gastosManuais !== null && (isGM || isMaster)) { gastosManuais = f.gastosManuais; const pgi = document.getElementById('pontosGastosInput'); if (pgi) pgi.value = f.gastosManuais; }
         else gastosManuais = null;
         ataquesCurto = f.ataquesCurto ? f.ataquesCurto.map(a => ({ ...a, chkB1: a.chkB1 !== false, chkB2: a.chkB2 !== false, chkBFA: a.chkBFA !== false })) : [];
@@ -6402,6 +7048,7 @@
                 if (!subCopy.statusSub) { const s = {}; STATUS_LISTA.forEach(x => { s[x.id] = false; }); subCopy.statusSub = s; }
                 if (subCopy.escala === undefined) subCopy.escala = '';
                 if (!Number.isFinite(subCopy.pontosBase)) subCopy.pontosBase = 0;
+                if (!Number.isFinite(subCopy._basePura)) subCopy._basePura = subCopy.pontosBase;
                 if (!subCopy.atributosCustom || !Array.isArray(subCopy.atributosCustom)) subCopy.atributosCustom = [];
                 return subCopy;
             });
@@ -6463,10 +7110,13 @@
             }
             renderizarOficios('oficiosPrincipais', false, null);
         }
+        gastosEditadoManualmente = false;
+        baseEditadaManualmente = false;
+        gastosEditadoManualmenteSub = {};
+        baseEditadaManualmenteSub = {};
         ultimoEstadoFicha = JSON.parse(JSON.stringify(extrairDadosDaTela()));
     }
-    
-    async function salvarFichaAtual() {
+        async function salvarFichaAtual() {
         if (!currentPin || !visualizandoId) return;
         const dados = extrairDadosDaTela();
         const jogadorRef = ref(db, `mesas/${currentPin}/jogadores/${visualizandoId}`);
@@ -6488,6 +7138,10 @@
     async function carregarFichaPorId(id) {
         if (!currentPin) return;
         visualizandoId = id;
+        gastosEditadoManualmente = false;
+        baseEditadaManualmente = false;
+        gastosEditadoManualmenteSub = {};
+        baseEditadaManualmenteSub = {};
         const jogadorRef = ref(db, `mesas/${currentPin}/jogadores/${id}`);
         const snapshot = await get(jogadorRef);
         if (snapshot.exists() && snapshot.val().ficha) injetarDadosNaTela(snapshot.val().ficha);
@@ -6503,6 +7157,10 @@
     function voltarParaLista() {
         if (!isMaster) return;
         visualizandoId = null; ultimoEstadoFicha = null;
+        gastosEditadoManualmente = false;
+        baseEditadaManualmente = false;
+        gastosEditadoManualmenteSub = {};
+        baseEditadaManualmenteSub = {};
         gmPanel.style.display = 'block'; editorFicha.style.display = 'none';
         document.getElementById('viewingText').style.display = 'none';
         document.getElementById('btnVoltarLista').style.display = 'none';
@@ -6586,7 +7244,6 @@
         if (!currentPin || !isMaster) return;
         if (_jogadoresChannel) { try { supabase.removeChannel(_jogadoresChannel); } catch(e) {} _jogadoresChannel = null; }
         if (listaJogadoresUnsubscribe) { try { listaJogadoresUnsubscribe(); } catch(e) {} listaJogadoresUnsubscribe = null; }
-        if (intervaloRefreshJogadores) { clearInterval(intervaloRefreshJogadores); intervaloRefreshJogadores = null; }
         const jogadoresCache = new Map();
         function renderizarListaJogadores() {
             const grid = document.getElementById('gmPlayersGrid');
@@ -6616,12 +7273,11 @@
             renderizarListaJogadores();
         }
         carregarTudo();
-        intervaloRefreshJogadores = setInterval(carregarTudo, 15000);
         const channelName = `jogadores-${currentPin}-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
         const channel = supabase.channel(channelName).on('postgres_changes', { event: '*', schema: 'public', table: 'jogadores', filter: `pin=eq.${currentPin}` }, carregarTudo).subscribe();
         _jogadoresChannel = channel;
         realtimeChannels.push(channel);
-        listaJogadoresUnsubscribe = () => { try { supabase.removeChannel(channel); } catch(e) {} if (intervaloRefreshJogadores) { clearInterval(intervaloRefreshJogadores); intervaloRefreshJogadores = null; } };
+        listaJogadoresUnsubscribe = () => { try { supabase.removeChannel(channel); } catch(e) {} };
     }
     
     window.copiarCodigoFicha = copiarCodigoFicha;
@@ -6662,7 +7318,8 @@
         const codigo = gerarCodigoUnico();
         supabase.from('jogadores').insert({ id: novoId, pin: currentPin, nome: `NPC - ${nomeFicha}`, personagem_nome: nomeFicha, ficha: novaFicha, is_master: false, is_npc: true, codigo_personagem: codigo, criado_por: currentUserId, ultima_atualizacao: new Date().toISOString() }).then(() => { mostrarToast(`✅ Ficha "${nomeFicha}" criada! Código: ${codigo}`, '#4a8a4a'); setTimeout(() => carregarListaJogadores(), 500); }).catch(err => console.error(err));
     }
-        const avatarBtnEl = document.getElementById('avatarBtn');
+    
+    const avatarBtnEl = document.getElementById('avatarBtn');
     const avatarUpload = document.getElementById('uploadAvatar');
     if (avatarBtnEl && avatarUpload) {
         avatarBtnEl.onclick = () => avatarUpload.click();
@@ -6786,14 +7443,18 @@
         const resultado = await buscarJogadorPorCodigo(pin, codigo);
         if (!resultado) { mostrarToast('❌ Código não encontrado!', '#c0392b'); return; }
         currentPin = pin; currentUserName = nome; currentUserId = resultado.id; codigoPersonagemAtual = codigo; isMaster = false; isGM = false;
-        const { error: erroUpdate } = await supabase.from('jogadores').update({
-            nome: nome,
-            conectado: true,
-            is_npc: false,
-            ultima_atualizacao: new Date().toISOString()
-        }).eq('id', currentUserId);
-        if (erroUpdate) console.error('Erro ao atualizar jogador:', erroUpdate);
         const jogadorRef = ref(db, `mesas/${pin}/jogadores/${currentUserId}`);
+        const jogadorSnapshot = await get(jogadorRef);
+        if (jogadorSnapshot.exists()) {
+            const dados = jogadorSnapshot.val();
+            const updatePayload = { nome, conectado: true, ultima_atualizacao: new Date().toISOString() };
+            if (dados.isNPC === true) {
+                updatePayload.isNPC = false;
+                mostrarToast(`🎲 Ficha "${dados.personagemNome}" é sua agora!`, '#4a8a4a');
+            }
+            const { error } = await supabase.from('jogadores').update(updatePayload).eq('id', currentUserId);
+            if (error) console.error('❌ Erro ao marcar online:', error);
+        }
         onDisconnect(jogadorRef).update({ conectado: false });
         entrarNaSala();
         mostrarToast(`🎲 Bem-vindo, ${nome}!`, '#4a8a4a');
@@ -6821,10 +7482,6 @@
             document.getElementById('btnAbrirRegras').style.display = 'none';
             carregarFichaPorId(currentUserId);
             escutarStatusGlobais();
-            // Reforça conectado: true ao entrar na sala (garantia)
-            if (currentPin && currentUserId) {
-                supabase.from('jogadores').update({ conectado: true }).eq('id', currentUserId).then(() => {}).catch(() => {});
-            }
         }
         escutarSustentadosGlobais();
         setTimeout(() => atualizarBadgeSustentadosTodos(), 1000);
@@ -6844,19 +7501,8 @@
         document.getElementById('closeStatusPopup').onclick = fecharPopupStatus;
         document.getElementById('statusPopup').addEventListener('click', (e) => { if (e.target === e.currentTarget) fecharPopupStatus(); });
         renderizarStatusCheckboxes();
-        // CORREÇÃO: Carregar regras e depois re-renderizar testes
-        carregarRegrasMesa().then(() => {
-            atualizarBadgeRegras();
-            aplicarClassesRegras();
-            atualizarSelectsDificuldade();
-            renderizarTestes('testesContainer', false, null);
-            subFichas.forEach((_, idx) => renderizarTestes(`subficha-testesContainer-${idx}`, true, idx));
-            renderizarBaralhoPrincipal();
-            subFichas.forEach((_, idx) => renderizarBaralhoSub(idx));
-            reRenderizarOficios();
-        });
+        carregarRegrasMesa().then(() => { atualizarBadgeRegras(); aplicarClassesRegras(); atualizarSelectsDificuldade(); renderizarBaralhoPrincipal(); subFichas.forEach((_, idx) => renderizarBaralhoSub(idx)); reRenderizarOficios(); });
         escutarRegrasMesa();
-        iniciarPollingRegras();
     }
     
     async function deslogar() {
@@ -6864,8 +7510,6 @@
         if (currentPin && visualizandoId) { try { await salvarFichaImediato(); } catch(e) { console.error('Falha ao salvar antes de sair:', e); } }
         if (currentPin && currentUserId) { await supabase.from('jogadores').update({ conectado: false }).eq('id', currentUserId); }
         if (intervaloLimpeza) clearInterval(intervaloLimpeza);
-        if (intervaloRefreshJogadores) { clearInterval(intervaloRefreshJogadores); intervaloRefreshJogadores = null; }
-        if (intervaloRegras) { clearInterval(intervaloRegras); intervaloRegras = null; }
         for (const ch of realtimeChannels) { try { supabase.removeChannel(ch); } catch(e) {} }
         realtimeChannels = []; _jogadoresChannel = null; _rolagensChannel = null; _mesasChannel = null; _sustentadosChannel = null;
         currentPin = null; currentUserId = null; currentUserName = null; isMaster = false; isGM = false; visualizandoId = null; periciaSelecionadaCarta = null;
@@ -6876,6 +7520,10 @@
         baralhosCombate = {};
         oficiosPrincipais = []; oficiosSub = {};
         atributosCustom = []; atributosCustomSub = {};
+        gastosEditadoManualmente = false;
+        baseEditadaManualmente = false;
+        gastosEditadoManualmenteSub = {};
+        baseEditadaManualmenteSub = {};
         if (listaJogadoresUnsubscribe) { try { listaJogadoresUnsubscribe(); } catch(e) {} listaJogadoresUnsubscribe = null; }
         document.body.classList.remove('regra-pericias-dificuldade', 'regra-pericias-bonus-treinada', 'regra-pericias-pilha-dados', 'regra-pericias-cartas', 'regra-pericias-esforco', 'regra-pericias-nivel-sucesso', 'regra-combate-sem-pv');
         loginScreen.style.display = 'flex'; fichaScreen.style.display = 'none';
@@ -6911,26 +7559,107 @@
     document.getElementById('btnAddAtributoCustom').onclick = () => adicionarAtributoCustom(false, null);
     document.getElementById('btnToggleVantagemRegional').onclick = () => { const e = document.getElementById('vantagemRegionalDescEditor'); e.style.display = e.style.display === 'none' ? 'block' : 'none'; };
     document.getElementById('vantagemRegionalNome').addEventListener('input', salvarForcado);
-    document.getElementById('vantagemRegionalCusto').addEventListener('input', () => { salvarForcado(); atualizarPontos(); });
+    document.getElementById('vantagemRegionalCusto').addEventListener('input', () => { liberarRecalculoPrincipal(); salvarForcado(); atualizarPontos(); });
     document.getElementById('vantagemRegionalDesc').addEventListener('input', salvarForcado);
     document.getElementById('btnToggleVantagemUnica').onclick = () => { const e = document.getElementById('vantagemUnicaDescEditor'); e.style.display = e.style.display === 'none' ? 'block' : 'none'; };
     document.getElementById('vantagemUnicaNome').addEventListener('input', salvarForcado);
-    document.getElementById('vantagemUnicaCusto').addEventListener('input', () => { salvarForcado(); atualizarPontos(); });
+    document.getElementById('vantagemUnicaCusto').addEventListener('input', () => { liberarRecalculoPrincipal(); salvarForcado(); atualizarPontos(); });
     document.getElementById('vantagemUnicaDesc').addEventListener('input', salvarForcado);
-    ['forca', 'habilidade', 'resistencia', 'armadura', 'pdf'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('input', () => { salvarForcado(); atualizarPontos(); }); });
+    (function() {
+        const vrCusto = document.getElementById('vantagemRegionalCusto');
+        if (vrCusto) {
+            vrCusto.addEventListener('focus', () => { vrCusto.dataset.valorAnterior = String(parseInt(vrCusto.value) || 0); });
+            vrCusto.addEventListener('blur', () => {
+                const valorAnterior = parseInt(vrCusto.dataset.valorAnterior) || 0;
+                const valorNovo = parseInt(vrCusto.value) || 0;
+                const deltaGasto = valorNovo - valorAnterior;
+                if (deltaGasto !== 0) registrarGasto(deltaGasto, false, null);
+                vrCusto.dataset.valorAnterior = String(valorNovo);
+            });
+        }
+        const vuCusto = document.getElementById('vantagemUnicaCusto');
+        if (vuCusto) {
+            vuCusto.addEventListener('focus', () => { vuCusto.dataset.valorAnterior = String(parseInt(vuCusto.value) || 0); });
+            vuCusto.addEventListener('blur', () => {
+                const valorAnterior = parseInt(vuCusto.dataset.valorAnterior) || 0;
+                const valorNovo = parseInt(vuCusto.value) || 0;
+                const deltaGasto = valorNovo - valorAnterior;
+                if (deltaGasto !== 0) registrarGasto(deltaGasto, false, null);
+                vuCusto.dataset.valorAnterior = String(valorNovo);
+            });
+        }
+    })();
+    ['forca', 'habilidade', 'resistencia', 'armadura', 'pdf'].forEach(id => { 
+        const el = document.getElementById(id); 
+        if (el) {
+            el.addEventListener('focus', () => { el.dataset.valorAnterior = String(parseInt(el.value) || 0); });
+            el.addEventListener('input', () => { liberarRecalculoPrincipal(); salvarForcado(); atualizarPontos(); });
+            el.addEventListener('blur', () => {
+                const valorAnterior = parseInt(el.dataset.valorAnterior) || 0;
+                const valorNovo = parseInt(el.value) || 0;
+                const deltaGasto = valorNovo - valorAnterior;
+                if (deltaGasto !== 0) registrarGasto(deltaGasto, false, null);
+                el.dataset.valorAnterior = String(valorNovo);
+            });
+        }
+    });
     ['bonusHabilidade', 'bonusHabilidade2', 'bonusResistencia', 'bonusResistencia2', 'bonusArmaduraVisivel', 'bonusArmadura2Visivel', 'bonusForcaVisivel', 'bonusForca2Visivel', 'bonusPdfVisivel', 'bonusPdf2Visivel', 'pvTotal', 'pvAtual', 'bonusPv', 'pmTotal', 'pmAtual', 'bonusPm', 'xp', 'dinheiro'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('input', () => { salvarForcado(); atualizarIndicadoresAtributos(); }); });
     ['chkBonusHabilidade', 'chkBonusHabilidade2', 'chkBonusResistencia', 'chkBonusResistencia2', 'chkBonusArmadura', 'chkBonusArmadura2', 'chkBonusForca', 'chkBonusForca2', 'chkBonusPdf', 'chkBonusPdf2'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', atualizarIndicadoresAtributos); });
-    const pontosGastosInputEl = document.getElementById('pontosGastosInput');
-    if (pontosGastosInputEl) {
-        pontosGastosInputEl.addEventListener('focus', () => { if (isGM || isMaster) pontosGastosInputEl.dataset.masterEditing = 'true'; });
-        pontosGastosInputEl.addEventListener('blur', () => { if (isGM || isMaster) { pontosGastosInputEl.dataset.masterEditing = 'false'; gastosManuais = parseInt(pontosGastosInputEl.value) || 0; const gastosCalculados = calcularGastosTotais(); const novaBase = parseInt(pontosField.value) + gastosCalculados; pontosField.setAttribute('data-base', novaBase); atualizarPontos(); debounceSave(); } });
-    }
-    pontosField?.addEventListener('input', () => {
-        if (!isGM) { const base = parseFloat(pontosField.getAttribute('data-base')) || 0; pontosField.value = base - calcularGastosTotais(); }
-        else { const valorAtual = parseFloat(pontosField.value) || 0; const gastos = calcularGastosTotais(); const novaBase = valorAtual + gastos; pontosField.setAttribute('data-base', novaBase); pontosField.value = novaBase - gastos; }
-        if (parseFloat(pontosField.value) < 0) pontosField.classList.add('pontos-negativo'); else pontosField.classList.remove('pontos-negativo');
-        salvarForcado();
-    });
+    (function() {
+        const baseEl = document.getElementById('pontosBase');
+        const gastosEl = document.getElementById('pontosGastosInput');
+        if (baseEl) {
+            baseEl.addEventListener('focus', () => {
+                if (isGM || isMaster) {
+                    baseEl.dataset.masterEditing = 'true';
+                    baseEl.dataset.valorAntesEdicao = String(parseInt(baseEl.value) || 0);
+                    // Ao focar, exibe o _basePura (total concedido) para edição
+                    baseEl.value = baseEl.dataset.basePura !== undefined
+                        ? (parseInt(baseEl.dataset.basePura) || 0)
+                        : (parseInt(baseEl.value) || 0);
+                }
+            });
+            baseEl.addEventListener('input', () => {
+                if (baseEl.dataset.masterEditing === 'true') {
+                    baseEl.dataset.basePura = String(parseInt(baseEl.value) || 0);
+                }
+                atualizarPontos(); debounceSave();
+            });
+            baseEl.addEventListener('blur', () => {
+                if (isGM || isMaster) {
+                    baseEl.dataset.masterEditing = 'false';
+                    const valorAntes = parseInt(baseEl.dataset.valorAntesEdicao) || 0;
+                    const valorAgora = parseInt(baseEl.value) || 0;
+                    // Só marca como "editado manualmente" se o valor REALMENTE mudou
+                    if (valorAntes !== valorAgora) {
+                        baseEditadaManualmente = true;
+                    }
+                    // Ao sair, restaura exibição líquida
+                    atualizarPontos(); debounceSave();
+                }
+            });
+        }
+        if (gastosEl) {
+            gastosEl.addEventListener('focus', () => { 
+                if (isGM || isMaster) {
+                    gastosEl.dataset.masterEditing = 'true';
+                    gastosEl.dataset.valorAntesEdicao = String(parseInt(gastosEl.value) || 0);
+                }
+            });
+            gastosEl.addEventListener('blur', () => {
+                if (isGM || isMaster) {
+                    gastosEl.dataset.masterEditing = 'false';
+                    const valorAntes = parseInt(gastosEl.dataset.valorAntesEdicao) || 0;
+                    const valorAgora = parseInt(gastosEl.value) || 0;
+                    if (valorAntes !== valorAgora) {
+                        gastosManuais = valorAgora;
+                        gastosEditadoManualmente = true;
+                    }
+                    atualizarPontos(); debounceSave();
+                }
+            });
+        }
+    })();
     document.getElementById('nomePersonagem').addEventListener('input', salvarForcado);
     document.getElementById('escalaPersonagem').addEventListener('input', salvarForcado);
     document.querySelectorAll('.aba-btn').forEach(btn => {
@@ -6946,7 +7675,7 @@
     renderizarStatusCheckboxes();
     window.getSupabase = () => supabase;
     window.getVisualizandoId = () => visualizandoId;
-    console.log('✅ Sistema carregado com atributos customizados integrados.');
+    console.log('✅ Sistema carregado com pontos (Personagem + Gastos) reformulados e edição manual persistente.');
 </script>
 </body>
 </html>
