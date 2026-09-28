@@ -2433,7 +2433,7 @@
     function liberarRecalculoSub(idx) { gastosEditadoManualmenteSub[idx] = false; baseEditadaManualmenteSub[idx] = false; }
 
     // Otimização #7: reduzido de 30 para 15
-    const MAX_CHAT_MESSAGES_DISPLAY = 15;
+    const MAX_CHAT_MESSAGES_DISPLAY = 10;
     const MAX_CHAT_MESSAGES_STORED = 50;
         const STATUS_LISTA_ORIGINAL = [
         { id: 'assombrado', label: 'Assombrado', desc: 'Sempre que você entra em combate, o mestre joga um dado: um resultado 4, 5 ou 6 significa que o fantasma apareceu para assombrá-lo, e você sofre uma penalidade de –1 em todas as suas características até que ele vá embora. Um conjurador Assombrado gasta duas vezes mais PMs para lançar magias. Esta desvantagem também pode significar alguma doença ou, para construtos, algum tipo de mal-funcionamento. A critério do mestre, o "fantasma" também pode aparecer para incomodá-lo em outras ocasiões.' },
@@ -3085,13 +3085,18 @@
     }
     function fecharPopupStatus() { document.getElementById('statusPopup').style.display = 'none'; }
     
+    let _debounceBadgeStatus = null;
+    function agendarBadgeStatus() {
+        if (_debounceBadgeStatus) clearTimeout(_debounceBadgeStatus);
+        _debounceBadgeStatus = setTimeout(() => atualizarBadgeStatusGlobal(), 2000);
+    }
     function escutarStatusGlobais() {
         if (!currentPin) return;
         const channelName = `status-${currentPin}-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
         const channel = supabase.channel(channelName).on('postgres_changes', { event: '*', schema: 'public', table: 'jogadores', filter: `pin=eq.${currentPin}` }, async () => {
             const popup = document.getElementById('statusPopup');
             if (popup.style.display === 'flex') await carregarStatusGlobais();
-            await atualizarBadgeStatusGlobal();
+            agendarBadgeStatus();
         }).subscribe();
         realtimeChannels.push(channel);
     }
@@ -5214,12 +5219,17 @@
     }
     function fecharPopupSustentados() { document.getElementById('sustentadosPopup').style.display = 'none'; }
     
+    let _debounceBadgeSustentados = null;
+    function agendarBadgeSustentados() {
+        if (_debounceBadgeSustentados) clearTimeout(_debounceBadgeSustentados);
+        _debounceBadgeSustentados = setTimeout(() => atualizarBadgeSustentadosTodos(), 2000);
+    }
     function escutarSustentadosGlobais() {
         if (!currentPin) return;
         if (_sustentadosChannel) { try { supabase.removeChannel(_sustentadosChannel); } catch(e) {} _sustentadosChannel = null; }
         const channelName = `sustentados-${currentPin}-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
         const channel = supabase.channel(channelName).on('postgres_changes', { event: '*', schema: 'public', table: 'jogadores', filter: `pin=eq.${currentPin}` }, async () => {
-            await atualizarBadgeSustentadosTodos();
+            agendarBadgeSustentados();
             const popup = document.getElementById('sustentadosPopup');
             if (popup.style.display === 'flex') await carregarItensSustentados();
         }).subscribe();
@@ -7408,7 +7418,7 @@
             }
         }, 20000);
          const channelName = `jogadores-${currentPin}-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
-        // Otimização #6: ignora eventos de heartbeat puro (só conectado/ultima_atualizacao)
+        // Otimização #6 + #2b: evita refetch total em INSERT/DELETE
         const channel = supabase.channel(channelName).on('postgres_changes', { event: '*', schema: 'public', table: 'jogadores', filter: `pin=eq.${currentPin}` }, async (payload) => {
             const novo = payload.new || {};
             const antigo = payload.old || {};
@@ -7430,6 +7440,17 @@
                     jogadoresCache.set(data.id, { id: data.id, ...dbRowToJogador(data) });
                     renderizarListaJogadores();
                 }
+                return;
+            }
+            // Correção #2b: INSERT/DELETE manipulam o cache local, sem SELECT * de toda a mesa
+            if (payload.eventType === 'INSERT' && novo.id) {
+                jogadoresCache.set(novo.id, { id: novo.id, ...dbRowToJogador(novo) });
+                renderizarListaJogadores();
+                return;
+            }
+            if (payload.eventType === 'DELETE' && antigo.id) {
+                jogadoresCache.delete(antigo.id);
+                renderizarListaJogadores();
                 return;
             }
             carregarTudo();
