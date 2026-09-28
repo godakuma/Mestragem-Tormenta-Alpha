@@ -1837,10 +1837,10 @@
     let _mesasChannel = null;
     let _sustentadosChannel = null;
 
-    // ===== PRESENÇA / HEARTBEAT =====
+    // ===== PRESENÇA / HEARTBEAT (OTIMIZADO) =====
     let intervaloHeartbeat = null;
-    const HEARTBEAT_MS = 30000;          // bate a cada 30s
-    const ONLINE_THRESHOLD_MS = 70000;   // considera offline após 70s sem batida
+    const HEARTBEAT_MS = 60000;          // Otimização #2: 60s em vez de 30s
+    const ONLINE_THRESHOLD_MS = 130000;  // Otimização #2: 130s em vez de 70s
     function estaOnline(ultimaAtualizacaoIso) {
         if (!ultimaAtualizacaoIso) return false;
         const t = new Date(ultimaAtualizacaoIso).getTime();
@@ -1849,6 +1849,8 @@
     }
     async function baterPonto() {
         if (!currentPin || !currentUserId) return;
+        // Otimização #1 + #5: só bate ponto com aba visível
+        if (document.visibilityState !== 'visible') return;
         try {
             await supabase.from('jogadores').update({
                 conectado: true,
@@ -1858,12 +1860,18 @@
     }
     function iniciarHeartbeat() {
         if (intervaloHeartbeat) clearInterval(intervaloHeartbeat);
-        baterPonto(); // bate imediatamente
-        intervaloHeartbeat = setInterval(baterPonto, HEARTBEAT_MS);
+        baterPonto();
+        intervaloHeartbeat = setInterval(() => {
+            if (document.visibilityState === 'visible') baterPonto();
+        }, HEARTBEAT_MS);
     }
     function pararHeartbeat() {
         if (intervaloHeartbeat) { clearInterval(intervaloHeartbeat); intervaloHeartbeat = null; }
     }
+    // Otimização #1: bate ponto quando a aba volta a ficar visível
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible' && currentPin && currentUserId) baterPonto();
+    });
 
     const CATEGORIAS_REGRAS = {
         testes: { nome: '🎯 Testes', descricao: 'Regras que substituem os testes de perícia.' },
@@ -2424,7 +2432,8 @@
     function liberarRecalculoPrincipal() { gastosEditadoManualmente = false; baseEditadaManualmente = false; }
     function liberarRecalculoSub(idx) { gastosEditadoManualmenteSub[idx] = false; baseEditadaManualmenteSub[idx] = false; }
 
-    const MAX_CHAT_MESSAGES_DISPLAY = 30;
+    // Otimização #7: reduzido de 30 para 15
+    const MAX_CHAT_MESSAGES_DISPLAY = 15;
     const MAX_CHAT_MESSAGES_STORED = 50;
         const STATUS_LISTA_ORIGINAL = [
         { id: 'assombrado', label: 'Assombrado', desc: 'Sempre que você entra em combate, o mestre joga um dado: um resultado 4, 5 ou 6 significa que o fantasma apareceu para assombrá-lo, e você sofre uma penalidade de –1 em todas as suas características até que ele vá embora. Um conjurador Assombrado gasta duas vezes mais PMs para lançar magias. Esta desvantagem também pode significar alguma doença ou, para construtos, algum tipo de mal-funcionamento. A critério do mestre, o "fantasma" também pode aparecer para incomodá-lo em outras ocasiões.' },
@@ -2501,10 +2510,9 @@
         try { return JSON.stringify(dados).length + '|' + (dados.nome || '') + '|' + (dados.subFichas ? dados.subFichas.length : 0); }
         catch (e) { return String(Date.now()); }
     }
-    function debounceSave() { if (saveTimeout) clearTimeout(saveTimeout); saveTimeout = setTimeout(() => { const d = extrairDadosDaTela(); const h = hashFicha(d); if (h === lastSavedHash) return; lastSavedHash = h; salvarForcado(); }, 2000); }
+    function debounceSave() { if (saveTimeout) clearTimeout(saveTimeout); saveTimeout = setTimeout(() => { const d = extrairDadosDaTela(); const h = hashFicha(d); if (h === lastSavedHash) return; lastSavedHash = h; salvarForcado(); }, 4000); }
     let subFichaSaveTimeout = null;
-    function debounceSaveSubFicha() { if (subFichaSaveTimeout) clearTimeout(subFichaSaveTimeout); subFichaSaveTimeout = setTimeout(() => { const d = extrairDadosDaTela(); const h = hashFicha(d); if (h === lastSavedHash) return; lastSavedHash = h; salvarForcado(); }, 2000); }
-    
+    function debounceSaveSubFicha() { if (subFichaSaveTimeout) clearTimeout(subFichaSaveTimeout); subFichaSaveTimeout = setTimeout(() => { const d = extrairDadosDaTela(); const h = hashFicha(d); if (h === lastSavedHash) return; lastSavedHash = h; salvarForcado(); }, 4000); }    
     function gerarCodigoUnico() {
         const invalidos = ['000000','123456','111111','222222','333333','444444','555555','666666','777777','888888','999999'];
         let codigo, tentativas = 0;
@@ -2570,11 +2578,12 @@
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
                     let width = img.width, height = img.height;
-                    if (width > 150 || height > 150) { const ratio = Math.min(150 / width, 150 / height); width *= ratio; height *= ratio; }
+                    // Otimização #3: 96px e qualidade 0.5 (era 150px e 0.6)
+                    if (width > 96 || height > 96) { const ratio = Math.min(96 / width, 96 / height); width *= ratio; height *= ratio; }
                     canvas.width = width; canvas.height = height;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
-                    resolve(canvas.toDataURL('image/jpeg', 0.6));
+                    resolve(canvas.toDataURL('image/jpeg', 0.5));
                 };
                 img.onerror = reject;
                 img.src = e.target.result;
@@ -3366,8 +3375,8 @@
         });
         const bv = parseInt(baseInput.value) || 0;
         const gv = gastosInput ? (parseInt(gastosInput.value) || 0) : 0;
-        if (bv < 0) baseInput.classList.add('pontos-negativo'); else baseInput.classList.remove('pontos-negativo');
-        if (gastosInput) { if (gv < 0) gastosInput.classList.add('pontos-negativo'); else gastosInput.classList.remove('pontos-negativo'); }
+        baseInput.classList.toggle('pontos-negativo', bv < 0);
+        if (gastosInput) gastosInput.classList.toggle('pontos-negativo', gv < 0);
         return bv - gv;
     }
     
@@ -3918,9 +3927,11 @@
     // BARALHO DE COMBATE
     // ============================================================
     function getChaveCombate(isSub, subIndex, tipo, indice, isDefesa) {
+        // Correção: inclui o id da ficha na chave para não colidir entre fichas
+        const fichaId = visualizandoId || 'sem-ficha';
         const key = isSub ? `sub${subIndex}` : 'principal';
         const subKey = isDefesa ? 'defesa' : (tipo === 'curto' ? 'curto' : 'distancia');
-        return `${key}_${subKey}_${indice}`;
+        return `${fichaId}_${key}_${subKey}_${indice}`;
     }
     
     function getEstadoCombate(chave) {
@@ -4021,9 +4032,9 @@
             html += `</div>`;
         }
         container.innerHTML = html;
-        container.querySelectorAll('[data-comprar-combate]').forEach(b => { b.onclick = () => { comprarMaoCombate(b.dataset.comprarCombate); renderizarCartasCombate(chave, containerId); salvarForcado(); }; });
+        container.querySelectorAll('[data-comprar-combate]').forEach(b => { b.onclick = () => { comprarMaoCombate(b.dataset.comprarCombate); renderizarCartasCombate(chave, containerId); debounceSave(); }; });
         container.querySelectorAll('[data-limpar-combate]').forEach(b => { b.onclick = () => { const est = baralhosCombate[b.dataset.limparCombate]; if (est) { est.selecionadas = []; est.cartaEscolhidaId = null; est.mao.forEach(c => { if (!c.usada && !comboPermitido) c.revelada = false; }); renderizarCartasCombate(chave, containerId); } }; });
-        container.querySelectorAll('[data-nova-mao-combate]').forEach(b => { b.onclick = () => { comprarMaoCombate(b.dataset.novaMaoCombate); renderizarCartasCombate(chave, containerId); salvarForcado(); }; });
+        container.querySelectorAll('[data-nova-mao-combate]').forEach(b => { b.onclick = () => { comprarMaoCombate(b.dataset.novaMaoCombate); renderizarCartasCombate(chave, containerId); debounceSave(); }; });
         container.querySelectorAll('[data-carta-combate-idx]').forEach(el => {
             el.onclick = () => {
                 const ch = el.dataset.cartaCombateChave;
@@ -4063,7 +4074,7 @@
                 carta.revelada = true;
                 est.cartaEscolhidaId = carta.id;
                 renderizarCartasCombate(ch, containerId);
-                salvarForcado();
+                debounceSave();
             };
         });
     }
@@ -6315,7 +6326,7 @@
                 const radioName = `periciaCarta-principal`;
                 document.querySelectorAll(`input[name="${radioName}"]`).forEach(r => { r.checked = false; });
                 renderizarBaralhoPrincipal();
-                salvarForcado();
+                debounceSave();
             };
         });
     }
@@ -6383,7 +6394,7 @@
         html += `</div></div>`;
         container.innerHTML = html;
         const btnComprar = document.getElementById(`btnComprarMaoSub-${subIndex}`);
-        if (btnComprar) btnComprar.onclick = () => { comprarMaoSub(subIndex); salvarForcado(); renderizarBaralhoSub(subIndex); };
+        if (btnComprar) btnComprar.onclick = () => { comprarMaoSub(subIndex); debounceSave(); renderizarBaralhoSub(subIndex); };
         container.querySelectorAll('.baralho-carta.virada:not(.travada)[data-carta-idx]').forEach(el => {
             el.onclick = () => {
                 if (cartaViradaAguardandoUsoSub[subIndex]) { mostrarToast('⚠️ Você já virou uma carta. Use-a antes de virar outra.', '#c0392b'); return; }
@@ -6400,7 +6411,7 @@
                 const radioName = `periciaCarta-sub${subIndex}`;
                 document.querySelectorAll(`input[name="${radioName}"]`).forEach(r => { r.checked = false; });
                 renderizarBaralhoSub(subIndex);
-                salvarForcado();
+                debounceSave();
             };
         });
     }
@@ -7096,6 +7107,9 @@
         cartaViradaAguardandoUso = false;
         if (f.baralhosCombate && typeof f.baralhosCombate === 'object') {
             baralhosCombate = JSON.parse(JSON.stringify(f.baralhosCombate));
+            // Correção: se as chaves antigas (sem fichaId) existirem, descarta
+            const temChaveAntiga = Object.keys(baralhosCombate).some(k => !k.includes(visualizandoId || 'sem-ficha'));
+            if (temChaveAntiga) baralhosCombate = {};
             for (const k of Object.keys(baralhosCombate)) {
                 const est = baralhosCombate[k];
                 if (!est.selecionadas) est.selecionadas = [];
@@ -7235,6 +7249,8 @@
     async function carregarFichaPorId(id) {
         if (!currentPin) return;
         visualizandoId = id;
+        // Correção: limpa baralhos de combate ao trocar de ficha
+        baralhosCombate = {};
         gastosEditadoManualmente = false;
         baseEditadaManualmente = false;
         gastosEditadoManualmenteSub = {};
@@ -7254,6 +7270,8 @@
     function voltarParaLista() {
         if (!isMaster) return;
         visualizandoId = null; ultimoEstadoFicha = null;
+        // Correção: limpa baralhos de combate ao voltar para a lista
+        baralhosCombate = {};
         gastosEditadoManualmente = false;
         baseEditadaManualmente = false;
         gastosEditadoManualmenteSub = {};
@@ -7389,8 +7407,33 @@
                 renderizarListaJogadores();
             }
         }, 20000);
-        const channelName = `jogadores-${currentPin}-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
-        const channel = supabase.channel(channelName).on('postgres_changes', { event: '*', schema: 'public', table: 'jogadores', filter: `pin=eq.${currentPin}` }, carregarTudo).subscribe();
+         const channelName = `jogadores-${currentPin}-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
+        // Otimização #6: ignora eventos de heartbeat puro (só conectado/ultima_atualizacao)
+        const channel = supabase.channel(channelName).on('postgres_changes', { event: '*', schema: 'public', table: 'jogadores', filter: `pin=eq.${currentPin}` }, async (payload) => {
+            const novo = payload.new || {};
+            const antigo = payload.old || {};
+            if (payload.eventType === 'UPDATE' && novo.ficha === antigo.ficha) {
+                if (novo.id && jogadoresCache.has(novo.id)) {
+                    const item = jogadoresCache.get(novo.id);
+                    if (item) {
+                        item.conectado = novo.conectado;
+                        item.ultimaAtualizacao = novo.ultima_atualizacao;
+                        item.personagemNome = novo.personagem_nome;
+                    }
+                    renderizarListaJogadores();
+                }
+                return;
+            }
+            if (payload.eventType === 'UPDATE' && novo.id) {
+                const { data } = await supabase.from('jogadores').select('*').eq('id', novo.id).maybeSingle();
+                if (data) {
+                    jogadoresCache.set(data.id, { id: data.id, ...dbRowToJogador(data) });
+                    renderizarListaJogadores();
+                }
+                return;
+            }
+            carregarTudo();
+        }).subscribe();
         _jogadoresChannel = channel;
         realtimeChannels.push(channel);
         listaJogadoresUnsubscribe = () => { try { supabase.removeChannel(channel); } catch(e) {} };
