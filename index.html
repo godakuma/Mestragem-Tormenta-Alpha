@@ -2455,7 +2455,7 @@
 
     // Otimização #7: reduzido de 30 para 15
     const MAX_CHAT_MESSAGES_DISPLAY = 10;
-    const MAX_CHAT_MESSAGES_STORED = 50;
+    const MAX_CHAT_MESSAGES_STORED = 20;
         const STATUS_LISTA_ORIGINAL = [
         { id: 'assombrado', label: 'Assombrado', desc: 'Sempre que você entra em combate, o mestre joga um dado: um resultado 4, 5 ou 6 significa que o fantasma apareceu para assombrá-lo, e você sofre uma penalidade de –1 em todas as suas características até que ele vá embora. Um conjurador Assombrado gasta duas vezes mais PMs para lançar magias. Esta desvantagem também pode significar alguma doença ou, para construtos, algum tipo de mal-funcionamento. A critério do mestre, o "fantasma" também pode aparecer para incomodá-lo em outras ocasiões.' },
         { id: 'amaldicoado', label: 'Amaldiçoado', desc: 'Você está sob o efeito de alguma maldição' },
@@ -2515,6 +2515,37 @@
         return limparObj(dados);
     }
     
+    // ============================================================
+    // DIFF DE FICHA — envia apenas os campos alterados
+    // ============================================================
+    function diffFicha(antigo, novo, path = 'ficha') {
+        const out = {};
+        if (!antigo || typeof antigo !== 'object') {
+            // Sem referência anterior: manda tudo (primeira vez)
+            return { [path]: novo };
+        }
+        // Arrays e primitivos: compara direto
+        if (Array.isArray(novo)) {
+            const a = JSON.stringify(antigo);
+            const b = JSON.stringify(novo);
+            if (a !== b) out[path] = novo;
+            return out;
+        }
+        if (novo === null || typeof novo !== 'object') {
+            if (antigo !== novo) out[path] = novo;
+            return out;
+        }
+        // Objetos: percorre chaves
+        const chaves = new Set([...Object.keys(antigo || {}), ...Object.keys(novo || {})]);
+        for (const k of chaves) {
+            const va = antigo ? antigo[k] : undefined;
+            const vb = novo ? novo[k] : undefined;
+            const sub = diffFicha(va, vb, `${path}/${k}`);
+            Object.assign(out, sub);
+        }
+        return out;
+    }
+
     function salvarForcado() {
         if (!currentPin || !visualizandoId) return;
         try {
@@ -2528,12 +2559,25 @@
             } catch(e) {}
             // Remove do payload do banco (não precisa sincronizar entre dispositivos)
             const dadosSemCartas = { ...dados, baralhoEstado: null, baralhosCombate: null };
-            // Sub-fichas também têm cartas
             if (Array.isArray(dadosSemCartas.subFichas)) {
                 dadosSemCartas.subFichas = dadosSemCartas.subFichas.map(s => ({ ...s, baralhoSubEstado: null }));
             }
             const jogadorRef = ref(db, `mesas/${currentPin}/jogadores/${visualizandoId}`);
-            update(jogadorRef, { 'ficha': comprimirDados(dadosSemCartas), 'personagemNome': dados.nome || 'Personagem', 'ultimaAtualizacao': serverTimestamp() }).catch(console.error);
+            let updates = {};
+            if (ultimoEstadoFicha) {
+                // Só os campos que mudaram
+                updates = diffFicha(ultimoEstadoFicha, comprimirDados(dadosSemCartas));
+            } else {
+                // Primeira vez: manda tudo
+                updates = { 'ficha': comprimirDados(dadosSemCartas) };
+            }
+            // Sempre atualiza o nome e o timestamp (baratos)
+            updates['personagemNome'] = dados.nome || 'Personagem';
+            updates['ultimaAtualizacao'] = serverTimestamp();
+            // Se não houve mudança real, não faz request
+            const soMeta = Object.keys(updates).every(k => k === 'personagemNome' || k === 'ultimaAtualizacao');
+            if (soMeta && ultimoEstadoFicha) return;
+            update(jogadorRef, updates).catch(console.error);
             ultimoEstadoFicha = JSON.parse(JSON.stringify(dados));
         } catch (err) { console.error('❌ Erro no salvamento forçado:', err); }
     }
@@ -2566,9 +2610,9 @@
         try { return JSON.stringify(dados).length + '|' + (dados.nome || '') + '|' + (dados.subFichas ? dados.subFichas.length : 0); }
         catch (e) { return String(Date.now()); }
     }
-    function debounceSave() { if (saveTimeout) clearTimeout(saveTimeout); saveTimeout = setTimeout(() => { const d = extrairDadosDaTela(); const h = hashFicha(d); if (h === lastSavedHash) return; lastSavedHash = h; salvarForcado(); }, 4000); }
+    function debounceSave() { if (saveTimeout) clearTimeout(saveTimeout); saveTimeout = setTimeout(() => { const d = extrairDadosDaTela(); const h = hashFicha(d); if (h === lastSavedHash) return; lastSavedHash = h; salvarForcado(); }, 10000); }
     let subFichaSaveTimeout = null;
-    function debounceSaveSubFicha() { if (subFichaSaveTimeout) clearTimeout(subFichaSaveTimeout); subFichaSaveTimeout = setTimeout(() => { const d = extrairDadosDaTela(); const h = hashFicha(d); if (h === lastSavedHash) return; lastSavedHash = h; salvarForcado(); }, 4000); }    
+    function debounceSaveSubFicha() { if (subFichaSaveTimeout) clearTimeout(subFichaSaveTimeout); subFichaSaveTimeout = setTimeout(() => { const d = extrairDadosDaTela(); const h = hashFicha(d); if (h === lastSavedHash) return; lastSavedHash = h; salvarForcado(); }, 10000); }    
     function gerarCodigoUnico() {
         const invalidos = ['000000','123456','111111','222222','333333','444444','555555','666666','777777','888888','999999'];
         let codigo, tentativas = 0;
@@ -3130,6 +3174,8 @@
         enviarRolagemFirebase(texto, false);
         atualizarBadgeStatus();
         debounceSave();
+        // Invalida o cache do popup: próxima abertura traz dados frescos
+        try { _ultimoStatusCarregado = 0; } catch(e) {}
     }
     
     function buscarTodosStatus() {
@@ -3145,47 +3191,52 @@
     }
     
     async function carregarStatusGlobais() {
-        const { data, error } = await supabase.from('jogadores').select('*').eq('pin', currentPin);
+        // Traz apenas os campos usados pelo popup de status (evita avatarSrc, listas, etc.)
+        const { data, error } = await supabase
+            .from('jogadores')
+            .select('id, nome, is_master, is_npc, personagem_nome, statusFicha:ficha->statusFicha, subFichas:ficha->subFichas')
+            .eq('pin', currentPin);
         if (error || !data) { renderizarPopupStatus([]); return; }
         const todosStatus = [];
         const nomePersonagemLocal = document.getElementById('nomePersonagem')?.value || 'Você';
+        // A ficha que está aberta agora (para o mestre, pode ser a de um jogador; para o jogador, a dele)
+        const fichaAtualId = visualizandoId;
         for (const d of data) {
-            const dados = dbRowToJogador(d);
-            if (dados.isMaster || !dados.ficha) continue;
-            const nomePersonagem = dados.personagemNome || dados.nome || 'Desconhecido';
-            // Se é a ficha que está sendo visualizada agora, usa o estado LOCAL (fonte da verdade)
-            const ehFichaAtual = (d.id === visualizandoId);
-            const fonteStatusFicha = ehFichaAtual ? statusFicha : (dados.ficha.statusFicha || {});
+            if (d.is_master) continue;
+            const ehFichaAtual = (d.id === fichaAtualId);
+            const nomePersonagem = ehFichaAtual
+                ? nomePersonagemLocal
+                : (d.personagem_nome || d.nome || 'Desconhecido');
+            // Se for a ficha aberta agora, usa os dados LOCAIS (mesmo antes de salvar)
+            const fonteStatusFicha = ehFichaAtual ? statusFicha : (d.statusFicha || {});
             const fonteSubFichas = ehFichaAtual
                 ? subFichas.map((s, i) => ({ ...s, statusSub: statusSubFichas[i] || s.statusSub || {} }))
-                : (dados.ficha.subFichas || []);
-            const nomeExibir = ehFichaAtual ? nomePersonagemLocal : nomePersonagem;
+                : (d.subFichas || {});
             if (fonteStatusFicha) {
                 for (const [statusId, value] of Object.entries(fonteStatusFicha)) {
-                    if (value) todosStatus.push({ condicao: statusId, label: getStatusLabel(statusId), desc: getStatusDesc(statusId), jogadorNome: nomeExibir, personagemNome: nomeExibir, jogadorId: d.id, origem: 'Ficha Principal' });
+                    if (value) todosStatus.push({ condicao: statusId, label: getStatusLabel(statusId), desc: getStatusDesc(statusId), jogadorNome: nomePersonagem, personagemNome: nomePersonagem, jogadorId: d.id, origem: 'Ficha Principal' });
                 }
             }
-            if (fonteSubFichas && Array.isArray(fonteSubFichas)) {
-                fonteSubFichas.forEach((sub, subIdx) => {
+            if (Array.isArray(fonteSubFichas)) {
+                fonteSubFichas.forEach((sub) => {
                     if (!sub.statusSub) return;
                     const nomeSub = sub.nome || 'Sub-ficha';
                     for (const [statusId, value] of Object.entries(sub.statusSub)) {
-                        if (value) todosStatus.push({ condicao: statusId, label: getStatusLabel(statusId), desc: getStatusDesc(statusId), jogadorNome: nomeExibir, personagemNome: nomeSub, jogadorId: d.id, origem: `Sub-ficha: ${nomeSub}` });
+                        if (value) todosStatus.push({ condicao: statusId, label: getStatusLabel(statusId), desc: getStatusDesc(statusId), jogadorNome: nomePersonagem, personagemNome: nomeSub, jogadorId: d.id, origem: `Sub-ficha: ${nomeSub}` });
                     }
                 });
             }
         }
-        // Garante que a ficha atual (local) aparece mesmo se ainda não foi salva no banco
-        if (visualizandoId && !data.some(d => d.id === visualizandoId)) {
-            const nomeExibir = nomePersonagemLocal;
+        // Se a ficha atual ainda não existe no banco (ex.: recém-criada), injeta os dados locais
+        if (fichaAtualId && !data.some(d => d.id === fichaAtualId)) {
             for (const [statusId, value] of Object.entries(statusFicha)) {
-                if (value) todosStatus.push({ condicao: statusId, label: getStatusLabel(statusId), desc: getStatusDesc(statusId), jogadorNome: nomeExibir, personagemNome: nomeExibir, jogadorId: visualizandoId, origem: 'Ficha Principal' });
+                if (value) todosStatus.push({ condicao: statusId, label: getStatusLabel(statusId), desc: getStatusDesc(statusId), jogadorNome: nomePersonagemLocal, personagemNome: nomePersonagemLocal, jogadorId: fichaAtualId, origem: 'Ficha Principal' });
             }
-            subFichas.forEach((sub) => {
-                const st = statusSubFichas[subFichas.indexOf(sub)] || sub.statusSub || {};
+            subFichas.forEach((sub, i) => {
+                const st = statusSubFichas[i] || sub.statusSub || {};
                 const nomeSub = sub.nome || 'Sub-ficha';
                 for (const [statusId, value] of Object.entries(st)) {
-                    if (value) todosStatus.push({ condicao: statusId, label: getStatusLabel(statusId), desc: getStatusDesc(statusId), jogadorNome: nomeExibir, personagemNome: nomeSub, jogadorId: visualizandoId, origem: `Sub-ficha: ${nomeSub}` });
+                    if (value) todosStatus.push({ condicao: statusId, label: getStatusLabel(statusId), desc: getStatusDesc(statusId), jogadorNome: nomePersonagemLocal, personagemNome: nomeSub, jogadorId: fichaAtualId, origem: `Sub-ficha: ${nomeSub}` });
                 }
             });
         }
@@ -3250,20 +3301,24 @@
                             }
                         }
                         const popup = document.getElementById('statusPopup');
-                        if (popup.style.display === 'flex') await carregarStatusGlobais();
+                        if (popup.style.display === 'flex') { _ultimoStatusCarregado = 0; await carregarStatusGlobais(); }
                     } catch (err) { console.error(err); mostrarToast('❌ Erro: ' + err.message, '#c0392b'); }
                 };
             });
         }
     }
     
+    let _ultimoStatusCarregado = 0;
+    const STATUS_CACHE_MS = 30000;
     async function abrirPopupStatus() {
         const popup = document.getElementById('statusPopup');
-        // Salva o estado atual antes de abrir (garante que a ficha atual esteja sincronizada)
-        if (visualizandoId && currentPin) {
-            try { await salvarFichaImediato(); } catch(e) {}
+        // NÃO força salvamento aqui — a ficha já é salva por debounceSave (10s) e onDisconnect.
+        // O popup apenas LÊ o estado atual do banco + injeta o estado LOCAL da ficha aberta.
+        const agora = Date.now();
+        if (agora - _ultimoStatusCarregado > STATUS_CACHE_MS) {
+            await carregarStatusGlobais();
+            _ultimoStatusCarregado = agora;
         }
-        await carregarStatusGlobais();
         popup.style.display = 'flex';
     }
     function fecharPopupStatus() { document.getElementById('statusPopup').style.display = 'none'; }
@@ -5227,21 +5282,39 @@
     
     async function carregarItensSustentados() {
         if (!currentPin) return;
-        const { data, error } = await supabase.from('jogadores').select('*').eq('pin', currentPin);
-        if (error || !data) { renderizarPopupSustentados([]); return; }
         const todos = [];
-        for (const row of data) {
-            const dados = dbRowToJogador(row);
-            if (dados.isMaster || !dados.ficha) continue;
-            const nomePersonagem = dados.personagemNome || dados.nome || 'Desconhecido';
-            if (dados.ficha.listas?.magias) { const lista = dados.ficha.listas.magias; lista.filter(m => m.sustentado === true).forEach(m => todos.push({ ...m, tipo: 'magias', jogadorId: row.id, jogadorNome: nomePersonagem, itemIndex: lista.indexOf(m), subFichaIndex: null, origem: 'Ficha Principal' })); }
-            if (dados.ficha.listas?.vantagens) { const lista = dados.ficha.listas.vantagens; lista.filter(v => v.sustentado === true).forEach(v => todos.push({ ...v, tipo: 'vantagens', jogadorId: row.id, jogadorNome: nomePersonagem, itemIndex: lista.indexOf(v), subFichaIndex: null, origem: 'Ficha Principal' })); }
-            if (dados.ficha.subFichas && Array.isArray(dados.ficha.subFichas)) {
-                dados.ficha.subFichas.forEach((sub, subIdx) => {
-                    if (!sub.listas) return;
-                    if (sub.listas.magias) { const lista = sub.listas.magias; lista.filter(m => m.sustentado === true).forEach(m => todos.push({ ...m, tipo: 'magias', jogadorId: row.id, jogadorNome: nomePersonagem, itemIndex: lista.indexOf(m), subFichaIndex: subIdx, origem: `Sub-ficha: ${sub.nome || 'sem nome'}` })); }
-                    if (sub.listas.vantagens) { const lista = sub.listas.vantagens; lista.filter(v => v.sustentado === true).forEach(v => todos.push({ ...v, tipo: 'vantagens', jogadorId: row.id, jogadorNome: nomePersonagem, itemIndex: lista.indexOf(v), subFichaIndex: subIdx, origem: `Sub-ficha: ${sub.nome || 'sem nome'}` })); }
-                });
+        const fichaAtualId = visualizandoId;
+        const nomePersonagemLocal = document.getElementById('nomePersonagem')?.value || currentUserName || 'Você';
+
+        // 1) Ficha aberta agora → usa dados LOCAIS (fonte da verdade, mesmo antes de salvar)
+        if (fichaAtualId) {
+            if (fichaListas.magias) fichaListas.magias.forEach((m, i) => { if (m.sustentado === true) todos.push({ ...m, tipo: 'magias', jogadorId: fichaAtualId, jogadorNome: nomePersonagemLocal, itemIndex: i, subFichaIndex: null, origem: 'Ficha Principal' }); });
+            if (fichaListas.vantagens) fichaListas.vantagens.forEach((v, i) => { if (v.sustentado === true) todos.push({ ...v, tipo: 'vantagens', jogadorId: fichaAtualId, jogadorNome: nomePersonagemLocal, itemIndex: i, subFichaIndex: null, origem: 'Ficha Principal' }); });
+            subFichas.forEach((sub, subIdx) => {
+                if (sub.listas?.magias) sub.listas.magias.forEach((m, i) => { if (m.sustentado === true) todos.push({ ...m, tipo: 'magias', jogadorId: fichaAtualId, jogadorNome: nomePersonagemLocal, itemIndex: i, subFichaIndex: subIdx, origem: `Sub-ficha: ${sub.nome || 'sem nome'}` }); });
+                if (sub.listas?.vantagens) sub.listas.vantagens.forEach((v, i) => { if (v.sustentado === true) todos.push({ ...v, tipo: 'vantagens', jogadorId: fichaAtualId, jogadorNome: nomePersonagemLocal, itemIndex: i, subFichaIndex: subIdx, origem: `Sub-ficha: ${sub.nome || 'sem nome'}` }); });
+            });
+        }
+
+        // 2) Demais fichas do banco (exceto a atual, que já foi incluída localmente)
+        const { data, error } = await supabase
+            .from('jogadores')
+            .select('id, nome, is_master, is_npc, personagem_nome, ficha->listas, ficha->subFichas')
+            .eq('pin', currentPin);
+        if (!error && data) {
+            for (const row of data) {
+                if (row.is_master) continue;
+                if (row.id === fichaAtualId) continue; // já incluída com dados locais
+                const nomePersonagem = row.personagem_nome || row.nome || 'Desconhecido';
+                if (row.listas?.magias) { const lista = row.listas.magias; lista.forEach((m, i) => { if (m.sustentado === true) todos.push({ ...m, tipo: 'magias', jogadorId: row.id, jogadorNome: nomePersonagem, itemIndex: i, subFichaIndex: null, origem: 'Ficha Principal' }); }); }
+                if (row.listas?.vantagens) { const lista = row.listas.vantagens; lista.forEach((v, i) => { if (v.sustentado === true) todos.push({ ...v, tipo: 'vantagens', jogadorId: row.id, jogadorNome: nomePersonagem, itemIndex: i, subFichaIndex: null, origem: 'Ficha Principal' }); }); }
+                if (Array.isArray(row.subFichas)) {
+                    row.subFichas.forEach((sub, subIdx) => {
+                        if (!sub.listas) return;
+                        if (sub.listas.magias) sub.listas.magias.forEach((m, i) => { if (m.sustentado === true) todos.push({ ...m, tipo: 'magias', jogadorId: row.id, jogadorNome: nomePersonagem, itemIndex: i, subFichaIndex: subIdx, origem: `Sub-ficha: ${sub.nome || 'sem nome'}` }); });
+                        if (sub.listas.vantagens) sub.listas.vantagens.forEach((v, i) => { if (v.sustentado === true) todos.push({ ...v, tipo: 'vantagens', jogadorId: row.id, jogadorNome: nomePersonagem, itemIndex: i, subFichaIndex: subIdx, origem: `Sub-ficha: ${sub.nome || 'sem nome'}` }); });
+                    });
+                }
             }
         }
         renderizarPopupSustentados(todos);
@@ -5322,15 +5395,22 @@
             const mensagem = `🪄 O Mestre cancelou a sustentação da ${tipoLabel} "${nomeItem}" de ${jogadorNome || 'um jogador'}.`;
             addMensagem(mensagem, false); enviarRolagemFirebase(mensagem, false); mostrarToast('✅ Sustentação cancelada!', '#4a8a4a');
             const popup = document.getElementById('sustentadosPopup');
-            if (popup.style.display === 'flex') await carregarItensSustentados();
+            if (popup.style.display === 'flex') { _ultimoSustentadosCarregado = 0; await carregarItensSustentados(); }
             renderizarLista(tipo, tipo === 'magias' ? 'magiasLista' : 'vantagensLista');
             subFichas.forEach((sub, idx) => renderizarSubListas(idx));
         } catch (err) { console.error(err); mostrarToast('❌ Erro: ' + err.message, '#c0392b'); }
     }
     
-    function abrirPopupSustentados() {
+    let _ultimoSustentadosCarregado = 0;
+    const SUSTENTADOS_CACHE_MS = 30000;
+    async function abrirPopupSustentados() {
         const popup = document.getElementById('sustentadosPopup');
-        carregarItensSustentados();
+        // NÃO força salvamento aqui — a ficha já é salva por debounceSave (10s) e onDisconnect.
+        const agora = Date.now();
+        if (agora - _ultimoSustentadosCarregado > SUSTENTADOS_CACHE_MS) {
+            await carregarItensSustentados();
+            _ultimoSustentadosCarregado = agora;
+        }
         popup.style.display = 'flex';
     }
     function fecharPopupSustentados() { document.getElementById('sustentadosPopup').style.display = 'none'; }
@@ -5396,11 +5476,11 @@
                 if (id.startsWith('sub-magia-sustentado-')) {
                     const partes = id.split('-'); const subIdx = parseInt(partes[3]); const itemIdx = parseInt(partes[4]);
                     const sub = subFichas[subIdx];
-                    if (sub && sub.listas.magias && sub.listas.magias[itemIdx]) { const item = sub.listas.magias[itemIdx]; item.sustentado = target.checked; const nomeItem = item.nome || 'Magia sem nome'; const mensagem = target.checked ? `🪄 🔮 Magia "${nomeItem}" foi marcada como sustentada na sub-ficha ${sub.nome}.` : `🪄 Sustentação da magia "${nomeItem}" foi cancelada na sub-ficha ${sub.nome}.`; addMensagem(mensagem, false); enviarRolagemFirebase(mensagem, false); atualizarBadgeSustentados(); debounceSaveSubFicha(); }
+                    if (sub && sub.listas.magias && sub.listas.magias[itemIdx]) { const item = sub.listas.magias[itemIdx]; item.sustentado = target.checked; const nomeItem = item.nome || 'Magia sem nome'; const mensagem = target.checked ? `🪄 🔮 Magia "${nomeItem}" foi marcada como sustentada na sub-ficha ${sub.nome}.` : `🪄 Sustentação da magia "${nomeItem}" foi cancelada na sub-ficha ${sub.nome}.`; addMensagem(mensagem, false); enviarRolagemFirebase(mensagem, false); atualizarBadgeSustentados(); debounceSaveSubFicha(); try { _ultimoSustentadosCarregado = 0; } catch(e) {} }
                 } else if (id.startsWith('sub-vantagem-sustentado-')) {
                     const partes = id.split('-'); const subIdx = parseInt(partes[3]); const itemIdx = parseInt(partes[4]);
                     const sub = subFichas[subIdx];
-                    if (sub && sub.listas.vantagens && sub.listas.vantagens[itemIdx]) { const item = sub.listas.vantagens[itemIdx]; item.sustentado = target.checked; const nomeItem = item.nome || 'Vantagem sem nome'; const mensagem = target.checked ? `🪄 ✨ Vantagem "${nomeItem}" foi marcada como sustentada na sub-ficha ${sub.nome}.` : `🪄 Sustentação da vantagem "${nomeItem}" foi cancelada na sub-ficha ${sub.nome}.`; addMensagem(mensagem, false); enviarRolagemFirebase(mensagem, false); atualizarBadgeSustentados(); debounceSaveSubFicha(); }
+                    if (sub && sub.listas.vantagens && sub.listas.vantagens[itemIdx]) { const item = sub.listas.vantagens[itemIdx]; item.sustentado = target.checked; const nomeItem = item.nome || 'Vantagem sem nome'; const mensagem = target.checked ? `🪄 ✨ Vantagem "${nomeItem}" foi marcada como sustentada na sub-ficha ${sub.nome}.` : `🪄 Sustentação da vantagem "${nomeItem}" foi cancelada na sub-ficha ${sub.nome}.`; addMensagem(mensagem, false); enviarRolagemFirebase(mensagem, false); atualizarBadgeSustentados(); debounceSaveSubFicha(); try { _ultimoSustentadosCarregado = 0; } catch(e) {} }
                 }
             }
         });
@@ -5538,6 +5618,8 @@
             if (mensagem.length > 0) { if (info) info.textContent = `⚠️ Condições ativas: ${mensagem.join(', ')}`; const texto = `⚠️ Status da sub-ficha "${sub.nome}" atualizado: ${mensagem.join(', ')}`; addMensagem(texto, false); enviarRolagemFirebase(texto, false); }
             else { if (info) info.textContent = 'Nenhuma condição ativa nesta sub-ficha.'; const texto = `✅ Todas as condições da sub-ficha "${sub.nome}" foram removidas.`; addMensagem(texto, false); enviarRolagemFirebase(texto, false); }
             atualizarBadgeStatus(); debounceSaveSubFicha();
+            // Invalida cache do popup de status
+            try { _ultimoStatusCarregado = 0; } catch(e) {}
         }
         for (const status of STATUS_LISTA) { const chk = document.getElementById(`subficha-status-${status.id}-${index}`); if (chk) chk.onchange = atualizarStatusSubLocal; }
         document.querySelectorAll(`.subficha-status-info-btn[data-sub-index="${index}"]`).forEach(btn => {
@@ -6907,7 +6989,7 @@
             container.appendChild(itemDiv);
         });
         if (tipo === 'magias') configurarEventosMagia(container, false, null);
-        if (tipo === 'magias' || tipo === 'vantagens') {
+                if (tipo === 'magias' || tipo === 'vantagens') {
             container.querySelectorAll('.chk-sustentado').forEach(chk => {
                 chk.onchange = () => {
                     const partes = chk.id.split('-'); const tipoItem = partes[0]; const idx = parseInt(partes[2]);
@@ -6917,6 +6999,8 @@
                         const nomeItem = item.nome || (tipoItem === 'magias' ? 'Magia sem nome' : 'Vantagem sem nome');
                         const mensagem = chk.checked ? `🪄 ${tipoItem === 'magias' ? '🔮 Magia' : '✨ Vantagem'} "${nomeItem}" foi marcada como sustentada.` : `🪄 Sustentação de "${nomeItem}" foi cancelada.`;
                         addMensagem(mensagem, false); enviarRolagemFirebase(mensagem, false); atualizarBadgeSustentados(); salvarForcado();
+                        // Invalida cache do popup de sustentados
+                        try { _ultimoSustentadosCarregado = 0; } catch(e) {}
                     }
                 };
             });
@@ -7359,10 +7443,17 @@
     }
         async function salvarFichaAtual() {
         if (!currentPin || !visualizandoId) return;
-        const dados = extrairDadosDaTela();
-        const jogadorRef = ref(db, `mesas/${currentPin}/jogadores/${visualizandoId}`);
-        await update(jogadorRef, { 'ficha': comprimirDados(dados), 'personagemNome': dados.nome || 'Personagem', 'ultimaAtualizacao': serverTimestamp() });
-        ultimoEstadoFicha = JSON.parse(JSON.stringify(dados));
+        try {
+            const dados = extrairDadosDaTela();
+            const jogadorRef = ref(db, `mesas/${currentPin}/jogadores/${visualizandoId}`);
+            let updates = ultimoEstadoFicha
+                ? diffFicha(ultimoEstadoFicha, comprimirDados(dados))
+                : { 'ficha': comprimirDados(dados) };
+            updates['personagemNome'] = dados.nome || 'Personagem';
+            updates['ultimaAtualizacao'] = serverTimestamp();
+            await update(jogadorRef, updates);
+            ultimoEstadoFicha = JSON.parse(JSON.stringify(dados));
+        } catch (err) { console.error('❌ Erro salvarFichaAtual:', err); }
     }
     
     async function salvarFichaImediato() {
@@ -7370,6 +7461,7 @@
         try {
             const dados = extrairDadosDaTela();
             const jogadorRef = ref(db, `mesas/${currentPin}/jogadores/${visualizandoId}`);
+            // No salvamento imediato, garante que tudo seja enviado (segurança)
             await update(jogadorRef, { 'ficha': comprimirDados(dados), 'personagemNome': dados.nome || 'Personagem', 'ultimaAtualizacao': serverTimestamp() });
             ultimoEstadoFicha = JSON.parse(JSON.stringify(dados));
             return true;
@@ -7583,7 +7675,10 @@
             checkboxes.forEach(cb => { cb.onchange = () => { const sel = grid.querySelectorAll('.player-checkbox:checked').length; document.getElementById('updateStatus').textContent = `${sel} selecionada${sel !== 1 ? 's' : ''}`; }; });
         }
         async function carregarTudo() {
-            const { data, error } = await supabase.from('jogadores').select('*').eq('pin', currentPin);
+                const { data, error } = await supabase
+                .from('jogadores')
+                .select('id, nome, is_master, is_npc, conectado, codigo_personagem, criado_por, personagem_nome, ultima_atualizacao')
+                .eq('pin', currentPin);
             if (error) { console.error(error); return; }
             jogadoresCache.clear();
             (data || []).forEach(d => { if (d.is_master) return; jogadoresCache.set(d.id, { id: d.id, ...dbRowToJogador(d) }); });
