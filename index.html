@@ -3148,18 +3148,46 @@
         const { data, error } = await supabase.from('jogadores').select('*').eq('pin', currentPin);
         if (error || !data) { renderizarPopupStatus([]); return; }
         const todosStatus = [];
+        const nomePersonagemLocal = document.getElementById('nomePersonagem')?.value || 'Você';
         for (const d of data) {
             const dados = dbRowToJogador(d);
             if (dados.isMaster || !dados.ficha) continue;
             const nomePersonagem = dados.personagemNome || dados.nome || 'Desconhecido';
-            if (dados.ficha.statusFicha) { for (const [statusId, value] of Object.entries(dados.ficha.statusFicha)) { if (value) todosStatus.push({ condicao: statusId, label: getStatusLabel(statusId), desc: getStatusDesc(statusId), jogadorNome: nomePersonagem, personagemNome: nomePersonagem, jogadorId: d.id, origem: 'Ficha Principal' }); } }
-            if (dados.ficha.subFichas && Array.isArray(dados.ficha.subFichas)) {
-                dados.ficha.subFichas.forEach((sub, subIdx) => {
+            // Se é a ficha que está sendo visualizada agora, usa o estado LOCAL (fonte da verdade)
+            const ehFichaAtual = (d.id === visualizandoId);
+            const fonteStatusFicha = ehFichaAtual ? statusFicha : (dados.ficha.statusFicha || {});
+            const fonteSubFichas = ehFichaAtual
+                ? subFichas.map((s, i) => ({ ...s, statusSub: statusSubFichas[i] || s.statusSub || {} }))
+                : (dados.ficha.subFichas || []);
+            const nomeExibir = ehFichaAtual ? nomePersonagemLocal : nomePersonagem;
+            if (fonteStatusFicha) {
+                for (const [statusId, value] of Object.entries(fonteStatusFicha)) {
+                    if (value) todosStatus.push({ condicao: statusId, label: getStatusLabel(statusId), desc: getStatusDesc(statusId), jogadorNome: nomeExibir, personagemNome: nomeExibir, jogadorId: d.id, origem: 'Ficha Principal' });
+                }
+            }
+            if (fonteSubFichas && Array.isArray(fonteSubFichas)) {
+                fonteSubFichas.forEach((sub, subIdx) => {
                     if (!sub.statusSub) return;
                     const nomeSub = sub.nome || 'Sub-ficha';
-                    for (const [statusId, value] of Object.entries(sub.statusSub)) { if (value) todosStatus.push({ condicao: statusId, label: getStatusLabel(statusId), desc: getStatusDesc(statusId), jogadorNome: nomePersonagem, personagemNome: nomeSub, jogadorId: d.id, origem: `Sub-ficha: ${nomeSub}` }); }
+                    for (const [statusId, value] of Object.entries(sub.statusSub)) {
+                        if (value) todosStatus.push({ condicao: statusId, label: getStatusLabel(statusId), desc: getStatusDesc(statusId), jogadorNome: nomeExibir, personagemNome: nomeSub, jogadorId: d.id, origem: `Sub-ficha: ${nomeSub}` });
+                    }
                 });
             }
+        }
+        // Garante que a ficha atual (local) aparece mesmo se ainda não foi salva no banco
+        if (visualizandoId && !data.some(d => d.id === visualizandoId)) {
+            const nomeExibir = nomePersonagemLocal;
+            for (const [statusId, value] of Object.entries(statusFicha)) {
+                if (value) todosStatus.push({ condicao: statusId, label: getStatusLabel(statusId), desc: getStatusDesc(statusId), jogadorNome: nomeExibir, personagemNome: nomeExibir, jogadorId: visualizandoId, origem: 'Ficha Principal' });
+            }
+            subFichas.forEach((sub) => {
+                const st = statusSubFichas[subFichas.indexOf(sub)] || sub.statusSub || {};
+                const nomeSub = sub.nome || 'Sub-ficha';
+                for (const [statusId, value] of Object.entries(st)) {
+                    if (value) todosStatus.push({ condicao: statusId, label: getStatusLabel(statusId), desc: getStatusDesc(statusId), jogadorNome: nomeExibir, personagemNome: nomeSub, jogadorId: visualizandoId, origem: `Sub-ficha: ${nomeSub}` });
+                }
+            });
         }
         renderizarPopupStatus(todosStatus);
     }
@@ -3190,12 +3218,36 @@
                         await supabase.from('jogadores').update({ ficha }).eq('id', jogadorId);
                         const mensagem = `⚠️ O Mestre removeu a condição "${getStatusLabel(condicao)}" de ${personagemNome}.`;
                         addMensagem(mensagem, false); enviarRolagemFirebase(mensagem, false); mostrarToast('✅ Condição removida!', '#4a8a4a');
+                        // Se o mestre está visualizando a própria ficha afetada, atualiza a UI local
                         if (visualizandoId === jogadorId) {
                             if (isSubFicha) {
                                 const m = origem.match(/Sub-ficha: (.+)/);
-                                if (m && subFichas) { for (let i = 0; i < subFichas.length; i++) { if (subFichas[i].nome === m[1]) { if (!subFichas[i].statusSub) subFichas[i].statusSub = {}; subFichas[i].statusSub[condicao] = false; statusSubFichas[i] = { ...subFichas[i].statusSub }; const chk = document.getElementById(`subficha-status-${condicao}-${i}`); if (chk) chk.checked = false; const info = document.getElementById(`subficha-statusInfo-${i}`); if (info) { const ativos = []; for (const [sid, val] of Object.entries(subFichas[i].statusSub)) { if (val) ativos.push(getStatusLabel(sid)); } info.textContent = ativos.length > 0 ? `⚠️ Condições ativas: ${ativos.join(', ')}` : 'Nenhuma condição ativa nesta sub-ficha.'; } break; } } }
+                                if (m && subFichas) {
+                                    for (let i = 0; i < subFichas.length; i++) {
+                                        if (subFichas[i].nome === m[1]) {
+                                            if (!subFichas[i].statusSub) subFichas[i].statusSub = {};
+                                            subFichas[i].statusSub[condicao] = false;
+                                            statusSubFichas[i] = { ...subFichas[i].statusSub };
+                                            const chk = document.getElementById(`subficha-status-${condicao}-${i}`);
+                                            if (chk) chk.checked = false;
+                                            const info = document.getElementById(`subficha-statusInfo-${i}`);
+                                            if (info) {
+                                                const ativos = [];
+                                                for (const [sid, val] of Object.entries(subFichas[i].statusSub)) { if (val) ativos.push(getStatusLabel(sid)); }
+                                                info.textContent = ativos.length > 0 ? `⚠️ Condições ativas: ${ativos.join(', ')}` : 'Nenhuma condição ativa nesta sub-ficha.';
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
                                 atualizarBadgeStatus();
-                            } else { const chk = document.getElementById(`status-${condicao}`); if (chk) chk.checked = false; statusFicha[condicao] = false; atualizarStatusFicha(); }
+                            } else {
+                                const chk = document.getElementById(`status-${condicao}`);
+                                if (chk) chk.checked = false;
+                                statusFicha[condicao] = false;
+                                // NÃO chamar atualizarStatusFicha() aqui — ele relê o DOM e pode reenviar o estado antigo.
+                                atualizarBadgeStatus();
+                            }
                         }
                         const popup = document.getElementById('statusPopup');
                         if (popup.style.display === 'flex') await carregarStatusGlobais();
@@ -3205,9 +3257,13 @@
         }
     }
     
-    function abrirPopupStatus() {
+    async function abrirPopupStatus() {
         const popup = document.getElementById('statusPopup');
-        carregarStatusGlobais();
+        // Salva o estado atual antes de abrir (garante que a ficha atual esteja sincronizada)
+        if (visualizandoId && currentPin) {
+            try { await salvarFichaImediato(); } catch(e) {}
+        }
+        await carregarStatusGlobais();
         popup.style.display = 'flex';
     }
     function fecharPopupStatus() { document.getElementById('statusPopup').style.display = 'none'; }
