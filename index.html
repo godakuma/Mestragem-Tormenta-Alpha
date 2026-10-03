@@ -1413,12 +1413,10 @@
                     <span class="contador" id="regrasNumero">0</span>
                 </button>
                 <button class="sustentados-badge" id="btnAbrirSustentados" title="Ver itens sustentados">
-                    🪄 <span id="sustentadosContador">0</span> item(ns) sustentado(s)
-                    <span class="contador" id="sustentadosNumero">0</span>
+                    🪄 Sustentados
                 </button>
                 <button class="status-badge" id="btnAbrirStatus" title="Ver condições ativas">
-                    ⚠️ <span id="statusContador">0</span> condição(ões) ativa(s)
-                    <span class="contador" id="statusNumero">0</span>
+                    ⚠️ Condições
                 </button>
             </div>
             <div>
@@ -3042,16 +3040,20 @@
     function getStatusDesc(id) { const f = STATUS_LISTA.find(s => s.id === id); return f ? f.desc : ''; }
     
     function atualizarBadgeStatus() {
+        // Brilho local: reflete apenas a ficha atual (sem SELECT, sem número)
         const badge = document.getElementById('btnAbrirStatus');
-        const contador = document.getElementById('statusContador');
-        const numero = document.getElementById('statusNumero');
-        let count = 0;
-        for (const [id, value] of Object.entries(statusFicha)) if (value) count++;
-        for (const [subIdx, subStatus] of Object.entries(statusSubFichas)) { if (subStatus) for (const [id, value] of Object.entries(subStatus)) if (value) count++; }
-        if (badge) badge.style.display = 'inline-flex';
-        if (contador) contador.textContent = count;
-        if (numero) numero.textContent = count;
-        if (badge) { if (count > 0) badge.classList.add('ativo'); else badge.classList.remove('ativo'); }
+        if (!badge) return;
+        let temAlgo = false;
+        for (const v of Object.values(statusFicha)) { if (v) { temAlgo = true; break; } }
+        if (!temAlgo) {
+            for (const subStatus of Object.values(statusSubFichas)) {
+                if (!subStatus) continue;
+                for (const v of Object.values(subStatus)) { if (v) { temAlgo = true; break; } }
+                if (temAlgo) break;
+            }
+        }
+        badge.classList.toggle('ativo', temAlgo);
+        // Resumo interno da aba Status (continua funcionando)
         const infoFicha = document.getElementById('statusFichaInfo');
         if (infoFicha) {
             const ativos = [];
@@ -3210,43 +3212,14 @@
     }
     function fecharPopupStatus() { document.getElementById('statusPopup').style.display = 'none'; }
     
-    let _timerBadgeStatus = null;
+        let _timerBadgeStatus = null;
     function escutarStatusGlobais() {
-        if (!currentPin) return;
-        if (_timerBadgeStatus) clearInterval(_timerBadgeStatus);
-        _timerBadgeStatus = setInterval(() => {
-            if (document.visibilityState === 'visible') atualizarBadgeStatusGlobal();
-        }, 60000);
+        // Sem polling. A badge de status só atualiza ao clicar.
+
     }
     
     async function atualizarBadgeStatusGlobal() {
-        if (!currentPin) return;
-        try {
-            const { data, error } = await supabase.from('jogadores').select('ficha').eq('pin', currentPin);
-            if (error || !data) return;
-            let total = 0;
-            for (const row of data) {
-                const ficha = row.ficha;
-                if (!ficha) continue;
-                if (ficha.statusFicha) {
-                    for (const v of Object.values(ficha.statusFicha)) { if (v) total++; }
-                }
-                if (Array.isArray(ficha.subFichas)) {
-                    for (const sub of ficha.subFichas) {
-                        if (sub.statusSub) {
-                            for (const v of Object.values(sub.statusSub)) { if (v) total++; }
-                        }
-                    }
-                }
-            }
-            const badge = document.getElementById('btnAbrirStatus');
-            const contador = document.getElementById('statusContador');
-            const numero = document.getElementById('statusNumero');
-            if (badge) badge.style.display = 'inline-flex';
-            if (contador) contador.textContent = total;
-            if (numero) numero.textContent = total;
-            if (badge) { if (total > 0) badge.classList.add('ativo'); else badge.classList.remove('ativo'); }
-        } catch (err) { console.warn('Erro ao atualizar badge de status global:', err); }
+        // Sem contador global. Nada a fazer.
     }
     
     // ============================================================
@@ -5220,57 +5193,26 @@
     }
 
     function atualizarBadgeSustentadosGlobal(totalGlobal) {
-        const badge = document.getElementById('btnAbrirSustentados');
-        const contador = document.getElementById('sustentadosContador');
-        const numero = document.getElementById('sustentadosNumero');
-        if (badge) badge.style.display = 'inline-flex';
-        if (contador) contador.textContent = totalGlobal;
-        if (numero) numero.textContent = totalGlobal;
-        if (badge) { if (totalGlobal > 0) badge.classList.add('ativo'); else badge.classList.remove('ativo'); }
+        // Sem contador global. Nada a fazer.
     }
 
     async function atualizarBadgeSustentadosTodos() {
-        if (!currentPin) return;
-        try {
-            const { data, error } = await supabase.from('jogadores').select('ficha').eq('pin', currentPin);
-            if (error || !data) return;
-            let total = 0;
-            for (const row of data) {
-                const ficha = row.ficha;
-                if (!ficha) continue;
-                if (ficha.listas?.magias) total += ficha.listas.magias.filter(m => m.sustentado === true).length;
-                if (ficha.listas?.vantagens) total += ficha.listas.vantagens.filter(v => v.sustentado === true).length;
-                if (ficha.subFichas && Array.isArray(ficha.subFichas)) {
-                    ficha.subFichas.forEach(sub => {
-                        if (!sub.listas) return;
-                        if (sub.listas.magias) total += sub.listas.magias.filter(m => m.sustentado === true).length;
-                        if (sub.listas.vantagens) total += sub.listas.vantagens.filter(v => v.sustentado === true).length;
-                    });
-                }
-            }
-            atualizarBadgeSustentadosGlobal(total);
-        } catch (err) { console.warn('Erro ao atualizar badge sustentados:', err); }
+        // Sem contador global. Nada a fazer.
     }
     
     function atualizarBadgeSustentados() {
+        // Brilho local: reflete apenas a ficha atual (sem SELECT, sem número)
         const badge = document.getElementById('btnAbrirSustentados');
-        const contador = document.getElementById('sustentadosContador');
-        const numero = document.getElementById('sustentadosNumero');
-        const magias = fichaListas.magias || [];
-        const vantagens = fichaListas.vantagens || [];
-        const sustentadasMagias = magias.filter(m => m.sustentado === true);
-        const sustentadasVantagens = vantagens.filter(v => v.sustentado === true);
-        let subSustentadas = 0;
-        subFichas.forEach(sub => {
-            if (sub.listas?.magias) subSustentadas += sub.listas.magias.filter(m => m.sustentado === true).length;
-            if (sub.listas?.vantagens) subSustentadas += sub.listas.vantagens.filter(v => v.sustentado === true).length;
-        });
-        const count = sustentadasMagias.length + sustentadasVantagens.length + subSustentadas;
-        if (badge) badge.style.display = 'inline-flex';
-        if (contador) contador.textContent = count;
-        if (numero) numero.textContent = count;
-        if (badge) { if (count > 0) badge.classList.add('ativo'); else badge.classList.remove('ativo'); }
-        atualizarBadgeSustentadosTodos();
+        if (!badge) return;
+        let temAlgo = false;
+        const checarLista = (lista) => (lista || []).some(item => item.sustentado === true);
+        if (checarLista(fichaListas.magias) || checarLista(fichaListas.vantagens)) temAlgo = true;
+        if (!temAlgo) {
+            for (const sub of subFichas) {
+                if (checarLista(sub.listas?.magias) || checarLista(sub.listas?.vantagens)) { temAlgo = true; break; }
+            }
+        }
+        badge.classList.toggle('ativo', temAlgo);
     }
     
     function buscarTodosItensSustentados() {
@@ -5341,12 +5283,8 @@
     function escutarSustentadosGlobais() {
         if (!currentPin) return;
         if (_sustentadosChannel) { try { supabase.removeChannel(_sustentadosChannel); } catch(e) {} _sustentadosChannel = null; }
-        // Polling de 60s para o badge (leve, só SELECT ficha dos outros)
-        if (_timerBadgeSustentados) clearInterval(_timerBadgeSustentados);
-        _timerBadgeSustentados = setInterval(() => {
-            if (document.visibilityState === 'visible') atualizarBadgeSustentadosTodos();
-        }, 60000);
-        _sustentadosChannel = { remove: () => { if (_timerBadgeSustentados) { clearInterval(_timerBadgeSustentados); _timerBadgeSustentados = null; } } };
+        // Sem polling. A badge de sustentados só atualiza ao clicar.
+        _sustentadosChannel = { remove: () => {} };
     }
     
     function renderizarSubFichaInline(sub, index) {
@@ -7836,8 +7774,6 @@ listaJogadoresUnsubscribe = () => {};
             escutarStatusGlobais();
         }
         escutarSustentadosGlobais();
-        setTimeout(() => atualizarBadgeSustentadosTodos(), 1000);
-        setTimeout(() => atualizarBadgeStatusGlobal(), 1000);
         document.getElementById('btnAtualizarFicha').onclick = atualizarFichaUsuario;
         document.getElementById('btnCriarNovaFicha').onclick = criarNovaFicha;
         document.getElementById('btnMigrarCodigos').onclick = migrarCodigosFichasExistentes;
@@ -7859,8 +7795,6 @@ listaJogadoresUnsubscribe = () => {};
     }
     
     async function deslogar() {
-                if (_timerBadgeStatus) { clearInterval(_timerBadgeStatus); _timerBadgeStatus = null; }
-        if (_timerBadgeSustentados) { clearInterval(_timerBadgeSustentados); _timerBadgeSustentados = null; }
         if (!confirm('Sair? Você será desconectado da mesa.')) return;
         if (currentPin && visualizandoId) { try { await salvarFichaImediato(); } catch(e) { console.error('Falha ao salvar antes de sair:', e); } }
         if (currentPin && currentUserId) { await supabase.from('jogadores').update({ conectado: false }).eq('id', currentUserId); }
