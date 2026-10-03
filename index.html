@@ -1437,6 +1437,7 @@
                 <div>
                     <button class="btn-criar-nova-ficha" id="btnCriarNovaFicha">➕ Criar Nova Ficha (NPC)</button>
                     <button class="btn-migrar-codigos" id="btnMigrarCodigos">🔑 Gerar Códigos</button>
+                                        <button class="btn-migrar-codigos" id="btnMigrarAvatares" style="background:#5a4a7a;">🖼️ Migrar Avatares</button>
                 </div>
             </div>
             <div class="gm-update-controls">
@@ -2593,6 +2594,52 @@
         });
     }
     
+    // ===== SUPABASE STORAGE - UPLOAD DE AVATAR =====
+    async function uploadAvatarParaStorage(file) {
+        if (!file) return null;
+        try {
+            const base64Comprimido = await comprimirAvatar(file);
+            if (!base64Comprimido) return null;
+            const response = await fetch(base64Comprimido);
+            const blob = await response.blob();
+            const timestamp = Date.now();
+            const random = Math.random().toString(36).slice(2, 8);
+            const nomeArquivo = `${currentUserId || 'anon'}/${timestamp}_${random}.jpg`;
+            const { data, error } = await supabase.storage
+                .from('avatars')
+                .upload(nomeArquivo, blob, {
+                    contentType: 'image/jpeg',
+                    cacheControl: '31536000',
+                    upsert: false
+                });
+            if (error) {
+                console.error('❌ Erro no upload do avatar:', error);
+                mostrarToast('⚠️ Não foi possível enviar a imagem.', '#c0392b');
+                return null;
+            }
+            const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(data.path);
+            return urlData.publicUrl;
+        } catch (err) {
+            console.error('❌ Erro inesperado no upload:', err);
+            mostrarToast('⚠️ Erro ao enviar imagem.', '#c0392b');
+            return null;
+        }
+    }
+
+    async function apagarAvatarAntigo(urlAntiga) {
+        if (!urlAntiga || typeof urlAntiga !== 'string') return;
+        if (!urlAntiga.includes('/storage/v1/object/public/avatars/')) return;
+        try {
+            const match = urlAntiga.match(/\/avatars\/(.+)$/);
+            if (!match) return;
+            const path = match[1];
+            const { error } = await supabase.storage.from('avatars').remove([path]);
+            if (error) console.warn('⚠️ Não foi possível apagar avatar antigo:', error.message);
+        } catch (err) {
+            console.warn('⚠️ Erro ao apagar avatar antigo:', err);
+        }
+    }
+
     async function limparChatAntigo() {
         if (!currentPin || !isMaster) return;
         const { data } = await supabase.from('rolagens').select('id').eq('pin', currentPin).order('timestamp', { ascending: false });
@@ -7135,8 +7182,17 @@
         else { if (xpFieldEl) { xpFieldEl.readOnly = true; xpFieldEl.style.opacity = '0.8'; } if (pontosEdicao) { pontosEdicao.readOnly = true; pontosEdicao.style.opacity = '0.8'; } }
         setTimeout(() => atualizarPontos(), 50);
         const avatarBtnEl = document.getElementById('avatarBtn');
-        if (f.avatarSrc) { avatarBtnEl.innerHTML = ''; const img = document.createElement('img'); img.src = f.avatarSrc; img.style.cssText = 'width:100%;height:100%;object-fit:cover;'; avatarBtnEl.appendChild(img); }
-        else avatarBtnEl.innerHTML = '<div class="avatar-placeholder">🎲</div>';
+        if (f.avatarSrc) {
+            avatarBtnEl.innerHTML = '';
+            const img = document.createElement('img');
+            img.src = f.avatarSrc;
+            img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+            avatarBtnEl.appendChild(img);
+            avatarBtnEl.dataset.avatarUrl = f.avatarSrc;
+        } else {
+            avatarBtnEl.innerHTML = '<div class="avatar-placeholder">🎲</div>';
+            avatarBtnEl.dataset.avatarUrl = '';
+        }
         const periciasComHabilidades = (f.listas?.pericias || []).map(p => ({ ...p, valor: parseInt(p.valor) || 0, habilidades: (p.habilidades || []).map(h => ({ ...h, custo: parseInt(h.custo) || 0 })) }));
         Object.keys(fichaListas).forEach(key => {
             fichaListas[key].length = 0;
@@ -7316,6 +7372,66 @@
         } catch (err) { console.error(err); mostrarToast('❌ Erro: ' + err.message, '#c0392b'); }
     }
     
+        async function migrarAvataresParaStorage() {
+        if (!isMaster) { mostrarToast('⚠️ Apenas o mestre!', '#c0392b'); return; }
+        if (!confirm('Migrar todos os avatares em base64 para o Supabase Storage?\n\nEste processo pode demorar. Não feche a aba.')) return;
+        try {
+            const { data, error } = await supabase.from('jogadores').select('*').eq('pin', currentPin);
+            if (error || !data) { mostrarToast('❌ Não foi possível buscar fichas.', '#c0392b'); return; }
+            let migrados = 0, ignorados = 0, falhas = 0;
+
+            async function uploadBase64(base64, prefixoId) {
+                if (!base64 || typeof base64 !== 'string' || !base64.startsWith('data:image/')) return null;
+                const response = await fetch(base64);
+                const blob = await response.blob();
+                const timestamp = Date.now();
+                const random = Math.random().toString(36).slice(2, 8);
+                const nomeArquivo = `${prefixoId}/${timestamp}_${random}.jpg`;
+                const { data: upData, error: upError } = await supabase.storage
+                    .from('avatars')
+                    .upload(nomeArquivo, blob, { contentType: 'image/jpeg', cacheControl: '31536000', upsert: false });
+                if (upError) return null;
+                const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(upData.path);
+                return urlData.publicUrl;
+            }
+
+            for (const row of data) {
+                const ficha = row.ficha;
+                if (!ficha) continue;
+                let mudou = false;
+
+                if (ficha.avatarSrc && ficha.avatarSrc.startsWith('data:image/')) {
+                    const novaUrl = await uploadBase64(ficha.avatarSrc, row.id);
+                    if (novaUrl) { ficha.avatarSrc = novaUrl; mudou = true; migrados++; }
+                    else falhas++;
+                } else { ignorados++; }
+
+                if (Array.isArray(ficha.subFichas)) {
+                    for (let i = 0; i < ficha.subFichas.length; i++) {
+                        const sub = ficha.subFichas[i];
+                        if (sub.avatarSrc && sub.avatarSrc.startsWith('data:image/')) {
+                            const novaUrl = await uploadBase64(sub.avatarSrc, `${row.id}_sub${i}`);
+                            if (novaUrl) { sub.avatarSrc = novaUrl; mudou = true; migrados++; }
+                            else falhas++;
+                        } else { ignorados++; }
+                    }
+                }
+
+                if (mudou) {
+                    const { error: updateError } = await supabase.from('jogadores').update({ ficha }).eq('id', row.id);
+                    if (updateError) { console.warn(`⚠️ Falha ao salvar ficha ${row.id}`); falhas++; }
+                }
+            }
+
+            mostrarToast(`✅ Migração: ${migrados} migrados, ${ignorados} já migrados, ${falhas} falhas.`, '#4a8a4a');
+            console.log(`📊 Migração: ${migrados} migrados, ${ignorados} ignorados, ${falhas} falhas.`);
+            carregarListaJogadores();
+        } catch (err) {
+            console.error('❌ Erro na migração:', err);
+            mostrarToast('❌ Erro: ' + err.message, '#c0392b');
+        }
+    }
+
     async function atualizarCodigoFicha(jogadorId) {
         if (!isMaster) return;
         if (!confirm('Gerar novo código?')) return;
@@ -7507,10 +7623,32 @@
         avatarUpload.addEventListener('change', async function(e) {
             const file = e.target.files[0];
             if (!file) return;
-            const avatarComprimido = await comprimirAvatar(file);
-            const img = document.createElement('img'); img.src = avatarComprimido; img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
-            avatarBtnEl.innerHTML = ''; avatarBtnEl.appendChild(img);
-            if (currentPin && visualizandoId) { const jogadorRef = ref(db, `mesas/${currentPin}/jogadores/${visualizandoId}`); await update(jogadorRef, { 'ficha/avatarSrc': avatarComprimido, ultimaAtualizacao: serverTimestamp() }); }
+            // Preview imediato
+            const previewUrl = URL.createObjectURL(file);
+            const imgPreview = document.createElement('img');
+            imgPreview.src = previewUrl;
+            imgPreview.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+            avatarBtnEl.innerHTML = '';
+            avatarBtnEl.appendChild(imgPreview);
+            const urlAntiga = avatarBtnEl.dataset.avatarUrl || '';
+            mostrarToast('📤 Enviando imagem...', '#5a7a8a');
+            const novaUrl = await uploadAvatarParaStorage(file);
+            if (!novaUrl) {
+                avatarBtnEl.innerHTML = '<div class="avatar-placeholder">🎲</div>';
+                URL.revokeObjectURL(previewUrl);
+                return;
+            }
+            imgPreview.src = novaUrl;
+            URL.revokeObjectURL(previewUrl);
+            avatarBtnEl.dataset.avatarUrl = novaUrl;
+            if (currentPin && visualizandoId) {
+                const jogadorRef = ref(db, `mesas/${currentPin}/jogadores/${visualizandoId}`);
+                await update(jogadorRef, { 'ficha/avatarSrc': novaUrl, ultimaAtualizacao: serverTimestamp() });
+            }
+            if (urlAntiga && urlAntiga !== novaUrl) {
+                await apagarAvatarAntigo(urlAntiga);
+            }
+            mostrarToast('✅ Imagem atualizada!', '#4a8a4a');
         });
     }
     
@@ -7670,6 +7808,7 @@
         document.getElementById('btnAtualizarFicha').onclick = atualizarFichaUsuario;
         document.getElementById('btnCriarNovaFicha').onclick = criarNovaFicha;
         document.getElementById('btnMigrarCodigos').onclick = migrarCodigosFichasExistentes;
+                document.getElementById('btnMigrarAvatares').onclick = migrarAvataresParaStorage;
         document.getElementById('btnSair').onclick = deslogar;
         document.getElementById('btnAbrirRegras').onclick = abrirPopupRegras;
         document.getElementById('closeRegrasPopup').onclick = fecharPopupRegras;
