@@ -2166,7 +2166,44 @@
     }
 
     function escutarRegrasMesa() {
-        // Sem realtime. Só é chamado quando o mestre salva ou alguém abre o popup.
+        if (!currentPin) return;
+        if (_mesasChannel) { try { supabase.removeChannel(_mesasChannel); } catch(e) {} _mesasChannel = null; }
+        const channelName = `mesas-${currentPin}-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
+        const channel = supabase.channel(channelName)
+            .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'mesas', filter: `pin=eq.${currentPin}` }, async (payload) => {
+                const novo = payload.new || {};
+                if (novo.regras && typeof novo.regras === 'object') {
+                    if (novo.regras.ativas) for (const [k, v] of Object.entries(novo.regras.ativas)) regrasMesa[k] = v === true;
+                    if (novo.regras.config) for (const [k, v] of Object.entries(novo.regras.config)) regrasConfig[k] = { ...(regrasConfig[k] || {}), ...v };
+                    if (novo.regras.subopcoes) for (const [k, v] of Object.entries(novo.regras.subopcoes)) regrasSubopcoes[k] = { ...(regrasSubopcoes[k] || {}), ...v };
+                    aplicarClassesRegras();
+                    atualizarBadgeRegras();
+                    atualizarSelectsDificuldade();
+                    if (isMaster) renderizarPopupRegras();
+                    if (visualizandoId) {
+                        renderizarTestes('testesContainer', false, null);
+                        renderizarBaralhoPrincipal();
+                        renderizarAtaques('curto', false, null);
+                        renderizarAtaques('distancia', false, null);
+                        renderizarDefesas(false, null);
+                        reRenderizarOficios();
+                        subFichas.forEach((_, idx) => {
+                            const elTestes = document.getElementById(`subficha-testesContainer-${idx}`);
+                            if (elTestes) renderizarTestes(`subficha-testesContainer-${idx}`, true, idx);
+                            const elBaralho = document.getElementById(`subficha-baralhoPainel-${idx}`);
+                            if (elBaralho) renderizarBaralhoSub(idx);
+                            const elOficios = document.getElementById(`subficha-oficios-${idx}`);
+                            if (elOficios) renderizarOficios(`subficha-oficios-${idx}`, true, idx);
+                            renderizarAtaques('curto', true, idx);
+                            renderizarAtaques('distancia', true, idx);
+                            renderizarDefesas(true, idx);
+                        });
+                    }
+                }
+            })
+            .subscribe();
+        _mesasChannel = channel;
+        realtimeChannels.push(channel);
     }
 
     function abrirPopupRegras() {
@@ -7516,7 +7553,7 @@
     
     function carregarListaJogadores() {
         if (!currentPin || !isMaster) return;
-        if (_jogadoresChannel) { try { supabase.removeChannel(_jogadoresChannel); } catch(e) {} _jogadoresChannel = null; }
+        // Sem canal realtime de jogadores.
         if (listaJogadoresUnsubscribe) { try { listaJogadoresUnsubscribe(); } catch(e) {} listaJogadoresUnsubscribe = null; }
         const jogadoresCache = new Map();
         function renderizarListaJogadores() {
@@ -7568,19 +7605,8 @@
         }, 20000);
          // Otimização: sem realtime de ficha. O mestre faz polling leve de 60s
         // (só 5 colunas, não a ficha inteira). Entradas/saídas aparecem em até 60s.
-        if (window._timerPollJogadores) clearInterval(window._timerPollJogadores);
-        window._timerPollJogadores = setInterval(async () => {
-            if (!isMaster || visualizandoId) return;
-            const { data, error } = await supabase
-                .from('jogadores')
-                .select('id, nome, is_master, is_npc, conectado, codigo_personagem, criado_por, personagem_nome, ultima_atualizacao')
-                .eq('pin', currentPin);
-            if (error || !data) return;
-            jogadoresCache.clear();
-            data.forEach(d => { if (!d.is_master) jogadoresCache.set(d.id, { id: d.id, ...dbRowToJogador(d) }); });
-            renderizarListaJogadores();
-        }, 60000);
-        listaJogadoresUnsubscribe = () => { if (window._timerPollJogadores) { clearInterval(window._timerPollJogadores); window._timerPollJogadores = null; } };
+        // Sem realtime e sem polling automático de fichas (somente carregamento manual).
+listaJogadoresUnsubscribe = () => {};
     }
     
     window.copiarCodigoFicha = copiarCodigoFicha;
@@ -7843,7 +7869,7 @@
                 if (window._timerRefreshLista) { clearInterval(window._timerRefreshLista); window._timerRefreshLista = null; }
         for (const ch of realtimeChannels) { try { supabase.removeChannel(ch); } catch(e) {} }
         realtimeChannels = []; _rolagensChannel = null; _mesasChannel = null; _sustentadosChannel = null;
-        if (window._timerPollJogadores) { clearInterval(window._timerPollJogadores); window._timerPollJogadores = null; }
+        // Sem canal realtime de jogadores.
         currentPin = null; currentUserId = null; currentUserName = null; isMaster = false; isGM = false; visualizandoId = null; periciaSelecionadaCarta = null;
         cartaViradaAguardandoUso = false;
         periciaSelecionadaCartaSub = {};
