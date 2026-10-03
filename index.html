@@ -2143,45 +2143,30 @@
         atualizarSelectsDificuldade();
     }
 
-    function escutarRegrasMesa() {
+        async function recarregarRegrasDaMesa() {
         if (!currentPin) return;
-        if (_mesasChannel) { try { supabase.removeChannel(_mesasChannel); } catch(e) {} _mesasChannel = null; }
-        const channelName = `mesas-${currentPin}-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
-        const channel = supabase.channel(channelName)
-            .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'mesas', filter: `pin=eq.${currentPin}` }, async (payload) => {
-                const novo = payload.new || {};
-                if (novo.regras && typeof novo.regras === 'object') {
-                    if (novo.regras.ativas) for (const [k, v] of Object.entries(novo.regras.ativas)) regrasMesa[k] = v === true;
-                    if (novo.regras.config) for (const [k, v] of Object.entries(novo.regras.config)) regrasConfig[k] = { ...(regrasConfig[k] || {}), ...v };
-                    if (novo.regras.subopcoes) for (const [k, v] of Object.entries(novo.regras.subopcoes)) regrasSubopcoes[k] = { ...(regrasSubopcoes[k] || {}), ...v };
-                    aplicarClassesRegras();
-                    atualizarBadgeRegras();
-                    atualizarSelectsDificuldade();
-                    if (isMaster) renderizarPopupRegras();
-                    if (visualizandoId) {
-                        renderizarTestes('testesContainer', false, null);
-                        renderizarBaralhoPrincipal();
-                        renderizarAtaques('curto', false, null);
-                        renderizarAtaques('distancia', false, null);
-                        renderizarDefesas(false, null);
-                        reRenderizarOficios();
-                        subFichas.forEach((_, idx) => {
-                            const elTestes = document.getElementById(`subficha-testesContainer-${idx}`);
-                            if (elTestes) renderizarTestes(`subficha-testesContainer-${idx}`, true, idx);
-                            const elBaralho = document.getElementById(`subficha-baralhoPainel-${idx}`);
-                            if (elBaralho) renderizarBaralhoSub(idx);
-                            const elOficios = document.getElementById(`subficha-oficios-${idx}`);
-                            if (elOficios) renderizarOficios(`subficha-oficios-${idx}`, true, idx);
-                            renderizarAtaques('curto', true, idx);
-                            renderizarAtaques('distancia', true, idx);
-                            renderizarDefesas(true, idx);
-                        });
-                    }
-                }
-            })
-            .subscribe();
-        _mesasChannel = channel;
-        realtimeChannels.push(channel);
+        try {
+            const { data } = await supabase.from('mesas').select('regras').eq('pin', currentPin).maybeSingle();
+            if (!data || !data.regras) return;
+            if (data.regras.ativas) for (const [k, v] of Object.entries(data.regras.ativas)) regrasMesa[k] = v === true;
+            if (data.regras.config) for (const [k, v] of Object.entries(data.regras.config)) regrasConfig[k] = { ...(regrasConfig[k] || {}), ...v };
+            if (data.regras.subopcoes) for (const [k, v] of Object.entries(data.regras.subopcoes)) regrasSubopcoes[k] = { ...(regrasSubopcoes[k] || {}), ...v };
+            aplicarClassesRegras();
+            atualizarBadgeRegras();
+            atualizarSelectsDificuldade();
+            if (visualizandoId) {
+                renderizarTestes('testesContainer', false, null);
+                renderizarBaralhoPrincipal();
+                renderizarAtaques('curto', false, null);
+                renderizarAtaques('distancia', false, null);
+                renderizarDefesas(false, null);
+                reRenderizarOficios();
+            }
+        } catch(e) {}
+    }
+
+    function escutarRegrasMesa() {
+        // Sem realtime. Só é chamado quando o mestre salva ou alguém abre o popup.
     }
 
     function abrirPopupRegras() {
@@ -2499,10 +2484,45 @@
         if (!currentPin || !visualizandoId) return;
         try {
             const dados = extrairDadosDaTela();
+            // Cartas vão para sessionStorage, não para o banco
+            try {
+                sessionStorage.setItem('cartas_estado_' + visualizandoId, JSON.stringify({
+                    baralhoEstado: dados.baralhoEstado,
+                    baralhosCombate: dados.baralhosCombate
+                }));
+            } catch(e) {}
+            // Remove do payload do banco (não precisa sincronizar entre dispositivos)
+            const dadosSemCartas = { ...dados, baralhoEstado: null, baralhosCombate: null };
+            // Sub-fichas também têm cartas
+            if (Array.isArray(dadosSemCartas.subFichas)) {
+                dadosSemCartas.subFichas = dadosSemCartas.subFichas.map(s => ({ ...s, baralhoSubEstado: null }));
+            }
             const jogadorRef = ref(db, `mesas/${currentPin}/jogadores/${visualizandoId}`);
-            update(jogadorRef, { 'ficha': comprimirDados(dados), 'personagemNome': dados.nome || 'Personagem', 'ultimaAtualizacao': serverTimestamp() }).catch(console.error);
+            update(jogadorRef, { 'ficha': comprimirDados(dadosSemCartas), 'personagemNome': dados.nome || 'Personagem', 'ultimaAtualizacao': serverTimestamp() }).catch(console.error);
             ultimoEstadoFicha = JSON.parse(JSON.stringify(dados));
         } catch (err) { console.error('❌ Erro no salvamento forçado:', err); }
+    }
+
+    function restaurarCartasDoSessionStorage() {
+        if (!visualizandoId) return;
+        try {
+            const raw = sessionStorage.getItem('cartas_estado_' + visualizandoId);
+            if (!raw) return;
+            const obj = JSON.parse(raw);
+            if (obj.baralhoEstado && Array.isArray(obj.baralhoEstado.monte)) {
+                baralhoEstado = obj.baralhoEstado;
+                if (baralhoEstado.mao) baralhoEstado.mao.forEach(c => { if (c.usada === undefined) c.usada = false; });
+            }
+            if (obj.baralhosCombate && typeof obj.baralhosCombate === 'object') {
+                baralhosCombate = obj.baralhosCombate;
+                for (const k of Object.keys(baralhosCombate)) {
+                    const est = baralhosCombate[k];
+                    if (!est.selecionadas) est.selecionadas = [];
+                    if (est.cartaEscolhidaId === undefined) est.cartaEscolhidaId = null;
+                    if (est.mao) est.mao.forEach(c => { if (c.usada === undefined) c.usada = false; });
+                }
+            }
+        } catch(e) {}
     }
     
     let saveTimeout = null;
@@ -2657,24 +2677,45 @@
     function escutarRolagensOtimizado() {
         if (!currentPin) return;
         if (_rolagensChannel) { try { supabase.removeChannel(_rolagensChannel); } catch(e) {} _rolagensChannel = null; }
-        const renderizar = async () => {
+        // Carrega as mensagens iniciais UMA vez
+        const carregarInicial = async () => {
             const { data } = await supabase.from('rolagens').select('*').eq('pin', currentPin).order('timestamp', { ascending: false }).limit(MAX_CHAT_MESSAGES_DISPLAY);
             if (!data || data.length === 0) { chatDivLateral.innerHTML = '<div class="empty-chat">📢 Nenhuma rolagem ainda.</div>'; return; }
             chatDivLateral.innerHTML = '';
-            data.forEach(r => {
-                const hora = new Date(r.timestamp).toLocaleTimeString();
-                const msgDiv = document.createElement('div');
-                msgDiv.className = r.secreta ? 'mensagem secreta' : 'mensagem';
-                const label = r.secreta ? ' <span style="color:#5a7a8a;">[SEGREDO]</span>' : '';
-                msgDiv.innerHTML = `<div class="mensagem-header"><strong>${escapeHtml(r.jogador)}${label}</strong><span class="mensagem-time">${hora}</span></div><div class="mensagem-texto">${escapeHtml(r.texto)}</div>`;
-                chatDivLateral.appendChild(msgDiv);
-            });
+            data.forEach(r => adicionarMensagemNoChat(r, false));
         };
-        renderizar();
+        carregarInicial();
+
+        // Realtime só ADICIONA a nova mensagem localmente (sem SELECT)
         const channelName = `rolagens-${currentPin}-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
-        const channel = supabase.channel(channelName).on('postgres_changes', { event: '*', schema: 'public', table: 'rolagens', filter: `pin=eq.${currentPin}` }, renderizar).subscribe();
+        const channel = supabase.channel(channelName).on('postgres_changes',
+            { event: 'INSERT', schema: 'public', table: 'rolagens', filter: `pin=eq.${currentPin}` },
+            (payload) => {
+                const nova = payload.new;
+                if (!nova) return;
+                // Evita duplicar se a mensagem veio pelo próprio addMensagem local
+                if (document.querySelector(`[data-msg-id="${nova.id}"]`)) return;
+                adicionarMensagemNoChat(nova, true);
+            }).subscribe();
         _rolagensChannel = channel;
         realtimeChannels.push(channel);
+    }
+
+    function adicionarMensagemNoChat(r, prepend = true) {
+        const hora = new Date(r.timestamp).toLocaleTimeString();
+        const msgDiv = document.createElement('div');
+        msgDiv.className = r.secreta ? 'mensagem secreta' : 'mensagem';
+        msgDiv.dataset.msgId = r.id || '';
+        const label = r.secreta ? ' <span style="color:#5a7a8a;">[SEGREDO]</span>' : '';
+        msgDiv.innerHTML = `<div class="mensagem-header"><strong>${escapeHtml(r.jogador)}${label}</strong><span class="mensagem-time">${hora}</span></div><div class="mensagem-texto">${escapeHtml(r.texto)}</div>`;
+        if (prepend) {
+            chatDivLateral.insertBefore(msgDiv, chatDivLateral.firstChild);
+            while (chatDivLateral.children.length > MAX_CHAT_MESSAGES_DISPLAY) chatDivLateral.removeChild(chatDivLateral.lastChild);
+        } else {
+            chatDivLateral.appendChild(msgDiv);
+        }
+        const empty = chatDivLateral.querySelector('.empty-chat');
+        if (empty) empty.remove();
     }
     
     function addMensagem(texto, ehSecreta = false) {
@@ -3132,20 +3173,13 @@
     }
     function fecharPopupStatus() { document.getElementById('statusPopup').style.display = 'none'; }
     
-    let _debounceBadgeStatus = null;
-    function agendarBadgeStatus() {
-        if (_debounceBadgeStatus) clearTimeout(_debounceBadgeStatus);
-        _debounceBadgeStatus = setTimeout(() => atualizarBadgeStatusGlobal(), 2000);
-    }
+    let _timerBadgeStatus = null;
     function escutarStatusGlobais() {
         if (!currentPin) return;
-        const channelName = `status-${currentPin}-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
-        const channel = supabase.channel(channelName).on('postgres_changes', { event: '*', schema: 'public', table: 'jogadores', filter: `pin=eq.${currentPin}` }, async () => {
-            const popup = document.getElementById('statusPopup');
-            if (popup.style.display === 'flex') await carregarStatusGlobais();
-            agendarBadgeStatus();
-        }).subscribe();
-        realtimeChannels.push(channel);
+        if (_timerBadgeStatus) clearInterval(_timerBadgeStatus);
+        _timerBadgeStatus = setInterval(() => {
+            if (document.visibilityState === 'visible') atualizarBadgeStatusGlobal();
+        }, 60000);
     }
     
     async function atualizarBadgeStatusGlobal() {
@@ -5266,22 +5300,16 @@
     }
     function fecharPopupSustentados() { document.getElementById('sustentadosPopup').style.display = 'none'; }
     
-    let _debounceBadgeSustentados = null;
-    function agendarBadgeSustentados() {
-        if (_debounceBadgeSustentados) clearTimeout(_debounceBadgeSustentados);
-        _debounceBadgeSustentados = setTimeout(() => atualizarBadgeSustentadosTodos(), 2000);
-    }
+    let _timerBadgeSustentados = null;
     function escutarSustentadosGlobais() {
         if (!currentPin) return;
         if (_sustentadosChannel) { try { supabase.removeChannel(_sustentadosChannel); } catch(e) {} _sustentadosChannel = null; }
-        const channelName = `sustentados-${currentPin}-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
-        const channel = supabase.channel(channelName).on('postgres_changes', { event: '*', schema: 'public', table: 'jogadores', filter: `pin=eq.${currentPin}` }, async () => {
-            agendarBadgeSustentados();
-            const popup = document.getElementById('sustentadosPopup');
-            if (popup.style.display === 'flex') await carregarItensSustentados();
-        }).subscribe();
-        _sustentadosChannel = channel;
-        realtimeChannels.push(channel);
+        // Polling de 60s para o badge (leve, só SELECT ficha dos outros)
+        if (_timerBadgeSustentados) clearInterval(_timerBadgeSustentados);
+        _timerBadgeSustentados = setInterval(() => {
+            if (document.visibilityState === 'visible') atualizarBadgeSustentadosTodos();
+        }, 60000);
+        _sustentadosChannel = { remove: () => { if (_timerBadgeSustentados) { clearInterval(_timerBadgeSustentados); _timerBadgeSustentados = null; } } };
     }
     
     function renderizarSubFichaInline(sub, index) {
@@ -7291,6 +7319,11 @@
         baseEditadaManualmente = false;
         gastosEditadoManualmenteSub = {};
         baseEditadaManualmenteSub = {};
+        // Restaura cartas do sessionStorage (não vêm mais do banco)
+        restaurarCartasDoSessionStorage();
+        renderizarBaralhoPrincipal();
+        subFichas.forEach((_, idx) => renderizarBaralhoSub(idx));
+
         ultimoEstadoFicha = JSON.parse(JSON.stringify(extrairDadosDaTela()));
     }
         async function salvarFichaAtual() {
@@ -7533,47 +7566,21 @@
                 renderizarListaJogadores();
             }
         }, 20000);
-         const channelName = `jogadores-${currentPin}-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
-        // Otimização #6 + #2b: evita refetch total em INSERT/DELETE
-        const channel = supabase.channel(channelName).on('postgres_changes', { event: '*', schema: 'public', table: 'jogadores', filter: `pin=eq.${currentPin}` }, async (payload) => {
-            const novo = payload.new || {};
-            const antigo = payload.old || {};
-            if (payload.eventType === 'UPDATE' && novo.ficha === antigo.ficha) {
-                if (novo.id && jogadoresCache.has(novo.id)) {
-                    const item = jogadoresCache.get(novo.id);
-                    if (item) {
-                        item.conectado = novo.conectado;
-                        item.ultimaAtualizacao = novo.ultima_atualizacao;
-                        item.personagemNome = novo.personagem_nome;
-                    }
-                    renderizarListaJogadores();
-                }
-                return;
-            }
-            if (payload.eventType === 'UPDATE' && novo.id) {
-                const { data } = await supabase.from('jogadores').select('*').eq('id', novo.id).maybeSingle();
-                if (data) {
-                    jogadoresCache.set(data.id, { id: data.id, ...dbRowToJogador(data) });
-                    renderizarListaJogadores();
-                }
-                return;
-            }
-            // Correção #2b: INSERT/DELETE manipulam o cache local, sem SELECT * de toda a mesa
-            if (payload.eventType === 'INSERT' && novo.id) {
-                jogadoresCache.set(novo.id, { id: novo.id, ...dbRowToJogador(novo) });
-                renderizarListaJogadores();
-                return;
-            }
-            if (payload.eventType === 'DELETE' && antigo.id) {
-                jogadoresCache.delete(antigo.id);
-                renderizarListaJogadores();
-                return;
-            }
-            carregarTudo();
-        }).subscribe();
-        _jogadoresChannel = channel;
-        realtimeChannels.push(channel);
-        listaJogadoresUnsubscribe = () => { try { supabase.removeChannel(channel); } catch(e) {} };
+         // Otimização: sem realtime de ficha. O mestre faz polling leve de 60s
+        // (só 5 colunas, não a ficha inteira). Entradas/saídas aparecem em até 60s.
+        if (window._timerPollJogadores) clearInterval(window._timerPollJogadores);
+        window._timerPollJogadores = setInterval(async () => {
+            if (!isMaster || visualizandoId) return;
+            const { data, error } = await supabase
+                .from('jogadores')
+                .select('id, nome, is_master, is_npc, conectado, codigo_personagem, criado_por, personagem_nome, ultima_atualizacao')
+                .eq('pin', currentPin);
+            if (error || !data) return;
+            jogadoresCache.clear();
+            data.forEach(d => { if (!d.is_master) jogadoresCache.set(d.id, { id: d.id, ...dbRowToJogador(d) }); });
+            renderizarListaJogadores();
+        }, 60000);
+        listaJogadoresUnsubscribe = () => { if (window._timerPollJogadores) { clearInterval(window._timerPollJogadores); window._timerPollJogadores = null; } };
     }
     
     window.copiarCodigoFicha = copiarCodigoFicha;
@@ -7826,6 +7833,8 @@
     }
     
     async function deslogar() {
+                if (_timerBadgeStatus) { clearInterval(_timerBadgeStatus); _timerBadgeStatus = null; }
+        if (_timerBadgeSustentados) { clearInterval(_timerBadgeSustentados); _timerBadgeSustentados = null; }
         if (!confirm('Sair? Você será desconectado da mesa.')) return;
         if (currentPin && visualizandoId) { try { await salvarFichaImediato(); } catch(e) { console.error('Falha ao salvar antes de sair:', e); } }
         if (currentPin && currentUserId) { await supabase.from('jogadores').update({ conectado: false }).eq('id', currentUserId); }
@@ -7833,7 +7842,8 @@
         pararHeartbeat();
                 if (window._timerRefreshLista) { clearInterval(window._timerRefreshLista); window._timerRefreshLista = null; }
         for (const ch of realtimeChannels) { try { supabase.removeChannel(ch); } catch(e) {} }
-        realtimeChannels = []; _jogadoresChannel = null; _rolagensChannel = null; _mesasChannel = null; _sustentadosChannel = null;
+        realtimeChannels = []; _rolagensChannel = null; _mesasChannel = null; _sustentadosChannel = null;
+        if (window._timerPollJogadores) { clearInterval(window._timerPollJogadores); window._timerPollJogadores = null; }
         currentPin = null; currentUserId = null; currentUserName = null; isMaster = false; isGM = false; visualizandoId = null; periciaSelecionadaCarta = null;
         cartaViradaAguardandoUso = false;
         periciaSelecionadaCartaSub = {};
