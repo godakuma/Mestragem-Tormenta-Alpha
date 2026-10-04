@@ -2255,17 +2255,23 @@
         const info = pathToTable(refObj.path);
         if (!info) return { exists: () => false, val: () => null };
         if (info.table === 'mesas') {
-            const { data, error } = await supabase.from('mesas').select('*').eq('pin', info.pin).maybeSingle();
-            if (error) return { exists: () => false, val: () => null };
-            return { exists: () => !!data, val: () => data ? { criadaEm: data.criada_em, mestreId: data.mestre_id, mestreNome: data.mestre_nome, regras: data.regras } : null };
-        }
+    const { data, error } = await supabase.from('mesas')
+        .select('pin, criada_em, mestre_id, mestre_nome, regras')
+        .eq('pin', info.pin).maybeSingle();
+    if (error) return { exists: () => false, val: () => null };
+    return { exists: () => !!data, val: () => data ? { criadaEm: data.criada_em, mestreId: data.mestre_id, mestreNome: data.mestre_nome, regras: data.regras } : null };
+}
         if (info.table === 'jogadores' && info.id) {
-            const { data, error } = await supabase.from('jogadores').select('*').eq('id', info.id).maybeSingle();
-            if (error || !data) return { exists: () => false, val: () => null };
-            return { exists: () => true, val: () => dbRowToJogador(data) };
-        }
+    const { data, error } = await supabase.from('jogadores')
+        .select('id, nome, is_master, is_npc, conectado, codigo_personagem, criado_por, personagem_nome, ficha, ultima_atualizacao')
+        .eq('id', info.id).maybeSingle();
+    if (error || !data) return { exists: () => false, val: () => null };
+    return { exists: () => true, val: () => dbRowToJogador(data) };
+}
         if (info.table === 'jogadores') {
-            const { data, error } = await supabase.from('jogadores').select('*').eq('pin', info.pin);
+    const { data, error } = await supabase.from('jogadores')
+        .select('id, nome, is_master, is_npc, conectado, codigo_personagem, criado_por, personagem_nome, ficha, ultima_atualizacao')
+        .eq('pin', info.pin);
             if (error) return { exists: () => false, val: () => null };
             const obj = {};
             (data || []).forEach(d => obj[d.id] = dbRowToJogador(d));
@@ -2352,8 +2358,9 @@
                 if (error) console.error('update jogador (direto):', error);
                 return;
             }
-            const { data } = await supabase.from('jogadores').select('*').eq('id', info.id).maybeSingle();
-            if (!data) return;
+            const { data } = await supabase.from('jogadores')
+    .select('id, nome, is_master, is_npc, conectado, codigo_personagem, criado_por, personagem_nome, ficha, ultima_atualizacao')
+    .eq('id', info.id).maybeSingle();            if (!data) return;
             const row = { ...data };
             const ficha = { ...(data.ficha || {}) };
             let fichaSubstituida = null;
@@ -2397,11 +2404,11 @@
         window.addEventListener('beforeunload', marcarOffline);
         window.addEventListener('pagehide', marcarOffline);
         document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'hidden') {
-                // Não marca offline só por trocar de aba, mas aproveita para salvar ficha
-                try { if (typeof salvarFichaAtual === 'function') salvarFichaAtual(); } catch (e) {}
-            }
-        });
+    if (document.visibilityState === 'hidden') {
+        // NÃO salva a cada troca de aba (economia de egress).
+        // O salvamento ocorre por debounceSave (10s) e no beforeunload/pagehide.
+    }
+});
         return { update: (vals) => update(refObj, vals) };
     }
 
@@ -2610,9 +2617,9 @@
         try { return JSON.stringify(dados).length + '|' + (dados.nome || '') + '|' + (dados.subFichas ? dados.subFichas.length : 0); }
         catch (e) { return String(Date.now()); }
     }
-    function debounceSave() { if (saveTimeout) clearTimeout(saveTimeout); saveTimeout = setTimeout(() => { const d = extrairDadosDaTela(); const h = hashFicha(d); if (h === lastSavedHash) return; lastSavedHash = h; salvarForcado(); }, 10000); }
+    function debounceSave() { if (saveTimeout) clearTimeout(saveTimeout); saveTimeout = setTimeout(() => { const d = extrairDadosDaTela(); const h = hashFicha(d); if (h === lastSavedHash) return; lastSavedHash = h; salvarForcado(); }, 3000); }
     let subFichaSaveTimeout = null;
-    function debounceSaveSubFicha() { if (subFichaSaveTimeout) clearTimeout(subFichaSaveTimeout); subFichaSaveTimeout = setTimeout(() => { const d = extrairDadosDaTela(); const h = hashFicha(d); if (h === lastSavedHash) return; lastSavedHash = h; salvarForcado(); }, 10000); }    
+    function debounceSaveSubFicha() { if (subFichaSaveTimeout) clearTimeout(subFichaSaveTimeout); subFichaSaveTimeout = setTimeout(() => { const d = extrairDadosDaTela(); const h = hashFicha(d); if (h === lastSavedHash) return; lastSavedHash = h; salvarForcado(); }, 3000); }    
     function gerarCodigoUnico() {
         const invalidos = ['000000','123456','111111','222222','333333','444444','555555','666666','777777','888888','999999'];
         let codigo, tentativas = 0;
@@ -2631,7 +2638,9 @@
         return codigo;
     }
     async function buscarJogadorPorCodigo(pin, codigo) {
-        const { data } = await supabase.from('jogadores').select('*').eq('pin', pin).eq('codigo_personagem', codigo).eq('is_master', false).limit(1);
+        const { data } = await supabase.from('jogadores')
+    .select('id, nome, is_master, is_npc, conectado, codigo_personagem, criado_por, personagem_nome, ficha, ultima_atualizacao')
+    .eq('pin', pin).eq('codigo_personagem', codigo).eq('is_master', false).limit(1);
         if (!data || !data.length) return null;
         const d = data[0];
         return { id: d.id, dados: dbRowToJogador(d) };
@@ -2758,7 +2767,7 @@
         if (_rolagensChannel) { try { supabase.removeChannel(_rolagensChannel); } catch(e) {} _rolagensChannel = null; }
         // Carrega as mensagens iniciais UMA vez
         const carregarInicial = async () => {
-            const { data } = await supabase.from('rolagens').select('*').eq('pin', currentPin).order('timestamp', { ascending: false }).limit(MAX_CHAT_MESSAGES_DISPLAY);
+            const { data } = await supabase.from('rolagens').select('id, texto, jogador, secreta, timestamp').eq('pin', currentPin).order('timestamp', { ascending: false }).limit(MAX_CHAT_MESSAGES_DISPLAY);
             if (!data || data.length === 0) { chatDivLateral.innerHTML = '<div class="empty-chat">📢 Nenhuma rolagem ainda.</div>'; return; }
             chatDivLateral.innerHTML = '';
             data.forEach(r => adicionarMensagemNoChat(r, false));
@@ -3681,7 +3690,7 @@
             if (isSub && subIndex !== null) return subFichas[subIndex]?.listas?.magias?.[magiaIdx];
             return fichaListas.magias?.[magiaIdx];
         };
-        const saveFn = isSub ? debounceSaveSubFicha : salvarForcado;
+        const saveFn = isSub ? debounceSaveSubFicha : debounceSave;
         container.querySelectorAll('[data-magia-attr]').forEach(chk => {
             chk.onchange = () => {
                 const magiaIdx = parseInt(chk.dataset.magiaIdx);
@@ -4985,7 +4994,7 @@
         renderizarAtaques(tipo, isSub, subIndex);
         popup.style.display = 'flex';
     }
-    function fecharPopupAtaques() { document.getElementById('ataquePopup').style.display = 'none'; salvarForcado(); }
+    function fecharPopupAtaques() { document.getElementById('ataquePopup').style.display = 'none'; debounceSave(); }
     function abrirPopupAtaquesSub(subIndex, tipo) { abrirPopupAtaques(tipo, true, subIndex); }
     
     function abrirPopupDefesas(isSub = false, subIndex = null) {
@@ -4998,7 +5007,7 @@
         renderizarDefesas(isSub, subIndex);
         popup.style.display = 'flex';
     }
-    function fecharPopupDefesas() { document.getElementById('defesaPopup').style.display = 'none'; salvarForcado(); }
+    function fecharPopupDefesas() { document.getElementById('defesaPopup').style.display = 'none'; debounceSave(); }
     
     function renderizarAtaques(tipo, isSub = false, subIndex = null) {
         const container = document.getElementById('ataquesContainer');
@@ -5466,7 +5475,7 @@
         subContainer.querySelectorAll('.btn-subficha.excluir').forEach(btn => {
             btn.onclick = () => {
                 const idx = parseInt(btn.dataset.idx);
-                if (confirm('Tem certeza que deseja excluir esta sub-ficha?')) { subFichas.splice(idx, 1); delete baralhosSubFichas[idx]; delete periciaSelecionadaCartaSub[idx]; delete cartaViradaAguardandoUsoSub[idx]; delete atributosCustomSub[idx]; renderizarSubFichas(); salvarForcado(); }
+                if (confirm('Tem certeza que deseja excluir esta sub-ficha?')) { subFichas.splice(idx, 1); delete baralhosSubFichas[idx]; delete periciaSelecionadaCartaSub[idx]; delete cartaViradaAguardandoUsoSub[idx]; delete atributosCustomSub[idx]; renderizarSubFichas(); debounceSave(); }
             };
         });
         subContainer.addEventListener('change', function(e) {
@@ -5817,7 +5826,7 @@
     
     function configurarEventosHabilidadesPericia(container, isSub, subIndex) {
         const getPericia = (periciaIdx) => { if (isSub) return subFichas[subIndex]?.listas?.pericias?.[periciaIdx]; return fichaListas.pericias?.[periciaIdx]; };
-        const saveFn = isSub ? debounceSaveSubFicha : salvarForcado;
+        const saveFn = isSub ? debounceSaveSubFicha : debounceSave;
         container.querySelectorAll('input[data-hab-field="nome"]').forEach(input => {
             input.oninput = () => { const periciaIdx = parseInt(input.dataset.periciaIdx); const habIdx = parseInt(input.dataset.habIdx); const p = getPericia(periciaIdx); if (p?.habilidades?.[habIdx]) { p.habilidades[habIdx].nome = input.value; saveFn(); } };
         });
@@ -5838,7 +5847,7 @@
             btn.onclick = () => {
                 const periciaIdx = parseInt(btn.dataset.habDelPericiaIdx); const habIdx = parseInt(btn.dataset.habDelIdx);
                 const p = getPericia(periciaIdx);
-                if (p?.habilidades) { p.habilidades.splice(habIdx, 1); if (isSub) { renderizarSubListas(subIndex); debounceSaveSubFicha(); } else { renderizarLista('pericias', 'periciasLista'); salvarForcado(); atualizarPontos(); } }
+                if (p?.habilidades) { p.habilidades.splice(habIdx, 1); if (isSub) { renderizarSubListas(subIndex); debounceSaveSubFicha(); } else { renderizarLista('pericias', 'periciasLista'); atualizarPontos(); debounceSave(); } }
             };
         });
     }
@@ -6084,14 +6093,14 @@
     }
     
     function criarSubFicha() {
-        const tipo = document.getElementById('subfichaTipo').value;
-        const nome = document.getElementById('subfichaNome').value.trim();
-        if (!nome) { alert('Digite um nome!'); return; }
-        subFichas.push(getSubFichaVazia(nome, tipo, currentUserId));
-        renderizarSubFichas(); salvarForcado();
-        document.getElementById('subfichaNome').value = '';
-        document.getElementById('modalCriarSubFicha').style.display = 'none';
-    }
+    const tipo = document.getElementById('subfichaTipo').value;
+    const nome = document.getElementById('subfichaNome').value.trim();
+    if (!nome) { alert('Digite um nome!'); return; }
+    subFichas.push(getSubFichaVazia(nome, tipo, currentUserId));
+    renderizarSubFichas(); debounceSave();
+    document.getElementById('subfichaNome').value = '';
+    document.getElementById('modalCriarSubFicha').style.display = 'none';
+}
     
     const TESTES_LISTA = [
         { nome: 'Acrobacia', attr: 'H' }, { nome: 'Alpinismo', attr: 'H' }, { nome: 'Armadilhas', attr: 'H' },
@@ -6507,7 +6516,7 @@
         html += `</div></div>`;
         container.innerHTML = html;
         const btnComprar = document.getElementById('btnComprarMaoPrincipal');
-        if (btnComprar) btnComprar.onclick = () => { comprarMao(); salvarForcado(); renderizarBaralhoPrincipal(); };
+        if (btnComprar) btnComprar.onclick = () => { comprarMao(); debounceSave(); renderizarBaralhoPrincipal(); };
         container.querySelectorAll('.baralho-carta.virada:not(.travada)[data-carta-idx]').forEach(el => {
             el.onclick = () => {
                 if (cartaViradaAguardandoUso) { mostrarToast('⚠️ Você já virou uma carta. Use-a antes de virar outra.', '#c0392b'); return; }
@@ -6942,10 +6951,10 @@
                 div.innerHTML = `<div class="kit-header"><input type="text" value="${escapeHtml(pericia.nome || '')}" placeholder="Nome" data-pericia-field="nome" data-pericia-idx="${periciaIndex}" style="flex:2;"><input type="text" inputmode="numeric" pattern="[0-9-]*" class="kit-custo" value="${pericia.valor || 0}" placeholder="Custo" data-pericia-field="valor" data-pericia-idx="${periciaIndex}" style="width:80px;"><button class="btn-desc-sub" data-pericia-desc-idx="${periciaIndex}">📖</button><button class="btn-info-sub" data-info-tipo="pericia" data-item-idx="${periciaIndex}">i</button><button class="btn-remove-kit" data-pericia-idx="${periciaIndex}">❌ Remover</button></div><div class="kit-desc-editor" id="pericia-desc-${periciaIndex}" style="display:${pericia.visivel ? 'block' : 'none'};"><textarea rows="3" placeholder="Descrição da Perícia..." data-pericia-field="desc" data-pericia-idx="${periciaIndex}">${escapeHtml(pericia.desc || '')}</textarea></div><div class="kit-habilidades" id="pericia-habilidades-${periciaIndex}">${renderizarHabilidadesPericia(pericia, periciaIndex, false, null)}</div><button class="btn-add-habilidade" data-pericia-add-hab="${periciaIndex}">+ Adicionar Habilidade (sem custo)</button>`;
                 container.appendChild(div);
             });
-            container.querySelectorAll('input[data-pericia-field="nome"]').forEach(i => { i.oninput = () => { fichaListas.pericias[parseInt(i.dataset.periciaIdx)].nome = i.value; salvarForcado(); }; });
+            container.querySelectorAll('input[data-pericia-field="nome"]').forEach(i => { i.oninput = () => { fichaListas.pericias[parseInt(i.dataset.periciaIdx)].nome = i.value; debounceSave(); }; });
             container.querySelectorAll('input[data-pericia-field="valor"]').forEach(i => {
                 i.addEventListener('focus', () => { i.dataset.valorAnterior = String(parseInt(i.value) || 0); });
-                i.addEventListener('input', () => { fichaListas.pericias[parseInt(i.dataset.periciaIdx)].valor = parseInt(i.value) || 0; liberarRecalculoPrincipal(); salvarForcado(); atualizarPontos(); });
+                i.addEventListener('input', () => { fichaListas.pericias[parseInt(i.dataset.periciaIdx)].valor = parseInt(i.value) || 0; liberarRecalculoPrincipal(); atualizarPontos(); debounceSave(); });
                 i.addEventListener('blur', () => {
                     const idx = parseInt(i.dataset.periciaIdx);
                     const valorAnterior = parseInt(i.dataset.valorAnterior) || 0;
@@ -6955,7 +6964,7 @@
                     i.dataset.valorAnterior = String(valorNovo);
                 });
             });
-            container.querySelectorAll('textarea[data-pericia-field="desc"]').forEach(t => { t.oninput = () => { fichaListas.pericias[parseInt(t.dataset.periciaIdx)].desc = t.value; salvarForcado(); }; });
+            container.querySelectorAll('textarea[data-pericia-field="desc"]').forEach(t => { t.oninput = () => { fichaListas.pericias[parseInt(t.dataset.periciaIdx)].desc = t.value; debounceSave(); }; });
             container.querySelectorAll('.btn-remove-kit').forEach(b => {
                 b.onclick = () => {
                     const idx = parseInt(b.dataset.periciaIdx);
@@ -6967,9 +6976,9 @@
                     salvarForcado(); atualizarPontos();
                 };
             });
-            container.querySelectorAll('[data-pericia-desc-idx]').forEach(b => { b.onclick = () => { const idx = parseInt(b.dataset.periciaDescIdx); if (!fichaListas.pericias[idx]) return; fichaListas.pericias[idx].visivel = !fichaListas.pericias[idx].visivel; const el = document.getElementById(`pericia-desc-${idx}`); if (el) el.style.display = fichaListas.pericias[idx].visivel ? 'block' : 'none'; salvarForcado(); }; });
+            container.querySelectorAll('[data-pericia-desc-idx]').forEach(b => { b.onclick = () => { const idx = parseInt(b.dataset.periciaDescIdx); if (!fichaListas.pericias[idx]) return; fichaListas.pericias[idx].visivel = !fichaListas.pericias[idx].visivel; const el = document.getElementById(`pericia-desc-${idx}`); if (el) el.style.display = fichaListas.pericias[idx].visivel ? 'block' : 'none'; atualizarPontos(); debounceSave(); }; });
             container.querySelectorAll('[data-info-tipo="pericia"]').forEach(b => { b.onclick = () => { const p = fichaListas.pericias[parseInt(b.dataset.itemIdx)]; if (p) exibirInfo(p.nome || 'Perícia sem nome', p.desc || ''); }; });
-            container.querySelectorAll('[data-pericia-add-hab]').forEach(b => { b.onclick = () => { const idx = parseInt(b.dataset.periciaAddHab); if (!fichaListas.pericias[idx]) return; if (!fichaListas.pericias[idx].habilidades) fichaListas.pericias[idx].habilidades = []; fichaListas.pericias[idx].habilidades.push({ nome: '', descricao: '', visivel: false }); renderizarLista('pericias', 'periciasLista'); salvarForcado(); atualizarPontos(); }; });
+            container.querySelectorAll('[data-pericia-add-hab]').forEach(b => { b.onclick = () => { const idx = parseInt(b.dataset.periciaAddHab); if (!fichaListas.pericias[idx]) return; if (!fichaListas.pericias[idx].habilidades) fichaListas.pericias[idx].habilidades = []; fichaListas.pericias[idx].habilidades.push({ nome: '', descricao: '', visivel: false }); renderizarLista('pericias', 'periciasLista'); atualizarPontos(); debounceSave(); }; });
             configurarEventosHabilidadesPericia(container, false, null);
             return;
         }
@@ -7040,58 +7049,56 @@
     };
     
     window.atualizarItemLista = function(tipo, index, campo, valor) {
-        if (!fichaListas[tipo] || !fichaListas[tipo][index]) return;
-        const item = fichaListas[tipo][index];
-        if (campo === 'valor') {
-            item[campo] = parseInt(valor) || 0;
-        } else {
-            item[campo] = valor;
-        }
-        liberarRecalculoPrincipal();
-        salvarForcado(); atualizarPontos();
-    };
+    if (!fichaListas[tipo] || !fichaListas[tipo][index]) return;
+    const item = fichaListas[tipo][index];
+    if (campo === 'valor') {
+        item[campo] = parseInt(valor) || 0;
+    } else {
+        item[campo] = valor;
+    }
+    liberarRecalculoPrincipal();
+    atualizarPontos(); debounceSave();
+};
     
     window.removerItemLista = function(tipo, index, containerId) {
-        if (!fichaListas[tipo]) return;
-        const item = fichaListas[tipo][index];
-        if (item && (tipo === 'vantagens' || tipo === 'desvantagens' || tipo === 'pericias' || tipo === 'especializacoes')) {
-            const valorItem = parseInt(item.valor) || 0;
-            if (valorItem !== 0) registrarGasto(-valorItem, false, null);
-        }
-        fichaListas[tipo].splice(index, 1);
-        if (tipo === 'kits') renderizarKits(); else renderizarLista(tipo, containerId);
-        liberarRecalculoPrincipal();
-        salvarForcado(); atualizarPontos(); atualizarBadgeSustentados();
-    };
+    if (!fichaListas[tipo]) return;
+    const item = fichaListas[tipo][index];
+    if (item && (tipo === 'vantagens' || tipo === 'desvantagens' || tipo === 'pericias' || tipo === 'especializacoes')) {
+        const valorItem = parseInt(item.valor) || 0;
+        if (valorItem !== 0) registrarGasto(-valorItem, false, null);
+    }
+    fichaListas[tipo].splice(index, 1);
+    if (tipo === 'kits') renderizarKits(); else renderizarLista(tipo, containerId);
+    liberarRecalculoPrincipal();
+    atualizarPontos(); atualizarBadgeSustentados(); debounceSave();
+};
     
     window.toggleDescLista = function(tipo, index) {
-        if (!fichaListas[tipo] || !fichaListas[tipo][index]) return;
-        fichaListas[tipo][index].visivel = !fichaListas[tipo][index].visivel;
-        const el = document.getElementById(`desc-${tipo}-${index}`);
-        if (el) el.style.display = fichaListas[tipo][index].visivel ? 'block' : 'none';
-        salvarForcado();
-    };
+    if (!fichaListas[tipo] || !fichaListas[tipo][index]) return;
+    fichaListas[tipo][index].visivel = !fichaListas[tipo][index].visivel;
+    const el = document.getElementById(`desc-${tipo}-${index}`);
+    if (el) el.style.display = fichaListas[tipo][index].visivel ? 'block' : 'none';
+    debounceSave();
+};
     
     window.adicionarItemLista = function(tipo, containerId) {
-        if (!fichaListas[tipo]) fichaListas[tipo] = [];
-        const novo = { nome: '', valor: 0, desc: '', visivel: false };
-        if (tipo === 'magias' || tipo === 'vantagens') novo.sustentado = false;
-        if (tipo === 'pericias') novo.habilidades = [];
-        if (tipo === 'magias') {
-            novo.magiaUsaF = false; novo.magiaUsaH = false; novo.magiaUsaR = false;
-            novo.magiaUsaA = false; novo.magiaUsaPdf = false;
-            novo.magiaValorLivre = 0; novo.magiaQtdDados = 0;
-        }
-        fichaListas[tipo].push(novo);
-        if (tipo === 'kits') renderizarKits(); else renderizarLista(tipo, containerId);
-        liberarRecalculoPrincipal();
-        salvarForcado(); atualizarPontos();
-    };
+    if (!fichaListas[tipo]) fichaListas[tipo] = [];
+    const novo = { nome: '', valor: 0, desc: '', visivel: false };
+    if (tipo === 'magias' || tipo === 'vantagens') novo.sustentado = false;
+    if (tipo === 'pericias') novo.habilidades = [];
+    if (tipo === 'magias') {
+        novo.magiaUsaF = false; novo.magiaUsaH = false; novo.magiaUsaR = false;
+        novo.magiaUsaA = false; novo.magiaUsaPdf = false;
+        novo.magiaValorLivre = 0; novo.magiaQtdDados = 0;
+    }
+    fichaListas[tipo].push(novo);
+    if (tipo === 'kits') renderizarKits(); else renderizarLista(tipo, containerId);
+    liberarRecalculoPrincipal();
+    atualizarPontos(); debounceSave();
+};
     
-    window.toggleDescKit = function(kitIndex) { if (!fichaListas.kits[kitIndex]) return; fichaListas.kits[kitIndex].visivel = !fichaListas.kits[kitIndex].visivel; const el = document.getElementById(`kit-desc-${kitIndex}`); if (el) el.style.display = fichaListas.kits[kitIndex].visivel ? 'block' : 'none'; salvarForcado(); };
-    window.exibirInfoKit = function(kitIndex) { const k = fichaListas.kits[kitIndex]; if (k) exibirInfo(k.nome || 'Kit sem nome', k.descricao || ''); };
-    window.toggleDescHabilidadeKit = function(kitIndex, habIndex) { if (!fichaListas.kits[kitIndex]?.habilidades?.[habIndex]) return; fichaListas.kits[kitIndex].habilidades[habIndex].visivel = !fichaListas.kits[kitIndex].habilidades[habIndex].visivel; const el = document.getElementById(`hab-kit-desc-${kitIndex}-${habIndex}`); if (el) el.style.display = fichaListas.kits[kitIndex].habilidades[habIndex].visivel ? 'block' : 'none'; salvarForcado(); };
-    window.exibirInfoHabilidadeKit = function(kitIndex, habIndex) { const hab = fichaListas.kits[kitIndex]?.habilidades?.[habIndex]; if (hab) exibirInfo(hab.nome || 'Habilidade sem nome', hab.descricao || ''); };
+    window.toggleDescKit = function(kitIndex) { if (!fichaListas.kits[kitIndex]) return; fichaListas.kits[kitIndex].visivel = !fichaListas.kits[kitIndex].visivel; const el = document.getElementById(`kit-desc-${kitIndex}`); if (el) el.style.display = fichaListas.kits[kitIndex].visivel ? 'block' : 'none'; debounceSave(); };
+window.toggleDescHabilidadeKit = function(kitIndex, habIndex) { if (!fichaListas.kits[kitIndex]?.habilidades?.[habIndex]) return; fichaListas.kits[kitIndex].habilidades[habIndex].visivel = !fichaListas.kits[kitIndex].habilidades[habIndex].visivel; const el = document.getElementById(`hab-kit-desc-${kitIndex}-${habIndex}`); if (el) el.style.display = fichaListas.kits[kitIndex].habilidades[habIndex].visivel ? 'block' : 'none'; debounceSave(); };
     
     function renderizarKits() {
         const container = document.getElementById('kitsLista');
@@ -7124,16 +7131,25 @@
         input.dataset.valorAnterior = String(valorNovo);
     };
     
-    window.adicionarKit = function() { if (!fichaListas.kits) fichaListas.kits = []; fichaListas.kits.push({ nome: '', custo: 0, descricao: '', habilidades: [], visivel: false }); renderizarKits(); liberarRecalculoPrincipal(); salvarForcado(); atualizarPontos(); };
-    window.removerKit = function(kitIndex) {
-        const kit = fichaListas.kits[kitIndex];
-        if (kit) {
-            let valorTotal = parseInt(kit.custo) || 0;
-            if (kit.habilidades) kit.habilidades.forEach(h => { valorTotal += parseInt(h.custo) || 0; });
-            if (valorTotal !== 0) registrarGasto(-valorTotal, false, null);
-        }
-        fichaListas.kits.splice(kitIndex, 1); renderizarKits(); liberarRecalculoPrincipal(); salvarForcado(); atualizarPontos();
-    };
+    window.adicionarKit = function() { if (!fichaListas.kits) fichaListas.kits = []; fichaListas.kits.push({ nome: '', custo: 0, descricao: '', habilidades: [], visivel: false }); renderizarKits(); liberarRecalculoPrincipal(); atualizarPontos(); debounceSave(); };
+window.removerKit = function(kitIndex) {
+    const kit = fichaListas.kits[kitIndex];
+    if (kit) {
+        let valorTotal = parseInt(kit.custo) || 0;
+        if (kit.habilidades) kit.habilidades.forEach(h => { valorTotal += parseInt(h.custo) || 0; });
+        if (valorTotal !== 0) registrarGasto(-valorTotal, false, null);
+    }
+    fichaListas.kits.splice(kitIndex, 1); renderizarKits(); liberarRecalculoPrincipal(); atualizarPontos(); debounceSave();
+};
+window.atualizarKit = function(kitIndex, campo, valor) { if (!fichaListas.kits[kitIndex]) return; if (campo === 'custo') fichaListas.kits[kitIndex][campo] = parseInt(valor) || 0; else fichaListas.kits[kitIndex][campo] = valor; liberarRecalculoPrincipal(); atualizarPontos(); debounceSave(); };
+window.adicionarHabilidade = function(kitIndex) { if (!fichaListas.kits[kitIndex].habilidades) fichaListas.kits[kitIndex].habilidades = []; fichaListas.kits[kitIndex].habilidades.push({ nome: '', custo: 0, descricao: '', visivel: false }); renderizarKits(); liberarRecalculoPrincipal(); atualizarPontos(); debounceSave(); };
+window.removerHabilidade = function(kitIndex, habIndex) {
+    if (!fichaListas.kits[kitIndex]?.habilidades) return;
+    const hab = fichaListas.kits[kitIndex].habilidades[habIndex];
+    if (hab) { const valorHab = parseInt(hab.custo) || 0; if (valorHab !== 0) registrarGasto(-valorHab, false, null); }
+    fichaListas.kits[kitIndex].habilidades.splice(habIndex, 1); renderizarKits(); liberarRecalculoPrincipal(); atualizarPontos(); debounceSave();
+};
+window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!fichaListas.kits[kitIndex]?.habilidades[habIndex]) return; if (campo === 'custo') fichaListas.kits[kitIndex].habilidades[habIndex][campo] = parseInt(valor) || 0; else fichaListas.kits[kitIndex].habilidades[habIndex][campo] = valor; liberarRecalculoPrincipal(); atualizarPontos(); debounceSave(); };
     window.atualizarKit = function(kitIndex, campo, valor) { if (!fichaListas.kits[kitIndex]) return; if (campo === 'custo') fichaListas.kits[kitIndex][campo] = parseInt(valor) || 0; else fichaListas.kits[kitIndex][campo] = valor; liberarRecalculoPrincipal(); salvarForcado(); atualizarPontos(); };
     window.adicionarHabilidade = function(kitIndex) { if (!fichaListas.kits[kitIndex].habilidades) fichaListas.kits[kitIndex].habilidades = []; fichaListas.kits[kitIndex].habilidades.push({ nome: '', custo: 0, descricao: '', visivel: false }); renderizarKits(); liberarRecalculoPrincipal(); salvarForcado(); atualizarPontos(); };
     window.removerHabilidade = function(kitIndex, habIndex) {
@@ -7532,8 +7548,7 @@
         if (!isMaster) { mostrarToast('⚠️ Apenas o mestre!', '#c0392b'); return; }
         if (!confirm('Migrar todos os avatares em base64 para o Supabase Storage?\n\nEste processo pode demorar. Não feche a aba.')) return;
         try {
-            const { data, error } = await supabase.from('jogadores').select('*').eq('pin', currentPin);
-            if (error || !data) { mostrarToast('❌ Não foi possível buscar fichas.', '#c0392b'); return; }
+const { data, error } = await supabase.from('jogadores').select('id, ficha').eq('pin', currentPin);            if (error || !data) { mostrarToast('❌ Não foi possível buscar fichas.', '#c0392b'); return; }
             let migrados = 0, ignorados = 0, falhas = 0;
 
             async function uploadBase64(base64, prefixoId) {
@@ -7605,7 +7620,7 @@
     async function atualizarFicha(jogadorId) {
         if (!isMaster) return;
         try {
-            const { data } = await supabase.from('jogadores').select('*').eq('id', jogadorId).maybeSingle();
+            const { data } = await supabase.from('jogadores').select('id, ficha').eq('id', jogadorId).maybeSingle();
             if (!data) { mostrarToast('❌ Ficha não encontrada!', '#c0392b'); return; }
             if (data.ficha) { await supabase.from('jogadores').update({ ficha: data.ficha, ultima_atualizacao: new Date().toISOString() }).eq('id', jogadorId); mostrarToast(`✅ Ficha atualizada!`, '#4a8a4a'); }
             carregarListaJogadores();
@@ -7615,7 +7630,7 @@
     async function atualizarTodasFichas() {
         if (!isMaster || !confirm('Atualizar TODAS as fichas?')) return;
         try {
-            const { data } = await supabase.from('jogadores').select('*').eq('pin', currentPin);
+            const { data } = await supabase.from('jogadores').select('id, is_master, ficha').eq('pin', currentPin);
             if (!data) return;
             let n = 0;
             for (const row of data) { if (row.is_master || !row.ficha) continue; await supabase.from('jogadores').update({ ficha: row.ficha, ultima_atualizacao: new Date().toISOString() }).eq('id', row.id); n++; }
@@ -7631,7 +7646,7 @@
         if (!confirm(`Atualizar ${checkboxes.length} ficha(s)?`)) return;
         try {
             let n = 0;
-            for (const cb of checkboxes) { const { data } = await supabase.from('jogadores').select('*').eq('id', cb.dataset.id).maybeSingle(); if (data?.ficha) { await supabase.from('jogadores').update({ ficha: data.ficha, ultima_atualizacao: new Date().toISOString() }).eq('id', cb.dataset.id); n++; } }
+            for (const cb of checkboxes) { const { data } = await supabase.from('jogadores').select('id, ficha').eq('id', cb.dataset.id).maybeSingle(); if (data?.ficha) { await supabase.from('jogadores').update({ ficha: data.ficha, ultima_atualizacao: new Date().toISOString() }).eq('id', cb.dataset.id); n++; } }
             mostrarToast(`✅ ${n} fichas atualizadas!`, '#4a8a4a');
             carregarListaJogadores();
         } catch (err) { console.error(err); mostrarToast('❌ Erro: ' + err.message, '#c0392b'); }
@@ -7707,7 +7722,7 @@ listaJogadoresUnsubscribe = () => {};
         const novoNome = prompt(`Nome da ficha duplicada:`, `${nomeOriginal} (cópia)`);
         if (!novoNome) return;
         try {
-            const { data } = await supabase.from('jogadores').select('*').eq('id', idOriginal).maybeSingle();
+            const { data } = await supabase.from('jogadores').select('id, ficha').eq('id', idOriginal).maybeSingle();
             if (!data?.ficha) { mostrarToast('❌ Ficha não encontrada!', '#c0392b'); return; }
             const fichaCopia = JSON.parse(JSON.stringify(data.ficha));
             fichaCopia.nome = novoNome; fichaCopia.baralhoEstado = null; fichaCopia.baralhosCombate = null;
