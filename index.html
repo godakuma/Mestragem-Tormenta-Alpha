@@ -3597,9 +3597,8 @@
     }
     
     function exibirInfo(nome, descricao) {
-        if (!nome && !descricao) { addMensagem("ℹ️ Nenhuma informação disponível para este item.", false); enviarRolagemFirebase("ℹ️ Nenhuma informação disponível para este item.", false); return; }
+        if (!nome && !descricao) { enviarRolagemFirebase("ℹ️ Nenhuma informação disponível para este item.", false); return; }
         const texto = `ℹ️ ${nome}: ${descricao || 'Sem descrição'}`;
-        addMensagem(texto, false);
         enviarRolagemFirebase(texto, false);
     }
         // ============================================================
@@ -5631,9 +5630,12 @@
             try { _ultimoStatusCarregado = 0; } catch(e) {}
         }
         for (const status of STATUS_LISTA) { const chk = document.getElementById(`subficha-status-${status.id}-${index}`); if (chk) chk.onchange = atualizarStatusSubLocal; }
-        document.querySelectorAll(`.subficha-status-info-btn[data-sub-index="${index}"]`).forEach(btn => {
-            btn.onclick = (e) => { e.stopPropagation(); e.preventDefault(); const status = STATUS_LISTA.find(s => s.id === btn.dataset.statusId); if (status) exibirInfo(status.label, status.desc); };
-        });
+        const subStatusGrid = document.getElementById(`subficha-status-grid-${index}`);
+        if (subStatusGrid) {
+            subStatusGrid.querySelectorAll('.subficha-status-info-btn').forEach(btn => {
+                btn.onclick = (e) => { e.stopPropagation(); e.preventDefault(); const status = STATUS_LISTA.find(s => s.id === btn.dataset.statusId); if (status) exibirInfo(status.label, status.desc); };
+            });
+        }
     }
     
     function configurarEventosSubFicha(index) {
@@ -5794,12 +5796,15 @@
         if (uploadInput && avatarDiv) {
             uploadInput.onchange = async (e) => { const file = e.target.files[0]; if (!file) return; const avatarComprimido = await comprimirAvatar(file); sub.avatarSrc = avatarComprimido; avatarDiv.innerHTML = `<img src="${sub.avatarSrc}">`; debounceSaveSubFicha(); };
         }
-        document.querySelectorAll(`.subficha-info-btn[data-sub-info-tipo="vantagemRegional"]`).forEach(btn => {
-            btn.onclick = () => { const s = subFichas[parseInt(btn.dataset.subInfoIdx)]; if (s) exibirInfo(s.vantagemRegionalNome || 'Vantagem Regional', s.vantagemRegionalDesc || ''); };
-        });
-        document.querySelectorAll(`.subficha-info-btn[data-sub-info-tipo="vantagemUnica"]`).forEach(btn => {
-            btn.onclick = () => { const s = subFichas[parseInt(btn.dataset.subInfoIdx)]; if (s) exibirInfo(s.vantagemUnicaNome || 'Vantagem Única', s.vantagemUnicaDesc || ''); };
-        });
+        const subContainerInfoBtn = document.getElementById(`subficha-conteudo-${index}`);
+        if (subContainerInfoBtn) {
+            subContainerInfoBtn.querySelectorAll('.subficha-info-btn[data-sub-info-tipo="vantagemRegional"]').forEach(btn => {
+                btn.onclick = () => { const s = subFichas[parseInt(btn.dataset.subInfoIdx)]; if (s) exibirInfo(s.vantagemRegionalNome || 'Vantagem Regional', s.vantagemRegionalDesc || ''); };
+            });
+            subContainerInfoBtn.querySelectorAll('.subficha-info-btn[data-sub-info-tipo="vantagemUnica"]').forEach(btn => {
+                btn.onclick = () => { const s = subFichas[parseInt(btn.dataset.subInfoIdx)]; if (s) exibirInfo(s.vantagemUnicaNome || 'Vantagem Única', s.vantagemUnicaDesc || ''); };
+            });
+        }
     }
     
     function rolarGenericoSub(subIndex) {
@@ -6008,6 +6013,32 @@
         }
         const kitsContainer = document.getElementById(`subficha-kitsLista-${index}`);
         if (kitsContainer) renderizarKitsSubFicha(sub, kitsContainer, index);
+
+        // ===== HANDLERS DOS BOTÕES "i" DAS SUBLISTAS =====
+        const subContainerInfo = document.getElementById(`subficha-conteudo-${index}`);
+        if (subContainerInfo) {
+            subContainerInfo.querySelectorAll('.btn-info-sub-item').forEach(btn => {
+                const infoTipo = btn.dataset.infoTipo;
+                const itemIdx = parseInt(btn.dataset.itemIdx);
+                const subIdx = parseInt(btn.dataset.subIdx);
+                if (isNaN(itemIdx) || isNaN(subIdx)) return;
+                const s = subFichas[subIdx];
+                if (!s) return;
+                btn.onclick = () => {
+                    let item = null;
+                    if (infoTipo === 'vantagemSub') item = s.listas?.vantagens?.[itemIdx];
+                    else if (infoTipo === 'desvantagemSub') item = s.listas?.desvantagens?.[itemIdx];
+                    else if (infoTipo === 'especializacaoSub') item = s.listas?.especializacoes?.[itemIdx];
+                    else if (infoTipo === 'periciaSub') item = s.listas?.pericias?.[itemIdx];
+                    else if (infoTipo === 'magiaSub') item = s.listas?.magias?.[itemIdx];
+                    else if (infoTipo === 'itemSub') item = s.listas?.itens?.[itemIdx];
+                    else if (infoTipo === 'equipamentoSub') item = s.listas?.equipamentos?.[itemIdx];
+                    else if (infoTipo === 'tipoDanoSub') item = s.listas?.tiposDano?.[itemIdx];
+                    if (!item) return;
+                    exibirInfo(item.nome || 'Item sem nome', item.desc || '');
+                };
+            });
+        }
     }
     
     // ============================================================
@@ -7099,6 +7130,16 @@
     
     window.toggleDescKit = function(kitIndex) { if (!fichaListas.kits[kitIndex]) return; fichaListas.kits[kitIndex].visivel = !fichaListas.kits[kitIndex].visivel; const el = document.getElementById(`kit-desc-${kitIndex}`); if (el) el.style.display = fichaListas.kits[kitIndex].visivel ? 'block' : 'none'; debounceSave(); };
 window.toggleDescHabilidadeKit = function(kitIndex, habIndex) { if (!fichaListas.kits[kitIndex]?.habilidades?.[habIndex]) return; fichaListas.kits[kitIndex].habilidades[habIndex].visivel = !fichaListas.kits[kitIndex].habilidades[habIndex].visivel; const el = document.getElementById(`hab-kit-desc-${kitIndex}-${habIndex}`); if (el) el.style.display = fichaListas.kits[kitIndex].habilidades[habIndex].visivel ? 'block' : 'none'; debounceSave(); };
+window.exibirInfoKit = function(kitIndex) {
+    const kit = fichaListas.kits?.[kitIndex];
+    if (!kit) return;
+    exibirInfo(kit.nome || 'Kit sem nome', kit.descricao || '');
+};
+window.exibirInfoHabilidadeKit = function(kitIndex, habIndex) {
+    const hab = fichaListas.kits?.[kitIndex]?.habilidades?.[habIndex];
+    if (!hab) return;
+    exibirInfo(hab.nome || 'Habilidade sem nome', hab.descricao || '');
+};
     
     function renderizarKits() {
         const container = document.getElementById('kitsLista');
