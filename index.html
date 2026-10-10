@@ -318,9 +318,9 @@
     .pontos-negativo { color: var(--perigo-forte) !important; border-color: var(--perigo-forte) !important; background: var(--fundo-critico) !important; }
 
     .recursos-3colunas { display: flex; flex-wrap: wrap; gap: 6px; background: var(--fundo-painel-claro); border-radius: 12px; padding: 8px 10px; }
-    .recurso { flex: 0 0 calc(33.333% - 4px); min-width: 110px; text-align: center; background: var(--fundo-painel); padding: 4px 6px; border-radius: 4px; }
+    .recurso { flex: 0 0 calc((100% - 6px) / 2); min-width: 0; text-align: center; background: var(--fundo-painel); padding: 4px 6px; border-radius: 4px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; gap: 2px; }
     .recurso label { display: block; font-size: 9px; color: var(--texto-medio); margin-bottom: 2px; font-weight: bold; }
-    .recurso .recurso-linha { display: flex; gap: 2px; justify-content: center; align-items: center; flex-wrap: wrap; margin-top: 1px; }
+    .recurso .recurso-linha { display: flex; gap: 2px; justify-content: center; align-items: center; flex-wrap: wrap; margin-top: 1px; width: 100%; }
     .recurso .recurso-linha input {
         width: 32px; background: var(--fundo-input); color: var(--texto); border: 1px solid var(--borda-clara);
         border-radius: 3px; padding: 2px; text-align: center; font-size: 12px;
@@ -332,9 +332,10 @@
     .recurso .recurso-linha span { font-size: 8px; color: var(--texto-medio); margin: 0 1px; }
     .recurso .recurso-linha input.input-full { width: 100%; font-size: 12px; }
     .recurso-converter {
-        flex: 0 0 calc(33.333% - 4px); min-width: 110px; text-align: center;
+        flex: 0 0 calc((100% - 6px) / 2); min-width: 0; text-align: center;
         background: var(--fundo-painel); padding: 3px 4px; border-radius: 4px;
-        display: flex; flex-direction: column; align-items: center; gap: 1px;
+        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+        box-sizing: border-box;
     }
     .recurso-converter label { font-size: 8px; color: var(--texto-medio); font-weight: bold; }
     .recurso-converter .converter-linha { display: flex; gap: 3px; align-items: center; width: 100%; justify-content: center; }
@@ -352,14 +353,17 @@
 
     /* ===== MÓDULO DE PONTOS REFORMULADO ===== */
     .recurso-pontos {
-        flex: 0 0 calc(33.333% - 4px);
-        min-width: 110px;
+        flex: 0 0 calc((100% - 6px) / 2);
+        min-width: 0;
         background: var(--fundo-painel);
         padding: 4px 6px;
         border-radius: 4px;
         display: flex;
         flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
         gap: 3px;
+        box-sizing: border-box;
     }
     .recurso-pontos label.titulo {
         display: block;
@@ -1196,6 +1200,254 @@
         min-width: 50px;
     }
 
+    /* ===== REGRAS OPCIONAIS: PONTOS ESPECIAIS ===== */
+    /* Containers vazios (regras desligadas) não ocupam slot no flex */
+    #containerPVFerimento:empty,
+    #containerPMAcao:empty,
+    #containerMC:empty,
+    #containerRP:empty,
+    #containerDestino:empty,
+    #containerMaculaXP:empty,
+    #containerRepXP:empty,
+    #containerConversorMacula:empty,
+    #containerConversorReputacao:empty {
+        display: none !important;
+    }
+    /* Containers com conteúdo de linha (dentro do bloco pai) */
+    #containerMC, #containerRP, #containerDestino {
+        display: block;
+        width: 100%;
+    }
+    #containerMaculaXP, #containerRepXP {
+        display: block;
+        width: 100%;
+    }
+
+    .recurso-especial-combate {
+        flex: 0 0 calc((100% - 6px) / 2);
+        min-width: 0;
+        text-align: center;
+        background: var(--fundo-painel);
+        padding: 4px 6px;
+        border-radius: 4px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 2px;
+    }
+    .recurso-especial-combate label {
+        display: block;
+        font-size: 9px;
+        color: var(--texto-medio);
+        margin-bottom: 2px;
+        font-weight: bold;
+    }
+    .recurso-especial-combate .recurso-linha {
+        display: flex;
+        gap: 2px;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 1px;
+    }
+    .recurso-especial-combate .recurso-linha input {
+        width: 32px;
+        background: var(--fundo-input);
+        color: var(--texto);
+        border: 1px solid var(--borda-clara);
+        border-radius: 3px;
+        padding: 2px;
+        text-align: center;
+        font-size: 12px;
+        font-weight: bold;
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
+    .recurso-especial-combate .recurso-linha input::-webkit-outer-spin-button,
+    .recurso-especial-combate .recurso-linha input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .recurso-especial-combate .recurso-linha span {
+        font-size: 8px;
+        color: var(--texto-medio);
+        margin: 0 1px;
+    }
+    .recurso-especial-combate .recurso-linha input.input-full {
+        width: 100%;
+        font-size: 12px;
+    }
+
+    .subficha-recurso-especial-combate {
+        flex: 0 0 calc(33.333% - 3px);
+        min-width: 80px;
+        text-align: center;
+        background: var(--fundo-painel);
+        padding: 2px 4px;
+        border-radius: 4px;
+    }
+    .subficha-recurso-especial-combate label {
+        display: block;
+        font-size: 8px;
+        color: var(--texto-medio);
+        margin-bottom: 1px;
+        font-weight: bold;
+    }
+    .subficha-recurso-especial-combate .recurso-linha {
+        display: flex;
+        gap: 2px;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 1px;
+    }
+    .subficha-recurso-especial-combate .recurso-linha input {
+        width: 26px;
+        background: var(--fundo-input);
+        color: var(--texto);
+        border: 1px solid var(--borda-clara);
+        border-radius: 3px;
+        padding: 2px;
+        text-align: center;
+        font-size: 10px;
+        font-weight: bold;
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
+    .subficha-recurso-especial-combate .recurso-linha input::-webkit-outer-spin-button,
+    .subficha-recurso-especial-combate .recurso-linha input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .subficha-recurso-especial-combate .recurso-linha span {
+        font-size: 7px;
+        color: var(--texto-medio);
+        margin: 0 1px;
+    }
+    .subficha-recurso-especial-combate .recurso-linha input.input-full {
+        width: 100%;
+        font-size: 10px;
+    }
+
+    /* Linhas extras do módulo de XP (Mácula e Reputação) */
+    .recurso .extra-linha {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        margin-top: 3px;
+    }
+    .recurso .extra-linha label {
+        font-size: 9px;
+        font-weight: bold;
+        color: var(--texto-medio);
+        margin: 0;
+        white-space: nowrap;
+    }
+    .recurso .extra-linha input {
+        width: 52px;
+        background: var(--fundo-input);
+        color: var(--texto);
+        border: 1px solid var(--borda-clara);
+        border-radius: 3px;
+        padding: 2px 3px;
+        text-align: center;
+        font-size: 12px;
+        font-weight: bold;
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
+    .recurso .extra-linha input::-webkit-outer-spin-button,
+    .recurso .extra-linha input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+    .recurso-pontos .extra-linha {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        margin-top: 3px;
+    }
+    .recurso-pontos .extra-linha span.rotulo {
+        font-size: 9px;
+        font-weight: bold;
+        white-space: nowrap;
+        color: var(--texto-medio);
+    }
+    .recurso-pontos .extra-linha input {
+        width: 52px;
+        background: var(--fundo-input);
+        color: var(--texto);
+        border: 1px solid var(--borda-clara);
+        border-radius: 3px;
+        padding: 2px 3px;
+        text-align: center;
+        font-size: 12px;
+        font-weight: bold;
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
+    .recurso-pontos .extra-linha input::-webkit-outer-spin-button,
+    .recurso-pontos .extra-linha input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+    .subficha-recurso .extra-linha {
+        display: flex;
+        gap: 3px;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        margin-top: 2px;
+    }
+    .subficha-recurso .extra-linha label {
+        font-size: 8px;
+        font-weight: bold;
+        color: var(--texto-medio);
+        margin: 0;
+        white-space: nowrap;
+    }
+    .subficha-recurso .extra-linha input {
+        width: 44px;
+        background: var(--fundo-input);
+        color: var(--texto);
+        border: 1px solid var(--borda-clara);
+        border-radius: 3px;
+        padding: 2px;
+        text-align: center;
+        font-size: 10px;
+        font-weight: bold;
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
+    .subficha-recurso .extra-linha input::-webkit-outer-spin-button,
+    .subficha-recurso .extra-linha input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+    .subficha-recurso-pontos .extra-linha {
+        display: flex;
+        gap: 3px;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        margin-top: 2px;
+    }
+    .subficha-recurso-pontos .extra-linha span.rotulo {
+        font-size: 8px;
+        font-weight: bold;
+        white-space: nowrap;
+        color: var(--texto-medio);
+    }
+    .subficha-recurso-pontos .extra-linha input {
+        width: 44px;
+        background: var(--fundo-input);
+        color: var(--texto);
+        border: 1px solid var(--borda-clara);
+        border-radius: 3px;
+        padding: 2px;
+        text-align: center;
+        font-size: 10px;
+        font-weight: bold;
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
+    .subficha-recurso-pontos .extra-linha input::-webkit-outer-spin-button,
+    .subficha-recurso-pontos .extra-linha input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
     body.regra-combate-sem-pv .recurso-pv-principal,
     body.regra-combate-sem-pv .subficha-recurso-pv { display: none !important; }
 
@@ -1595,6 +1847,7 @@
                                             <input type="text" inputmode="numeric" pattern="[0-9]*" id="bonusPv" placeholder="B" class="bonus-pv-pm" value="0">
                                         </div>
                                     </div>
+                                    <div id="containerPVFerimento"></div>
                                     <div class="recurso">
                                         <label>✨ PM</label>
                                         <div class="recurso-linha">
@@ -1605,6 +1858,7 @@
                                             <input type="text" inputmode="numeric" pattern="[0-9]*" id="bonusPm" placeholder="B" class="bonus-pv-pm" value="0">
                                         </div>
                                     </div>
+                                    <div id="containerPMAcao"></div>
                                     <div class="recurso-pontos">
                                         <label class="titulo">💰 Pontos</label>
                                         <div class="pontos-linha">
@@ -1615,10 +1869,15 @@
                                             <span class="rotulo gastos">Gastos:</span>
                                             <input type="text" inputmode="numeric" pattern="[0-9-]*" id="pontosGastosInput" value="0">
                                         </div>
+                                        <div id="containerMC"></div>
+                                        <div id="containerRP"></div>
+                                        <div id="containerDestino"></div>
                                     </div>
                                     <div class="recurso">
                                         <label>⭐ XP</label>
                                         <div class="recurso-linha"><input type="text" inputmode="numeric" pattern="[0-9]*" id="xp" value="0" class="input-full"></div>
+                                        <div id="containerMaculaXP"></div>
+                                        <div id="containerRepXP"></div>
                                     </div>
                                     <div class="recurso-converter">
                                         <label>🔄 Converter</label>
@@ -1628,6 +1887,8 @@
                                         </div>
                                         <div class="xp-info">10 XP = 1 ponto</div>
                                     </div>
+                                    <div id="containerConversorMacula"></div>
+                                    <div id="containerConversorReputacao"></div>
                                     <div class="recurso">
                                         <label>🪙 T$</label>
                                         <div class="recurso-linha"><input type="text" inputmode="numeric" pattern="[0-9]*" id="dinheiro" value="0" class="input-full"></div>
@@ -1874,11 +2135,13 @@
 
     const CATEGORIAS_REGRAS = {
         testes: { nome: '🎯 Testes', descricao: 'Regras que substituem os testes de perícia.' },
-        ataques: { nome: '⚔️ Ataques', descricao: 'Regras que substituem a resolução de ataques e defesas.' }
+        ataques: { nome: '⚔️ Ataques', descricao: 'Regras que substituem a resolução de ataques e defesas.' },
+        pontosEspeciais: { nome: '💎 Pontos Especiais', descricao: 'Regras opcionais que adicionam novos tipos de pontos à ficha. Podem ser ativadas em conjunto e aparecem empilhadas na ficha.' }
     };
     const REGRAS_EXCLUSIVAS_POR_CATEGORIA = {
         testes: ['periciasDificuldade', 'periciasBonusTreinada', 'periciasPilhaDados', 'periciasCartas', 'periciasEsforco', 'periciasNivelSucesso'],
-        ataques: ['combateTesteAtaque', 'combatePilhaDados', 'combateCartas', 'combatePontosEsforco', 'combateSemPV']
+        ataques: ['combateTesteAtaque', 'combatePilhaDados', 'combateCartas', 'combatePontosEsforco', 'combateSemPV'],
+        pontosEspeciais: []
     };
     const REGRAS_EXCLUSIVAS = Object.values(REGRAS_EXCLUSIVAS_POR_CATEGORIA).flat();
     
@@ -1893,7 +2156,12 @@
         { id: 'combatePilhaDados', categoria: 'ataques', nome: 'Pilha de dados em combate', descricao: 'Role uma quantidade de dados igual a F ou PdF + H para FA, e A + H para FD. Cada sucesso da defesa elimina um sucesso de ataque; sucessos de ataque restantes causam 1 ponto de dano cada. Alternativamente, multiplique os sucessos pela característica adequada. Outra forma: role 1 dado por ponto de F/PdF e some; para defesa, role 1 dado por ponto de A e some; o resultado é subtraído diretamente dos PVs. H não é usado neste tipo.', temConfig: false, subopcoes: [{ id: 'multiplicarPorCaracteristica', label: 'Multiplicar sucessos pela característica (em vez de 1 ponto de dano por sucesso)' }, { id: 'rolarDadosPorPonto', label: 'Rolar 1 dado por ponto de F/PdF (ataque) e de A (defesa), somando os resultados e subtraindo dos PVs' }] },
         { id: 'combateCartas', categoria: 'ataques', nome: 'Com Cartas em combate', descricao: 'Use as mesmas diretrizes do teste de perícia com cartas. Cada jogador compra duas cartas extras no início do combate, ficando com uma "mão de combate" de seis cartas. FA e FD = F/A/PdF + H + metade do valor da carta usada. Figuras (J/Q/K) contam como 6 (acerto crítico). Coringas: abra e descarte a primeira carta do monte; vermelha = acerto crítico, preta = valor 0 e remove a Habilidade do cálculo. O jogador pode fazer "combo" de cartas de mesmo naipe, somando os valores. A cada rodada, todas as cartas não utilizadas são descartadas e uma nova mão de seis cartas é comprada.', temConfig: false, subopcoes: [{ id: 'comboCartas', label: 'Combo de cartas (permite selecionar várias cartas do mesmo naipe e somar seus valores)' }] },
         { id: 'combatePontosEsforco', categoria: 'ataques', nome: 'Pontos de Esforço em Combate', descricao: 'As regras de Pontos de Esforço também podem ser usadas em combate. FA e FD passam a ser calculadas com F/A/PdF + H + Pontos de Esforço usados. Os pontos só são revelados no chat quando o jogador tiver escolhido e clicado no botão de rolagem. O uso segue as mesmas diretrizes dos testes: limite grátis = R + B1 + B2 + (treinado?4:0); o excedente custa 1 PM, depois 1 PV.', temConfig: false },
-        { id: 'combateSemPV', categoria: 'ataques', nome: 'Combate sem Pontos de Vida', descricao: 'Elimina os Pontos de Vida. O atacante faz um teste de Força ou Poder de Fogo; se tiver sucesso, o defensor faz um teste de Armadura. Se falhar, sofre 1 ponto de dano. Cada ponto de dano = –1 em todas as características até o fim do combate. O personagem é "derrotado" quando a Resistência chegar a 0. Pode ser combinado com outras formas: disputa direta entre F/PdF contra a Armadura do alvo; pilha de dados (cada sucesso não eliminado = 1 ponto de dano); ou sistema detalhado de ferimentos. Sempre considera F/PdF + B1 + B2 + BFA. Quando esta regra está ativa, o módulo de PV é removido da ficha.', temConfig: false, subopcoes: [{ id: 'disputaContraArmadura', label: '5.1 — Disputa direta: F/PdF (+B1+B2+BFA) contra a Armadura do alvo; se o atacante vencer, o defensor sofre 1 ponto de dano' }, { id: 'pilhaDados', label: '5.2 — Pilha de dados: cada sucesso de ataque não eliminado por um sucesso de defesa = 1 ponto de dano' }, { id: 'sistemaFerimentos', label: '5.3 — FA vs FD: a diferença define ferimentos (FA venceu = 1 ferimento; +5 = atordoado; +10 = fora de combate). Cada ferimento = –1 em FD futuras' }, { id: 'pilhaFerimentos', label: '5.4 — Pilha de dados + ferimentos: atacante com 1 sucesso a mais = 1 ferimento; 3 a mais = atordoado; 6 a mais = fora de combate. Cada ferimento remove um sucesso de defesa' }] }
+        { id: 'combateSemPV', categoria: 'ataques', nome: 'Combate sem Pontos de Vida', descricao: 'Elimina os Pontos de Vida. O atacante faz um teste de Força ou Poder de Fogo; se tiver sucesso, o defensor faz um teste de Armadura. Se falhar, sofre 1 ponto de dano. Cada ponto de dano = –1 em todas as características até o fim do combate. O personagem é "derrotado" quando a Resistência chegar a 0. Pode ser combinado com outras formas: disputa direta entre F/PdF contra a Armadura do alvo; pilha de dados (cada sucesso não eliminado = 1 ponto de dano); ou sistema detalhado de ferimentos. Sempre considera F/PdF + B1 + B2 + BFA. Quando esta regra está ativa, o módulo de PV é removido da ficha.', temConfig: false, subopcoes: [{ id: 'disputaContraArmadura', label: '5.1 — Disputa direta: F/PdF (+B1+B2+BFA) contra a Armadura do alvo; se o atacante vencer, o defensor sofre 1 ponto de dano' }, { id: 'pilhaDados', label: '5.2 — Pilha de dados: cada sucesso de ataque não eliminado por um sucesso de defesa = 1 ponto de dano' }, { id: 'sistemaFerimentos', label: '5.3 — FA vs FD: a diferença define ferimentos (FA venceu = 1 ferimento; +5 = atordoado; +10 = fora de combate). Cada ferimento = –1 em FD futuras' }, { id: 'pilhaFerimentos', label: '5.4 — Pilha de dados + ferimentos: atacante com 1 sucesso a mais = 1 ferimento; 3 a mais = atordoado; 6 a mais = fora de combate. Cada ferimento remove um sucesso de defesa' }] },
+        { id: 'pontosDestino', categoria: 'pontosEspeciais', nome: 'Pontos de Destino', descricao: 'Compensam a diferença de poder, dando àqueles com pontuação menor um pouco de controle sobre a própria história e capacidades de dar a volta por cima. Campo sem vinculação matemática, editável apenas pelo Mestre.', temConfig: false },
+        { id: 'pontosAcao', categoria: 'pontosEspeciais', nome: 'Pontos de Ação', descricao: 'Uma contagem separada de pontos para ativar vantagens. Medem a capacidade de realizar ações especiais e feitos heroicos representados pelas vantagens. Possuem valor atual e máximo.', temConfig: false },
+        { id: 'pontosFerimento', categoria: 'pontosEspeciais', nome: 'Pontos de Ferimento', descricao: 'Regra opcional para campanhas com maior letalidade. Possuem valor atual e máximo, ficando logo abaixo dos Pontos de Vida.', temConfig: false },
+        { id: 'pontosMacula', categoria: 'pontosEspeciais', nome: 'Pontos de Mácula', descricao: 'Mácula é um problema enfrentado pelo personagem — um mal ou desvantagem que pode piorar progressivamente, mas que também traz benefícios e aumenta seus poderes. Campo editável apenas pelo Mestre, com conversor de Pontos de Mácula → Mácula (10 pontos = 1 Mácula).', temConfig: false },
+        { id: 'pontosReputacao', categoria: 'pontosEspeciais', nome: 'Pontos de Reputação', descricao: 'A Reputação (RP) mede o quão conhecido é o personagem, seja por fama geral ou dentro de um grupo específico. Campo editável apenas pelo Mestre, com conversor de Pontos de RP → RP (10 pontos = 1 RP).', temConfig: false }
     ];
     let regrasMesa = {};
     let regrasSubopcoes = {
@@ -1920,6 +2188,414 @@
         document.body.classList.toggle('regra-pericias-esforco', regraAtiva('periciasEsforco'));
         document.body.classList.toggle('regra-pericias-nivel-sucesso', regraAtiva('periciasNivelSucesso'));
         document.body.classList.toggle('regra-combate-sem-pv', regraAtiva('combateSemPV'));
+        renderizarPontosEspeciais();
+    }
+
+    // ============================================================
+    // PONTOS ESPECIAIS (Destino, Ação, Ferimento, Mácula, Reputação)
+    // ============================================================
+    function renderizarPontosEspeciais() {
+        renderizarPontosEspeciaisPrincipal();
+        subFichas.forEach((_, idx) => renderizarPontosEspeciaisSub(idx));
+    }
+
+    function renderizarPontosEspeciaisPrincipal() {
+        // Ferimento (dentro do quadrado de PV, abaixo da linha)
+        const cPV = document.getElementById('containerPVFerimento');
+        if (cPV) {
+            if (regraAtiva('pontosFerimento')) {
+                cPV.outerHTML = `<div class="recurso-especial-combate" id="containerPVFerimento">
+                    <label>🩸 Ferimento</label>
+                    <div class="recurso-linha">
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" id="ferimentoTotal" placeholder="T">
+                        <span>/</span>
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" id="ferimentoAtual" placeholder="A">
+                    </div>
+                </div>`;
+                const totalEl = document.getElementById('ferimentoTotal');
+                const atualEl = document.getElementById('ferimentoAtual');
+                if (totalEl) totalEl.value = (window._pontosEspeciais?.ferimentoTotal ?? 0);
+                if (atualEl) atualEl.value = (window._pontosEspeciais?.ferimentoAtual ?? 0);
+                if (totalEl) totalEl.oninput = () => { if (!window._pontosEspeciais) window._pontosEspeciais = {}; window._pontosEspeciais.ferimentoTotal = parseInt(totalEl.value) || 0; debounceSave(); };
+                if (atualEl) atualEl.oninput = () => { if (!window._pontosEspeciais) window._pontosEspeciais = {}; window._pontosEspeciais.ferimentoAtual = parseInt(atualEl.value) || 0; debounceSave(); };
+            } else {
+                cPV.outerHTML = `<div id="containerPVFerimento"></div>`;
+            }
+        }
+        // Ação (dentro do quadrado de PM, abaixo da linha)
+        const cPM = document.getElementById('containerPMAcao');
+        if (cPM) {
+            if (regraAtiva('pontosAcao')) {
+                cPM.outerHTML = `<div class="recurso-especial-combate" id="containerPMAcao">
+                    <label>⚡ Ação</label>
+                    <div class="recurso-linha">
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" id="acaoTotal" placeholder="T">
+                        <span>/</span>
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" id="acaoAtual" placeholder="A">
+                    </div>
+                </div>`;
+                const totalEl = document.getElementById('acaoTotal');
+                const atualEl = document.getElementById('acaoAtual');
+                if (totalEl) totalEl.value = (window._pontosEspeciais?.acaoTotal ?? 0);
+                if (atualEl) atualEl.value = (window._pontosEspeciais?.acaoAtual ?? 0);
+                if (totalEl) totalEl.oninput = () => { if (!window._pontosEspeciais) window._pontosEspeciais = {}; window._pontosEspeciais.acaoTotal = parseInt(totalEl.value) || 0; debounceSave(); };
+                if (atualEl) atualEl.oninput = () => { if (!window._pontosEspeciais) window._pontosEspeciais = {}; window._pontosEspeciais.acaoAtual = parseInt(atualEl.value) || 0; debounceSave(); };
+            } else {
+                cPM.outerHTML = `<div id="containerPMAcao"></div>`;
+            }
+        }
+        // Mácula (dentro do quadrado de Pontos, abaixo de Gastos) — editável só pelo mestre
+        const cMC = document.getElementById('containerMC');
+        if (cMC) {
+            if (regraAtiva('pontosMacula')) {
+                const editavel = isGM || isMaster;
+                cMC.outerHTML = `<div class="extra-linha" id="containerMC">
+                    <span class="rotulo">Mácula:</span>
+                    <input type="text" inputmode="numeric" pattern="[0-9-]*" id="pontosMacula" value="${window._pontosEspeciais?.pontosMacula ?? 0}" ${editavel ? '' : 'readonly'}>
+                </div>`;
+                const el = document.getElementById('pontosMacula');
+                if (el) el.oninput = () => { if (!window._pontosEspeciais) window._pontosEspeciais = {}; window._pontosEspeciais.pontosMacula = parseInt(el.value) || 0; debounceSave(); };
+            } else {
+                cMC.outerHTML = `<div id="containerMC"></div>`;
+            }
+        }
+        // Reputação (dentro do quadrado de Pontos, abaixo de Mácula ou de Gastos) — editável só pelo mestre
+        const cRP = document.getElementById('containerRP');
+        if (cRP) {
+            if (regraAtiva('pontosReputacao')) {
+                const editavel = isGM || isMaster;
+                cRP.outerHTML = `<div class="extra-linha" id="containerRP">
+                    <span class="rotulo">Reputação:</span>
+                    <input type="text" inputmode="numeric" pattern="[0-9-]*" id="pontosRP" value="${window._pontosEspeciais?.pontosRP ?? 0}" ${editavel ? '' : 'readonly'}>
+                </div>`;
+                const el = document.getElementById('pontosRP');
+                if (el) el.oninput = () => { if (!window._pontosEspeciais) window._pontosEspeciais = {}; window._pontosEspeciais.pontosRP = parseInt(el.value) || 0; debounceSave(); };
+            } else {
+                cRP.outerHTML = `<div id="containerRP"></div>`;
+            }
+        }
+        // Destino (dentro do quadrado de Pontos, abaixo de RP ou de Gastos) — editável só pelo mestre
+        const cDest = document.getElementById('containerDestino');
+        if (cDest) {
+            if (regraAtiva('pontosDestino')) {
+                const editavel = isGM || isMaster;
+                cDest.outerHTML = `<div class="extra-linha" id="containerDestino">
+                    <span class="rotulo">🍀 Destino:</span>
+                    <input type="text" inputmode="numeric" pattern="[0-9-]*" id="pontosDestino" value="${window._pontosEspeciais?.destino ?? 0}" ${editavel ? '' : 'readonly'}>
+                </div>`;
+                const el = document.getElementById('pontosDestino');
+                if (el) el.oninput = () => { if (!window._pontosEspeciais) window._pontosEspeciais = {}; window._pontosEspeciais.destino = parseInt(el.value) || 0; debounceSave(); };
+            } else {
+                cDest.outerHTML = `<div id="containerDestino"></div>`;
+            }
+        }
+        // Mác (dentro do quadrado de XP, abaixo da linha) — editável pelo mestre
+        const cMacXP = document.getElementById('containerMaculaXP');
+        if (cMacXP) {
+            if (regraAtiva('pontosMacula')) {
+                const editavel = isGM || isMaster;
+                cMacXP.outerHTML = `<div class="extra-linha" id="containerMaculaXP">
+                    <label>🩸 Mác:</label>
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" id="macula" value="${window._pontosEspeciais?.macula ?? 0}" ${editavel ? '' : 'readonly'}>
+                </div>`;
+                const el = document.getElementById('macula');
+                if (el) el.oninput = () => { if (!window._pontosEspeciais) window._pontosEspeciais = {}; window._pontosEspeciais.macula = parseInt(el.value) || 0; debounceSave(); };
+            } else {
+                cMacXP.outerHTML = `<div id="containerMaculaXP"></div>`;
+            }
+        }
+        // Rep. (dentro do quadrado de XP, abaixo de Mác ou da linha) — editável pelo mestre
+        const cRepXP = document.getElementById('containerRepXP');
+        if (cRepXP) {
+            if (regraAtiva('pontosReputacao')) {
+                const editavel = isGM || isMaster;
+                cRepXP.outerHTML = `<div class="extra-linha" id="containerRepXP">
+                    <label>🏆 Rep.:</label>
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" id="reputacao" value="${window._pontosEspeciais?.reputacao ?? 0}" ${editavel ? '' : 'readonly'}>
+                </div>`;
+                const el = document.getElementById('reputacao');
+                if (el) el.oninput = () => { if (!window._pontosEspeciais) window._pontosEspeciais = {}; window._pontosEspeciais.reputacao = parseInt(el.value) || 0; debounceSave(); };
+            } else {
+                cRepXP.outerHTML = `<div id="containerRepXP"></div>`;
+            }
+        }
+        // Conversor de Mácula (abaixo do conversor de XP)
+        const cConvMac = document.getElementById('containerConversorMacula');
+        if (cConvMac) {
+            if (regraAtiva('pontosMacula')) {
+                cConvMac.outerHTML = `<div class="recurso-converter" id="containerConversorMacula">
+                    <label>🔄 Converter</label>
+                    <div class="converter-linha">
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" id="maculaConverterAmount" placeholder="Mácula">
+                        <button id="btnConverterMacula" disabled>Conv</button>
+                    </div>
+                    <div class="xp-info">10 Mácula = 1 Mác</div>
+                </div>`;
+                const amountEl = document.getElementById('maculaConverterAmount');
+                const btnConv = document.getElementById('btnConverterMacula');
+                const origemEl = document.getElementById('macula');
+                if (amountEl) amountEl.addEventListener('input', atualizarBotaoConverterMacula);
+                if (origemEl) origemEl.addEventListener('input', atualizarBotaoConverterMacula);
+                atualizarBotaoConverterMacula();
+                if (btnConv) btnConv.onclick = () => converterPontosEspeciais('macula', 'maculaConverterAmount', 'pontosMacula');
+            } else {
+                cConvMac.outerHTML = `<div id="containerConversorMacula"></div>`;
+            }
+        }
+        // Conversor de Reputação
+        const cConvRep = document.getElementById('containerConversorReputacao');
+        if (cConvRep) {
+            if (regraAtiva('pontosReputacao')) {
+                cConvRep.outerHTML = `<div class="recurso-converter" id="containerConversorReputacao">
+                    <label>🔄 Converter</label>
+                    <div class="converter-linha">
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" id="rpConverterAmount" placeholder="Reputação">
+                        <button id="btnConverterRP" disabled>Conv</button>
+                    </div>
+                    <div class="xp-info">10 Reputação = 1 Rep.</div>
+                </div>`;
+                const amountEl = document.getElementById('rpConverterAmount');
+                const btnConv = document.getElementById('btnConverterRP');
+                const origemEl = document.getElementById('reputacao');
+                if (amountEl) amountEl.addEventListener('input', atualizarBotaoConverterRP);
+                if (origemEl) origemEl.addEventListener('input', atualizarBotaoConverterRP);
+                atualizarBotaoConverterRP();
+                if (btnConv) btnConv.onclick = () => converterPontosEspeciais('reputacao', 'rpConverterAmount', 'pontosRP');
+            } else {
+                cConvRep.outerHTML = `<div id="containerConversorReputacao"></div>`;
+            }
+        }
+    }
+
+    function renderizarPontosEspeciaisSub(index) {
+        const sub = subFichas[index];
+        if (!sub) return;
+        if (!sub._pontosEspeciais) sub._pontosEspeciais = {};
+        // Ferimento (dentro do quadrado de PV)
+        const cPV = document.getElementById(`subficha-containerPVFerimento-${index}`);
+        if (cPV) {
+            if (regraAtiva('pontosFerimento')) {
+                cPV.outerHTML = `<div class="subficha-recurso-especial-combate" id="subficha-containerPVFerimento-${index}">
+                    <label>🩸 Fer.</label>
+                    <div class="recurso-linha">
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-ferimentoTotal-${index}" placeholder="T">
+                        <span>/</span>
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-ferimentoAtual-${index}" placeholder="A">
+                    </div>
+                </div>`;
+                const totalEl = document.getElementById(`subficha-ferimentoTotal-${index}`);
+                const atualEl = document.getElementById(`subficha-ferimentoAtual-${index}`);
+                if (totalEl) totalEl.value = (sub._pontosEspeciais.ferimentoTotal ?? 0);
+                if (atualEl) atualEl.value = (sub._pontosEspeciais.ferimentoAtual ?? 0);
+                if (totalEl) totalEl.oninput = () => { sub._pontosEspeciais.ferimentoTotal = parseInt(totalEl.value) || 0; debounceSaveSubFicha(); };
+                if (atualEl) atualEl.oninput = () => { sub._pontosEspeciais.ferimentoAtual = parseInt(atualEl.value) || 0; debounceSaveSubFicha(); };
+            } else {
+                cPV.outerHTML = `<div id="subficha-containerPVFerimento-${index}"></div>`;
+            }
+        }
+        // Ação (dentro do quadrado de PM)
+        const cPM = document.getElementById(`subficha-containerPMAcao-${index}`);
+        if (cPM) {
+            if (regraAtiva('pontosAcao')) {
+                cPM.outerHTML = `<div class="subficha-recurso-especial-combate" id="subficha-containerPMAcao-${index}">
+                    <label>⚡ Ação</label>
+                    <div class="recurso-linha">
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-acaoTotal-${index}" placeholder="T">
+                        <span>/</span>
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-acaoAtual-${index}" placeholder="A">
+                    </div>
+                </div>`;
+                const totalEl = document.getElementById(`subficha-acaoTotal-${index}`);
+                const atualEl = document.getElementById(`subficha-acaoAtual-${index}`);
+                if (totalEl) totalEl.value = (sub._pontosEspeciais.acaoTotal ?? 0);
+                if (atualEl) atualEl.value = (sub._pontosEspeciais.acaoAtual ?? 0);
+                if (totalEl) totalEl.oninput = () => { sub._pontosEspeciais.acaoTotal = parseInt(totalEl.value) || 0; debounceSaveSubFicha(); };
+                if (atualEl) atualEl.oninput = () => { sub._pontosEspeciais.acaoAtual = parseInt(atualEl.value) || 0; debounceSaveSubFicha(); };
+            } else {
+                cPM.outerHTML = `<div id="subficha-containerPMAcao-${index}"></div>`;
+            }
+        }
+        // Mácula (dentro do quadrado de Pontos, abaixo de Gastos) — editável só pelo mestre
+        const cMC = document.getElementById(`subficha-containerMC-${index}`);
+        if (cMC) {
+            if (regraAtiva('pontosMacula')) {
+                const editavel = isGM || isMaster;
+                cMC.outerHTML = `<div class="extra-linha" id="subficha-containerMC-${index}">
+                    <span class="rotulo">Mácula:</span>
+                    <input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-pontosMacula-${index}" value="${sub._pontosEspeciais.pontosMacula ?? 0}" ${editavel ? '' : 'readonly'}>
+                </div>`;
+                const el = document.getElementById(`subficha-pontosMacula-${index}`);
+                if (el) el.oninput = () => { sub._pontosEspeciais.pontosMacula = parseInt(el.value) || 0; debounceSaveSubFicha(); };
+            } else {
+                cMC.outerHTML = `<div id="subficha-containerMC-${index}"></div>`;
+            }
+        }
+        // Reputação (dentro do quadrado de Pontos) — editável só pelo mestre
+        const cRP = document.getElementById(`subficha-containerRP-${index}`);
+        if (cRP) {
+            if (regraAtiva('pontosReputacao')) {
+                const editavel = isGM || isMaster;
+                cRP.outerHTML = `<div class="extra-linha" id="subficha-containerRP-${index}">
+                    <span class="rotulo">Reputação:</span>
+                    <input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-pontosRP-${index}" value="${sub._pontosEspeciais.pontosRP ?? 0}" ${editavel ? '' : 'readonly'}>
+                </div>`;
+                const el = document.getElementById(`subficha-pontosRP-${index}`);
+                if (el) el.oninput = () => { sub._pontosEspeciais.pontosRP = parseInt(el.value) || 0; debounceSaveSubFicha(); };
+            } else {
+                cRP.outerHTML = `<div id="subficha-containerRP-${index}"></div>`;
+            }
+        }
+        // Destino (dentro do quadrado de Pontos) — editável só pelo mestre
+        const cDest = document.getElementById(`subficha-containerDestino-${index}`);
+        if (cDest) {
+            if (regraAtiva('pontosDestino')) {
+                const editavel = isGM || isMaster;
+                cDest.outerHTML = `<div class="extra-linha" id="subficha-containerDestino-${index}">
+                    <span class="rotulo">🍀 Destino:</span>
+                    <input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-pontosDestino-${index}" value="${sub._pontosEspeciais.destino ?? 0}" ${editavel ? '' : 'readonly'}>
+                </div>`;
+                const el = document.getElementById(`subficha-pontosDestino-${index}`);
+                if (el) el.oninput = () => { sub._pontosEspeciais.destino = parseInt(el.value) || 0; debounceSaveSubFicha(); };
+            } else {
+                cDest.outerHTML = `<div id="subficha-containerDestino-${index}"></div>`;
+            }
+        }
+        // Mác (dentro do quadrado de XP) — editável pelo mestre
+        const cMacXP = document.getElementById(`subficha-containerMaculaXP-${index}`);
+        if (cMacXP) {
+            if (regraAtiva('pontosMacula')) {
+                const editavel = isGM || isMaster;
+                cMacXP.outerHTML = `<div class="extra-linha" id="subficha-containerMaculaXP-${index}">
+                    <label>🩸 Mác:</label>
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-macula-${index}" value="${sub._pontosEspeciais.macula ?? 0}" ${editavel ? '' : 'readonly'}>
+                </div>`;
+                const el = document.getElementById(`subficha-macula-${index}`);
+                if (el) el.oninput = () => { sub._pontosEspeciais.macula = parseInt(el.value) || 0; debounceSaveSubFicha(); };
+            } else {
+                cMacXP.outerHTML = `<div id="subficha-containerMaculaXP-${index}"></div>`;
+            }
+        }
+        // Rep. (dentro do quadrado de XP) — editável pelo mestre
+        const cRepXP = document.getElementById(`subficha-containerRepXP-${index}`);
+        if (cRepXP) {
+            if (regraAtiva('pontosReputacao')) {
+                const editavel = isGM || isMaster;
+                cRepXP.outerHTML = `<div class="extra-linha" id="subficha-containerRepXP-${index}">
+                    <label>🏆 Rep.:</label>
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-reputacao-${index}" value="${sub._pontosEspeciais.reputacao ?? 0}" ${editavel ? '' : 'readonly'}>
+                </div>`;
+                const el = document.getElementById(`subficha-reputacao-${index}`);
+                if (el) el.oninput = () => { sub._pontosEspeciais.reputacao = parseInt(el.value) || 0; debounceSaveSubFicha(); };
+            } else {
+                cRepXP.outerHTML = `<div id="subficha-containerRepXP-${index}"></div>`;
+            }
+        }
+        // Conversor de Mácula
+        const cConvMac = document.getElementById(`subficha-containerConversorMacula-${index}`);
+        if (cConvMac) {
+            if (regraAtiva('pontosMacula')) {
+                cConvMac.outerHTML = `<div class="subficha-recurso-converter" id="subficha-containerConversorMacula-${index}">
+                    <label>🔄 Converter</label>
+                    <div class="converter-linha">
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-maculaConverterAmount-${index}" placeholder="Mácula">
+                        <button id="subficha-btnConverterMacula-${index}" disabled>Conv</button>
+                    </div>
+                    <div class="xp-info">10 Mácula = 1 Mác</div>
+                </div>`;
+                const amountEl = document.getElementById(`subficha-maculaConverterAmount-${index}`);
+                const btnConv = document.getElementById(`subficha-btnConverterMacula-${index}`);
+                const origemEl = document.getElementById(`subficha-macula-${index}`);
+                if (amountEl) amountEl.addEventListener('input', () => atualizarBotaoConverterMaculaSub(index));
+                if (origemEl) origemEl.addEventListener('input', () => atualizarBotaoConverterMaculaSub(index));
+                atualizarBotaoConverterMaculaSub(index);
+                if (btnConv) btnConv.onclick = () => converterPontosEspeciaisSub(index, 'macula', 'maculaConverterAmount', 'pontosMacula');
+            } else {
+                cConvMac.outerHTML = `<div id="subficha-containerConversorMacula-${index}"></div>`;
+            }
+        }
+        // Conversor de Reputação
+        const cConvRep = document.getElementById(`subficha-containerConversorReputacao-${index}`);
+        if (cConvRep) {
+            if (regraAtiva('pontosReputacao')) {
+                cConvRep.outerHTML = `<div class="subficha-recurso-converter" id="subficha-containerConversorReputacao-${index}">
+                    <label>🔄 Converter</label>
+                    <div class="converter-linha">
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-rpConverterAmount-${index}" placeholder="Reputação">
+                        <button id="subficha-btnConverterRP-${index}" disabled>Conv</button>
+                    </div>
+                    <div class="xp-info">10 Reputação = 1 Rep.</div>
+                </div>`;
+                const amountEl = document.getElementById(`subficha-rpConverterAmount-${index}`);
+                const btnConv = document.getElementById(`subficha-btnConverterRP-${index}`);
+                const origemEl = document.getElementById(`subficha-reputacao-${index}`);
+                if (amountEl) amountEl.addEventListener('input', () => atualizarBotaoConverterRPSub(index));
+                if (origemEl) origemEl.addEventListener('input', () => atualizarBotaoConverterRPSub(index));
+                atualizarBotaoConverterRPSub(index);
+                if (btnConv) btnConv.onclick = () => converterPontosEspeciaisSub(index, 'reputacao', 'rpConverterAmount', 'pontosRP');
+            } else {
+                cConvRep.outerHTML = `<div id="subficha-containerConversorReputacao-${index}"></div>`;
+            }
+        }
+    }
+
+    async function converterPontosEspeciais(campoOrigem, campoAmount, campoDestino) {
+        const elOrigem = document.getElementById(campoOrigem);
+        const elAmount = document.getElementById(campoAmount);
+        const elDestino = document.getElementById(campoDestino);
+        if (!elOrigem || !elAmount || !elDestino) return;
+        const pontosAtuais = parseInt(elOrigem.value) || 0;
+        const qtd = parseInt(elAmount.value) || 0;
+        if (qtd < 10) { addMensagem("⚠️ Você precisa converter pelo menos 10 pontos!"); return; }
+        if (qtd % 10 !== 0) { addMensagem("⚠️ A quantidade deve ser múltipla de 10!"); return; }
+        if (qtd > pontosAtuais) { addMensagem(`⚠️ Você só tem ${pontosAtuais} pontos disponíveis!`); return; }
+        const ganho = qtd / 10;
+        if (!window._pontosEspeciais) window._pontosEspeciais = {};
+        // Debita da origem (Mác ou Rep.)
+        const novosPontos = pontosAtuais - qtd;
+        window._pontosEspeciais[campoOrigem] = novosPontos;
+        elOrigem.value = novosPontos;
+        elAmount.value = '';
+        // Soma no destino (Mácula ou Reputação)
+        const destAtual = parseInt(elDestino.value) || 0;
+        window._pontosEspeciais[campoDestino] = destAtual + ganho;
+        elDestino.value = window._pontosEspeciais[campoDestino];
+        const labelDest = campoDestino === 'pontosMacula' ? 'Mácula' : 'Reputação';
+        const nomePersonagem = document.getElementById('nomePersonagem')?.value || currentUserName || 'Jogador';
+        const quem = isGM ? 'Mestre' : nomePersonagem;
+        const mensagem = `🎲 ${quem} converteu ${qtd} pontos e ganhou ${ganho} ${labelDest}!`;
+        addMensagem(mensagem, false);
+        await enviarRolagemFirebase(mensagem, false);
+        await salvarFichaAtual();
+    }
+
+    async function converterPontosEspeciaisSub(index, campoOrigem, campoAmount, campoDestino) {
+        const sub = subFichas[index];
+        if (!sub) return;
+        const elOrigem = document.getElementById(`subficha-${campoOrigem}-${index}`);
+        const elAmount = document.getElementById(`subficha-${campoAmount}-${index}`);
+        const elDestino = document.getElementById(`subficha-${campoDestino}-${index}`);
+        if (!elOrigem || !elAmount || !elDestino) return;
+        const pontosAtuais = parseInt(elOrigem.value) || 0;
+        const qtd = parseInt(elAmount.value) || 0;
+        if (qtd < 10) { addMensagem("⚠️ Você precisa converter pelo menos 10 pontos!"); return; }
+        if (qtd % 10 !== 0) { addMensagem("⚠️ A quantidade deve ser múltipla de 10!"); return; }
+        if (qtd > pontosAtuais) { addMensagem(`⚠️ Você só tem ${pontosAtuais} pontos disponíveis!`); return; }
+        const ganho = qtd / 10;
+        if (!sub._pontosEspeciais) sub._pontosEspeciais = {};
+        // Debita da origem (Mác ou Rep.)
+        const novosPontos = pontosAtuais - qtd;
+        sub._pontosEspeciais[campoOrigem] = novosPontos;
+        elOrigem.value = novosPontos;
+        elAmount.value = '';
+        // Soma no destino (Mácula ou Reputação)
+        const destAtual = parseInt(elDestino.value) || 0;
+        sub._pontosEspeciais[campoDestino] = destAtual + ganho;
+        elDestino.value = sub._pontosEspeciais[campoDestino];
+        const labelDest = campoDestino === 'pontosMacula' ? 'Mácula' : 'Reputação';
+        const mensagem = `🎲 [${sub.nome}] converteu ${qtd} pontos e ganhou ${ganho} ${labelDest}!`;
+        addMensagem(mensagem, false);
+        await enviarRolagemFirebase(mensagem, false);
+        await salvarFichaAtual();
     }
 
     function atualizarBadgeRegras() {
@@ -1929,7 +2605,7 @@
         if (!isMaster) { badge.style.display = 'none'; return; }
         badge.style.display = 'inline-flex';
         let count = 0;
-        for (const k of Object.keys(regrasMesa)) if (regrasMesa[k]) count++;
+        for (const r of REGRAS_DISPONIVEIS) { if (regrasMesa[r.id] === true) count++; }
         if (numero) numero.textContent = count;
         if (count > 0) badge.classList.add('ativo'); else badge.classList.remove('ativo');
     }
@@ -2034,6 +2710,7 @@
                 atualizarBadgeRegras();
                 salvarRegrasMesa();
                 atualizarSelectsDificuldade();
+                renderizarPontosEspeciais();
                 if (visualizandoId) {
                     renderizarTestes('testesContainer', false, null);
                     subFichas.forEach((_, idx) => renderizarTestes(`subficha-testesContainer-${idx}`, true, idx));
@@ -2048,6 +2725,7 @@
                         renderizarDefesas(true, idx);
                     });
                     reRenderizarOficios();
+                    renderizarPontosEspeciais();
                 }
                 const msg = marcado
                     ? `📜 Regra ativada: "${REGRAS_DISPONIVEIS.find(x => x.id === id)?.nome || id}"`
@@ -2077,6 +2755,7 @@
                         renderizarDefesas(true, idx);
                     });
                     reRenderizarOficios();
+                    renderizarPontosEspeciais();
                 }
             };
         });
@@ -2134,6 +2813,13 @@
                 if (data.regras.ativas) for (const [k, v] of Object.entries(data.regras.ativas)) regrasMesa[k] = v === true;
                 if (data.regras.config) for (const [k, v] of Object.entries(data.regras.config)) regrasConfig[k] = { ...(regrasConfig[k] || {}), ...v };
                 if (data.regras.subopcoes) for (const [k, v] of Object.entries(data.regras.subopcoes)) regrasSubopcoes[k] = { ...(regrasSubopcoes[k] || {}), ...v };
+                // Limpa chaves órfãs: qualquer regra em regrasMesa que não exista mais em REGRAS_DISPONIVEIS
+                const idsValidos = new Set(REGRAS_DISPONIVEIS.map(r => r.id));
+                let precisaSalvar = false;
+                for (const k of Object.keys(regrasMesa)) {
+                    if (!idsValidos.has(k)) { delete regrasMesa[k]; precisaSalvar = true; }
+                }
+                if (precisaSalvar && isMaster) salvarRegrasMesa();
             }
         } catch (err) { console.warn('⚠️ Erro ao carregar regras:', err); }
         aplicarClassesRegras();
@@ -2159,6 +2845,7 @@
                 renderizarAtaques('distancia', false, null);
                 renderizarDefesas(false, null);
                 reRenderizarOficios();
+                renderizarPontosEspeciais();
             }
         } catch(e) {}
     }
@@ -2185,6 +2872,7 @@
                         renderizarAtaques('distancia', false, null);
                         renderizarDefesas(false, null);
                         reRenderizarOficios();
+                        renderizarPontosEspeciais();
                         subFichas.forEach((_, idx) => {
                             const elTestes = document.getElementById(`subficha-testesContainer-${idx}`);
                             if (elTestes) renderizarTestes(`subficha-testesContainer-${idx}`, true, idx);
@@ -2195,6 +2883,7 @@
                             renderizarAtaques('curto', true, idx);
                             renderizarAtaques('distancia', true, idx);
                             renderizarDefesas(true, idx);
+                            renderizarPontosEspeciaisSub(idx);
                         });
                     }
                 }
@@ -2790,6 +3479,10 @@
     }
 
     function adicionarMensagemNoChat(r, prepend = true) {
+        // Evita duplicar mensagem que o próprio cliente acabou de enviar
+        if (r && r.texto && r.jogador && foiEnviadaLocalmente(r.texto, r.jogador)) {
+            return;
+        }
         const hora = new Date(r.timestamp).toLocaleTimeString();
         const msgDiv = document.createElement('div');
         msgDiv.className = r.secreta ? 'mensagem secreta' : 'mensagem';
@@ -2806,6 +3499,25 @@
         if (empty) empty.remove();
     }
     
+    // Guarda uma "impressão digital" das últimas mensagens locais para evitar duplicação via realtime
+    window._ultimasMensagensLocais = window._ultimasMensagensLocais || [];
+
+    function registrarMensagemLocal(texto, nome) {
+        const chave = `${nome}::${texto}`;
+        const agora = Date.now();
+        window._ultimasMensagensLocais.push({ chave, ts: agora });
+        // Mantém só as últimas 10
+        if (window._ultimasMensagensLocais.length > 10) window._ultimasMensagensLocais.shift();
+    }
+
+    function foiEnviadaLocalmente(texto, nome) {
+        const chave = `${nome}::${texto}`;
+        const agora = Date.now();
+        // Considera "recente" se foi nos últimos 5 segundos
+        window._ultimasMensagensLocais = (window._ultimasMensagensLocais || []).filter(m => (agora - m.ts) < 5000);
+        return window._ultimasMensagensLocais.some(m => m.chave === chave);
+    }
+
     function addMensagem(texto, ehSecreta = false) {
         const nome = isMaster ? 'Mestre' : (document.getElementById('nomePersonagem').value || currentUserName || 'Jogador');
         const hora = new Date().toLocaleTimeString();
@@ -2817,6 +3529,8 @@
         const empty = chatDivLateral.querySelector('.empty-chat');
         if (empty) empty.remove();
         while (chatDivLateral.children.length > MAX_CHAT_MESSAGES_DISPLAY) chatDivLateral.removeChild(chatDivLateral.lastChild);
+        // Registra para não duplicar quando voltar via realtime
+        registrarMensagemLocal(texto, nome);
     }
     
     async function enviarRolagemFirebase(texto, ehSecreta = false) {
@@ -5239,6 +5953,46 @@
         const xp = parseInt(xpFieldEl?.value) || 0;
         if (btnConverter) btnConverter.disabled = (xp < 10);
     }
+
+    function atualizarBotaoConverterMacula() {
+        const origemEl = document.getElementById('macula');
+        const amountEl = document.getElementById('maculaConverterAmount');
+        const btn = document.getElementById('btnConverterMacula');
+        if (!btn) return;
+        const pontos = parseInt(origemEl?.value) || 0;
+        const qtd = parseInt(amountEl?.value) || 0;
+        btn.disabled = !(qtd >= 10 && qtd % 10 === 0 && qtd <= pontos);
+    }
+
+    function atualizarBotaoConverterRP() {
+        const origemEl = document.getElementById('reputacao');
+        const amountEl = document.getElementById('rpConverterAmount');
+        const btn = document.getElementById('btnConverterRP');
+        if (!btn) return;
+        const pontos = parseInt(origemEl?.value) || 0;
+        const qtd = parseInt(amountEl?.value) || 0;
+        btn.disabled = !(qtd >= 10 && qtd % 10 === 0 && qtd <= pontos);
+    }
+
+    function atualizarBotaoConverterMaculaSub(index) {
+        const origemEl = document.getElementById(`subficha-macula-${index}`);
+        const amountEl = document.getElementById(`subficha-maculaConverterAmount-${index}`);
+        const btn = document.getElementById(`subficha-btnConverterMacula-${index}`);
+        if (!btn) return;
+        const pontos = parseInt(origemEl?.value) || 0;
+        const qtd = parseInt(amountEl?.value) || 0;
+        btn.disabled = !(qtd >= 10 && qtd % 10 === 0 && qtd <= pontos);
+    }
+
+    function atualizarBotaoConverterRPSub(index) {
+        const origemEl = document.getElementById(`subficha-reputacao-${index}`);
+        const amountEl = document.getElementById(`subficha-rpConverterAmount-${index}`);
+        const btn = document.getElementById(`subficha-btnConverterRP-${index}`);
+        if (!btn) return;
+        const pontos = parseInt(origemEl?.value) || 0;
+        const qtd = parseInt(amountEl?.value) || 0;
+        btn.disabled = !(qtd >= 10 && qtd % 10 === 0 && qtd <= pontos);
+    }
     
     // ============================================================
     // CONVERTER XP - usa aplicarDeltaBasePura
@@ -5284,7 +6038,8 @@
             testes: {}, statusSub: { ...statusSubInicial },
             oficios: [],
             atributosCustom: [],
-            baralhoSubEstado: null
+            baralhoSubEstado: null,
+            _pontosEspeciais: {}
         };
     }
     
@@ -5477,7 +6232,7 @@
                 if (confirm('Tem certeza que deseja excluir esta sub-ficha?')) { subFichas.splice(idx, 1); delete baralhosSubFichas[idx]; delete periciaSelecionadaCartaSub[idx]; delete cartaViradaAguardandoUsoSub[idx]; delete atributosCustomSub[idx]; renderizarSubFichas(); debounceSave(); }
             };
         });
-        subContainer.addEventListener('change', function(e) {
+        subContainer.onchange = function(e) {
             const target = e.target;
             if (target.classList.contains('chk-sustentado')) {
                 const id = target.id;
@@ -5491,7 +6246,7 @@
                     if (sub && sub.listas.vantagens && sub.listas.vantagens[itemIdx]) { const item = sub.listas.vantagens[itemIdx]; item.sustentado = target.checked; const nomeItem = item.nome || 'Vantagem sem nome'; const mensagem = target.checked ? `🪄 ✨ Vantagem "${nomeItem}" foi marcada como sustentada na sub-ficha ${sub.nome}.` : `🪄 Sustentação da vantagem "${nomeItem}" foi cancelada na sub-ficha ${sub.nome}.`; addMensagem(mensagem, false); enviarRolagemFirebase(mensagem, false); atualizarBadgeSustentados(); debounceSaveSubFicha(); try { _ultimoSustentadosCarregado = 0; } catch(e) {} }
                 }
             }
-        });
+        };
     }
     
     function renderizarConteudoSubFicha(index) {
@@ -5528,10 +6283,14 @@
                         </div>
                         <div class="subficha-recursos-3colunas">
                             <div class="subficha-recurso subficha-recurso-pv"><label>❤️ PV</label><div class="recurso-linha"><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-pvTotal-${index}" value="${sub.pvTotal}"><span>/</span><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-pvAtual-${index}" value="${sub.pvAtual}"><span>+</span><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusPv-${index}" class="bonus-pv-pm" value="${sub.bonusPv}"></div></div>
+                            <div id="subficha-containerPVFerimento-${index}"></div>
                             <div class="subficha-recurso"><label>✨ PM</label><div class="recurso-linha"><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-pmTotal-${index}" value="${sub.pmTotal}"><span>/</span><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-pmAtual-${index}" value="${sub.pmAtual}"><span>+</span><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-bonusPm-${index}" class="bonus-pv-pm" value="${sub.bonusPm}"></div></div>
-                            <div class="subficha-recurso-pontos"><label class="titulo">💰 Pontos</label><div class="pontos-linha"><span class="rotulo">Personagem:</span><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-pontosBase-${index}" value="${sub.pontosBase ?? 0}"></div><div class="pontos-linha"><span class="rotulo gastos">Gastos:</span><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-pontosGastos-${index}" value="${sub.pontosGastos ?? 0}"></div></div>
-                            <div class="subficha-recurso"><label>⭐ XP</label><div class="recurso-linha"><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-xp-${index}" value="${sub.xp}" class="input-full"></div></div>
+                            <div id="subficha-containerPMAcao-${index}"></div>
+                            <div class="subficha-recurso-pontos"><label class="titulo">💰 Pontos</label><div class="pontos-linha"><span class="rotulo">Personagem:</span><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-pontosBase-${index}" value="${sub.pontosBase ?? 0}"></div><div class="pontos-linha"><span class="rotulo gastos">Gastos:</span><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-pontosGastos-${index}" value="${sub.pontosGastos ?? 0}"></div><div id="subficha-containerMC-${index}"></div><div id="subficha-containerRP-${index}"></div><div id="subficha-containerDestino-${index}"></div></div>
+                            <div class="subficha-recurso"><label>⭐ XP</label><div class="recurso-linha"><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-xp-${index}" value="${sub.xp}" class="input-full"></div><div id="subficha-containerMaculaXP-${index}"></div><div id="subficha-containerRepXP-${index}"></div></div>
                             <div class="subficha-recurso-converter"><label>🔄 Converter</label><div class="converter-linha"><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-xpConverterAmount-${index}" placeholder="XP"><button id="subficha-btnConverterXP-${index}" disabled>Conv</button></div><div class="xp-info">10 XP = 1 ponto</div></div>
+                            <div id="subficha-containerConversorMacula-${index}"></div>
+                            <div id="subficha-containerConversorReputacao-${index}"></div>
                             <div class="subficha-recurso"><label>🪙 T$</label><div class="recurso-linha"><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-dinheiro-${index}" value="${sub.dinheiro}" class="input-full"></div></div>
                         </div>
                         <div class="botoes-acao" style="display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0;">
@@ -5600,6 +6359,7 @@
         atualizarIndicadoresAtributosSub(index);
         configurarEventosStatusSub(index);
         renderizarBaralhoSub(index);
+        renderizarPontosEspeciaisSub(index);
         const testesContainer = document.getElementById(`subficha-testesContainer-${index}`);
         if (testesContainer) {
             let oficiosDiv = document.getElementById(`subficha-oficios-${index}`);
@@ -5646,19 +6406,19 @@
             const input = document.getElementById(`subficha-${attr}-${index}`);
             if (input) {
                 if (['forca', 'habilidade', 'resistencia', 'armadura', 'pdf'].includes(attr)) {
-                    input.addEventListener('focus', () => { input.dataset.valorAnterior = String(parseInt(input.value) || 0); });
-                    input.addEventListener('input', () => {
+                    input.onfocus = () => { input.dataset.valorAnterior = String(parseInt(input.value) || 0); };
+                    input.oninput = () => {
                         sub[attr] = parseInt(input.value) || 0;
                         liberarRecalculoSub(index); atualizarPontosSub(index);
                         atualizarIndicadoresAtributosSub(index); debounceSaveSubFicha();
-                    });
-                    input.addEventListener('blur', () => {
+                    };
+                    input.onblur = () => {
                         const valorAnterior = parseInt(input.dataset.valorAnterior) || 0;
                         const valorNovo = parseInt(input.value) || 0;
                         const deltaGasto = valorNovo - valorAnterior;
                         if (deltaGasto !== 0) registrarGasto(deltaGasto, true, index);
                         input.dataset.valorAnterior = String(valorNovo);
-                    });
+                    };
                 } else {
                     input.oninput = () => {
                         const field = input.id.split('-')[1];
@@ -5683,21 +6443,21 @@
         const subBaseInput = document.getElementById(`subficha-pontosBase-${index}`);
         const subGastosInput = document.getElementById(`subficha-pontosGastos-${index}`);
         if (subBaseInput) {
-            subBaseInput.addEventListener('focus', () => {
+            subBaseInput.onfocus = () => {
                 if (isGM || isMaster) {
                     subBaseInput.dataset.masterEditing = 'true';
                     subBaseInput.dataset.valorAntesEdicao = String(parseInt(subBaseInput.value) || 0);
                     const basePura = (sub._basePura !== undefined) ? sub._basePura : (parseInt(subBaseInput.value) || 0);
                     subBaseInput.value = basePura;
                 }
-            });
-            subBaseInput.addEventListener('input', () => {
+            };
+            subBaseInput.oninput = () => {
                 if (subBaseInput.dataset.masterEditing === 'true') {
                     sub._basePura = parseInt(subBaseInput.value) || 0;
                 }
                 atualizarPontosSub(index); debounceSaveSubFicha();
-            });
-            subBaseInput.addEventListener('blur', () => {
+            };
+            subBaseInput.onblur = () => {
                 if (isGM || isMaster) {
                     subBaseInput.dataset.masterEditing = 'false';
                     const valorAntes = parseInt(subBaseInput.dataset.valorAntesEdicao) || 0;
@@ -5705,16 +6465,16 @@
                     baseEditadaManualmenteSub[index] = (valorAntes !== valorAgora);
                     atualizarPontosSub(index); debounceSaveSubFicha();
                 }
-            });
+            };
         }
         if (subGastosInput) {
-            subGastosInput.addEventListener('focus', () => {
+            subGastosInput.onfocus = () => {
                 if (isGM || isMaster) {
                     subGastosInput.dataset.masterEditing = 'true';
                     subGastosInput.dataset.valorAntesEdicao = String(parseInt(subGastosInput.value) || 0);
                 }
-            });
-            subGastosInput.addEventListener('blur', () => {
+            };
+            subGastosInput.onblur = () => {
                 if (isGM || isMaster) {
                     subGastosInput.dataset.masterEditing = 'false';
                     const valorAntes = parseInt(subGastosInput.dataset.valorAntesEdicao) || 0;
@@ -5727,7 +6487,7 @@
                     }
                     atualizarPontosSub(index); debounceSaveSubFicha();
                 }
-            });
+            };
         }
         const vRN = document.getElementById(`subficha-vantagemRegionalNome-${index}`);
         if (vRN) vRN.oninput = () => { sub.vantagemRegionalNome = vRN.value; debounceSaveSubFicha(); };
@@ -5769,8 +6529,8 @@
         const subBtnConverter = document.getElementById(`subficha-btnConverterXP-${index}`);
         const subConverterAmount = document.getElementById(`subficha-xpConverterAmount-${index}`);
         function atualizarBotaoConverterSub() { if (subBtnConverter) { const xp = parseInt(subXpField?.value) || 0; subBtnConverter.disabled = (xp < 10); } }
-        if (subXpField) subXpField.addEventListener('input', atualizarBotaoConverterSub);
-        if (subConverterAmount) subConverterAmount.addEventListener('input', atualizarBotaoConverterSub);
+        if (subXpField) subXpField.oninput = atualizarBotaoConverterSub;
+        if (subConverterAmount) subConverterAmount.oninput = atualizarBotaoConverterSub;
         if (subBtnConverter) {
             subBtnConverter.onclick = async () => {
                 let xpAtual = parseInt(subXpField.value) || 0;
@@ -7220,7 +7980,8 @@ window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!f
             subFichas: [], testes: {}, statusFicha: { ...statusInicial },
             oficios: [],
             atributosCustom: [],
-            baralhoEstado: null
+            baralhoEstado: null,
+            pontosEspeciais: {}
         };
     }
     
@@ -7296,7 +8057,8 @@ window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!f
             oficios: getOficiosPrincipais(),
             atributosCustom: JSON.parse(JSON.stringify(getAtributosCustom())),
             baralhoEstado: JSON.parse(JSON.stringify(baralhoEstado)),
-            baralhosCombate: JSON.parse(JSON.stringify(baralhosCombate))
+            baralhosCombate: JSON.parse(JSON.stringify(baralhosCombate)),
+            pontosEspeciais: JSON.parse(JSON.stringify(window._pontosEspeciais || {}))
         };
     }
     
@@ -7427,6 +8189,7 @@ window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!f
                 if (!Number.isFinite(subCopy.pontosBase)) subCopy.pontosBase = 0;
                 if (!Number.isFinite(subCopy._basePura)) subCopy._basePura = subCopy.pontosBase;
                 if (!subCopy.atributosCustom || !Array.isArray(subCopy.atributosCustom)) subCopy.atributosCustom = [];
+                if (!subCopy._pontosEspeciais || typeof subCopy._pontosEspeciais !== 'object') subCopy._pontosEspeciais = {};
                 return subCopy;
             });
         } else subFichas = [];
@@ -7495,6 +8258,10 @@ window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!f
         restaurarCartasDoSessionStorage();
         renderizarBaralhoPrincipal();
         subFichas.forEach((_, idx) => renderizarBaralhoSub(idx));
+
+        // Pontos Especiais (Destino, Ação, Ferimento, Mácula, Reputação)
+        window._pontosEspeciais = (f.pontosEspeciais && typeof f.pontosEspeciais === 'object') ? JSON.parse(JSON.stringify(f.pontosEspeciais)) : {};
+        renderizarPontosEspeciais();
 
         ultimoEstadoFicha = JSON.parse(JSON.stringify(extrairDadosDaTela()));
     }
