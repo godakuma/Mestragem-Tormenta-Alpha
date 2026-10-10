@@ -1361,7 +1361,6 @@
         display: flex;
         gap: 4px;
         align-items: center;
-        justify-content: space-between;
         width: 100%;
         margin-top: 3px;
     }
@@ -1383,6 +1382,8 @@
         font-weight: bold;
         -moz-appearance: textfield;
         appearance: textfield;
+        margin-left: auto;
+        flex-shrink: 0;
     }
     .recurso-pontos .extra-linha input::-webkit-outer-spin-button,
     .recurso-pontos .extra-linha input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
@@ -1632,6 +1633,71 @@
         border-left-color: var(--perigo-forte);
         color: var(--perigo-forte);
     }
+    /* ===== ALINHAMENTO DO MÓDULO DE PONTOS ===== */
+/* Faz Mácula/Reputação/Destino ficarem IGUAIS a Personagem/Gastos */
+.recurso-pontos .extra-linha {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 3px;
+    margin-left: 0;
+}
+.recurso-pontos .extra-linha span.rotulo,
+.recurso-pontos .extra-linha label {
+    font-size: 9px;
+    font-weight: bold;
+    white-space: nowrap;
+    color: var(--texto-medio);
+    text-align: left;
+    margin: 0;
+    flex: 0 0 auto;
+}
+.recurso-pontos .extra-linha input {
+    width: 52px;
+    margin: 0;                /* tira o margin-left:auto */
+    margin-left: 0;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    background: var(--fundo-input);
+    color: var(--texto);
+    border: 1px solid var(--borda-clara);
+    border-radius: 3px;
+    padding: 2px 3px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+.recurso-pontos .extra-linha input::-webkit-outer-spin-button,
+.recurso-pontos .extra-linha input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+/* Força TODAS as linhas do módulo de pontos a ficarem alinhadas do mesmo jeito */
+.recurso-pontos :where(.pontos-linha, .extra-linha) {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    gap: 4px !important;
+}
+.recurso-pontos :where(.pontos-linha, .extra-linha) input {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    flex-shrink: 0 !important;
+    width: 52px !important;
+}
+.recurso-pontos :where(.pontos-linha, .extra-linha) span.rotulo,
+.recurso-pontos :where(.pontos-linha, .extra-linha) label {
+    flex: 0 0 auto !important;
+    margin: 0 !important;
+    text-align: left !important;
+}
 </style>
 </head>
 <body>
@@ -2249,14 +2315,14 @@
         if (cMC) {
             if (regraAtiva('pontosMacula')) {
                 const editavel = isGM || isMaster;
-                cMC.outerHTML = `<div class="extra-linha" id="containerMC">
+                cMC.outerHTML = `<div class="pontos-linha" id="containerMC">
                     <span class="rotulo">Mácula:</span>
                     <input type="text" inputmode="numeric" pattern="[0-9-]*" id="pontosMacula" value="${window._pontosEspeciais?.pontosMacula ?? 0}" ${editavel ? '' : 'readonly'}>
                 </div>`;
                 const el = document.getElementById('pontosMacula');
                 if (el) el.oninput = () => { if (!window._pontosEspeciais) window._pontosEspeciais = {}; window._pontosEspeciais.pontosMacula = parseInt(el.value) || 0; debounceSave(); };
             } else {
-                cMC.outerHTML = `<div id="containerMC"></div>`;
+                cMC.outerHTML = `<div id="containerMC" style="display: none;"></div>`;
             }
         }
         // Reputação (dentro do quadrado de Pontos, abaixo de Mácula ou de Gastos) — editável só pelo mestre
@@ -2264,14 +2330,14 @@
         if (cRP) {
             if (regraAtiva('pontosReputacao')) {
                 const editavel = isGM || isMaster;
-                cRP.outerHTML = `<div class="extra-linha" id="containerRP">
+                cRP.outerHTML = `<div class="pontos-linha" id="containerRP">
                     <span class="rotulo">Reputação:</span>
                     <input type="text" inputmode="numeric" pattern="[0-9-]*" id="pontosRP" value="${window._pontosEspeciais?.pontosRP ?? 0}" ${editavel ? '' : 'readonly'}>
                 </div>`;
                 const el = document.getElementById('pontosRP');
                 if (el) el.oninput = () => { if (!window._pontosEspeciais) window._pontosEspeciais = {}; window._pontosEspeciais.pontosRP = parseInt(el.value) || 0; debounceSave(); };
             } else {
-                cRP.outerHTML = `<div id="containerRP"></div>`;
+                cRP.outerHTML = `<div id="containerRP" style="display: none;"></div>`;
             }
         }
         // Destino (dentro do quadrado de Pontos, abaixo de RP ou de Gastos) — editável só pelo mestre
@@ -2279,14 +2345,14 @@
         if (cDest) {
             if (regraAtiva('pontosDestino')) {
                 const editavel = isGM || isMaster;
-                cDest.outerHTML = `<div class="extra-linha" id="containerDestino">
+                cDest.outerHTML = `<div class="pontos-linha" id="containerDestino">
                     <span class="rotulo">🍀 Destino:</span>
                     <input type="text" inputmode="numeric" pattern="[0-9-]*" id="pontosDestino" value="${window._pontosEspeciais?.destino ?? 0}" ${editavel ? '' : 'readonly'}>
                 </div>`;
                 const el = document.getElementById('pontosDestino');
                 if (el) el.oninput = () => { if (!window._pontosEspeciais) window._pontosEspeciais = {}; window._pontosEspeciais.destino = parseInt(el.value) || 0; debounceSave(); };
             } else {
-                cDest.outerHTML = `<div id="containerDestino"></div>`;
+                cDest.outerHTML = `<div id="containerDestino" style="display: none;"></div>`;
             }
         }
         // Mác (dentro do quadrado de XP, abaixo da linha) — editável pelo mestre
