@@ -2004,12 +2004,18 @@
                                     <div class="item-linha">
                                         <input type="text" id="vantagemUnicaNome" placeholder="Nome da Vantagem Única">
                                         <input type="text" inputmode="numeric" pattern="[0-9-]*" id="vantagemUnicaCusto" class="valor" placeholder="Custo" value="0">
+                                        <label style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:bold; color:var(--texto-suave); cursor:pointer; white-space:nowrap;">
+                                            <input type="checkbox" id="vantagemUnicaLefou" style="width:16px; height:16px; cursor:pointer; accent-color:var(--dourado);">
+                                            🩸 Lefou
+                                        </label>
                                         <button class="btn-desc" id="btnToggleVantagemUnica">📖</button>
                                         <button class="btn-info-item" data-info-tipo="vantagemUnica">i</button>
                                     </div>
                                     <div id="vantagemUnicaDescEditor" style="display:none;" class="desc-editor">
                                         <textarea id="vantagemUnicaDesc" rows="3" placeholder="Descrição da Vantagem Única..."></textarea>
                                     </div>
+                                    <div id="vantagemUnicaHabilidades" class="kit-habilidades" style="margin-top:8px; border-left-color: var(--dourado);"></div>
+                                    <button type="button" class="btn-add-habilidade" id="btnAddHabilidadeVantagemUnica" style="margin-top:6px;">+ Adicionar Habilidade</button>
                                 </div>
                             </div>
                             <div class="card-lista"><h3>✅ Vantagens</h3><div id="vantagensLista" class="lista"></div><button class="btn-add" id="addVantagem">+ Adicionar Vantagem</button></div>
@@ -3177,7 +3183,10 @@
     let codigoPersonagemAtual = null;
     
     let fichaListas = { vantagens: [], desvantagens: [], pericias: [], especializacoes: [], itens: [], equipamentos: [], tiposDano: [], magias: [], kits: [] };
-    
+        // Vantagem Única - Habilidades (ficha principal)
+    let vantagemUnicaHabilidades = [];
+    let vantagemUnicaLefou = false;
+
     let ultimoEstadoFicha = null;
     let bonusTestes = {};
     let gastosManuais = null;
@@ -4172,6 +4181,8 @@
         gastos += somar(document.getElementById('pdf').value);
         gastos += somar(document.getElementById('vantagemRegionalCusto').value);
         gastos += somar(document.getElementById('vantagemUnicaCusto').value);
+        // Lefou: o custo extra (+2) já está somado no valor visual do campo da Vantagem Única.
+        // Não somar novamente aqui para evitar dupla contagem.
         if (fichaListas.vantagens) fichaListas.vantagens.forEach(v => gastos += somar(v.valor));
         if (fichaListas.desvantagens) fichaListas.desvantagens.forEach(d => gastos += somar(d.valor));
         if (fichaListas.pericias) fichaListas.pericias.forEach(p => gastos += somar(p.valor));
@@ -4308,6 +4319,8 @@
         gastos += somar(sub.pdf);
         gastos += somar(sub.vantagemRegionalCusto);
         gastos += somar(sub.vantagemUnicaCusto);
+        // Lefou: o custo extra (+2) já está somado no valor visual do campo da Vantagem Única.
+        // Não somar novamente aqui para evitar dupla contagem.
         if (sub.listas?.vantagens) sub.listas.vantagens.forEach(v => gastos += somar(v.valor));
         if (sub.listas?.desvantagens) sub.listas.desvantagens.forEach(d => gastos += somar(d.valor));
         if (sub.listas?.pericias) sub.listas.pericias.forEach(p => gastos += somar(p.valor));
@@ -6100,6 +6113,7 @@
             pontosBase: 0, _basePura: 0, xp: 0, dinheiro: 0, gastosManuais: null,
             vantagemRegionalNome: '', vantagemRegionalCusto: 0, vantagemRegionalDesc: '',
             vantagemUnicaNome: '', vantagemUnicaCusto: 0, vantagemUnicaDesc: '',
+            vantagemUnicaLefou: false, vantagemUnicaHabilidades: [],
             listas: { vantagens: [], desvantagens: [], pericias: [], especializacoes: [], itens: [], equipamentos: [], tiposDano: [], magias: [], kits: [] },
             testes: {}, statusSub: { ...statusSubInicial },
             oficios: [],
@@ -6251,7 +6265,16 @@
         // Sem polling. A badge de sustentados só atualiza ao clicar.
         _sustentadosChannel = { remove: () => {} };
     }
-    
+        function atualizarCustoVisualVantagemUnicaSub(index) {
+        const input = document.getElementById(`subficha-vantagemUnicaCusto-${index}`);
+        const chk = document.getElementById(`subficha-vantagemUnicaLefou-${index}`);
+        if (!input) return;
+        if (document.activeElement === input) return;
+        const base = parseInt(input.dataset.custoBase);
+        const baseSeguro = Number.isFinite(base) ? base : (parseInt(input.value) || 0);
+        const lefou = chk?.checked === true ? 2 : 0;
+        input.value = baseSeguro + lefou;
+    }
     function renderizarSubFichaInline(sub, index) {
         const container = document.getElementById('subfichasContainer');
         if (!container) return;
@@ -6382,7 +6405,7 @@
             <div id="subficha-aba-vantagens-${index}" class="subficha-aba-conteudo">
                 <div class="grid-4">
                     <div class="card-full" style="margin-bottom: 20px;"><h3>🌟 Vantagem Regional</h3><div class="item"><div class="item-linha"><input type="text" id="subficha-vantagemRegionalNome-${index}" placeholder="Nome da Vantagem Regional" style="flex:2;" value="${escapeHtml(sub.vantagemRegionalNome || '')}"><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-vantagemRegionalCusto-${index}" class="valor" placeholder="Custo" value="${sub.vantagemRegionalCusto || 0}"><button class="btn-desc-sub" id="subficha-btnToggleVantagemRegional-${index}">📖</button><button class="btn-info-sub-item subficha-info-btn" data-sub-info-tipo="vantagemRegional" data-sub-info-idx="${index}">i</button></div><div id="subficha-vantagemRegionalDescEditor-${index}" style="display:none;" class="desc-editor"><textarea id="subficha-vantagemRegionalDesc-${index}" rows="3" placeholder="Descrição da Vantagem Regional...">${escapeHtml(sub.vantagemRegionalDesc || '')}</textarea></div></div></div>
-                    <div class="card-full" style="margin-bottom: 20px;"><h3>🌟 Vantagem Única</h3><div class="item"><div class="item-linha"><input type="text" id="subficha-vantagemUnicaNome-${index}" placeholder="Nome da Vantagem Única" value="${escapeHtml(sub.vantagemUnicaNome)}"><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-vantagemUnicaCusto-${index}" class="valor" placeholder="Custo" value="${sub.vantagemUnicaCusto}"><button class="btn-desc-sub" id="subficha-btnToggleVantagemUnica-${index}">📖</button><button class="btn-info-sub-item subficha-info-btn" data-sub-info-tipo="vantagemUnica" data-sub-info-idx="${index}">i</button></div><div id="subficha-vantagemUnicaDescEditor-${index}" style="display:none;" class="desc-editor"><textarea id="subficha-vantagemUnicaDesc-${index}" rows="3" placeholder="Descrição da Vantagem Única...">${escapeHtml(sub.vantagemUnicaDesc)}</textarea></div></div></div>
+                    <div class="card-full" style="margin-bottom: 20px;"><h3>🌟 Vantagem Única</h3><div class="item"><div class="item-linha"><input type="text" id="subficha-vantagemUnicaNome-${index}" placeholder="Nome da Vantagem Única" value="${escapeHtml(sub.vantagemUnicaNome)}"><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-vantagemUnicaCusto-${index}" class="valor" placeholder="Custo" value="${sub.vantagemUnicaCusto}"><label style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:bold; color:var(--texto-suave); cursor:pointer; white-space:nowrap;"><input type="checkbox" id="subficha-vantagemUnicaLefou-${index}" style="width:16px; height:16px; cursor:pointer; accent-color:var(--dourado);" ${sub.vantagemUnicaLefou ? 'checked' : ''}>🩸 Lefou</label><button class="btn-desc-sub" id="subficha-btnToggleVantagemUnica-${index}">📖</button><button class="btn-info-sub-item subficha-info-btn" data-sub-info-tipo="vantagemUnica" data-sub-info-idx="${index}">i</button></div><div id="subficha-vantagemUnicaDescEditor-${index}" style="display:none;" class="desc-editor"><textarea id="subficha-vantagemUnicaDesc-${index}" rows="3" placeholder="Descrição da Vantagem Única...">${escapeHtml(sub.vantagemUnicaDesc)}</textarea></div><div id="subficha-vantagemUnicaHabilidades-${index}" class="kit-habilidades" style="margin-top:8px; border-left-color: var(--dourado);"></div><button type="button" class="btn-add-habilidade" data-sub-vu-add-hab="${index}" style="margin-top:6px;">+ Adicionar Habilidade</button></div></div>
                     <div class="card-lista"><h3>✅ Vantagens</h3><div id="subficha-vantagensLista-${index}" class="lista"></div><button class="btn-add" onclick="window.adicionarItemSubLista(${index}, 'vantagens')">+ Adicionar Vantagem</button></div>
                     <div class="card-lista"><h3>❌ Desvantagens</h3><div id="subficha-desvantagensLista-${index}" class="lista"></div><button class="btn-add" onclick="window.adicionarItemSubLista(${index}, 'desvantagens')">+ Adicionar Desvantagem</button></div>
                     <div class="card-lista"><h3>⚡ Perícias</h3><div id="subficha-periciasLista-${index}" class="lista"></div><button class="btn-add" onclick="window.adicionarItemSubLista(${index}, 'pericias')">+ Adicionar Perícia</button></div>
@@ -6576,12 +6599,30 @@
         const vUN = document.getElementById(`subficha-vantagemUnicaNome-${index}`);
         if (vUN) vUN.oninput = () => { sub.vantagemUnicaNome = vUN.value; debounceSaveSubFicha(); };
         const vUC = document.getElementById(`subficha-vantagemUnicaCusto-${index}`);
+        const vULefou = document.getElementById(`subficha-vantagemUnicaLefou-${index}`);
         if (vUC) {
-            vUC.addEventListener('focus', () => { vUC.dataset.valorAnterior = String(parseInt(vUC.value) || 0); });
-            vUC.addEventListener('input', () => { sub.vantagemUnicaCusto = parseInt(vUC.value) || 0; liberarRecalculoSub(index); atualizarPontosSub(index); debounceSaveSubFicha(); });
+            vUC.addEventListener('focus', () => {
+                const lefou = vULefou?.checked === true ? 2 : 0;
+                const valorVisivel = parseInt(vUC.value) || 0;
+                const base = valorVisivel - lefou;
+                vUC.dataset.custoBase = String(base);
+                vUC.dataset.valorAnterior = String(valorVisivel);
+                vUC.value = base;
+            });
+            vUC.addEventListener('input', () => {
+                const base = parseInt(vUC.value) || 0;
+                vUC.dataset.custoBase = String(base);
+                sub.vantagemUnicaCusto = base;
+                liberarRecalculoSub(index);
+                atualizarPontosSub(index);
+                debounceSaveSubFicha();
+            });
             vUC.addEventListener('blur', () => {
+                const base = parseInt(vUC.dataset.custoBase) || 0;
+                const lefou = vULefou?.checked === true ? 2 : 0;
+                vUC.value = base + lefou;
                 const valorAnterior = parseInt(vUC.dataset.valorAnterior) || 0;
-                const valorNovo = parseInt(vUC.value) || 0;
+                const valorNovo = base + lefou;
                 const deltaGasto = valorNovo - valorAnterior;
                 if (deltaGasto !== 0) registrarGasto(deltaGasto, true, index);
                 vUC.dataset.valorAnterior = String(valorNovo);
@@ -6591,6 +6632,38 @@
         if (vUD) vUD.oninput = () => { sub.vantagemUnicaDesc = vUD.value; debounceSaveSubFicha(); };
         const btnTU = document.getElementById(`subficha-btnToggleVantagemUnica-${index}`);
         if (btnTU) btnTU.onclick = () => { const e = document.getElementById(`subficha-vantagemUnicaDescEditor-${index}`); if (e) e.style.display = e.style.display === 'none' ? 'block' : 'none'; };
+                // Lefou (subficha)
+        const vuLefouSub = document.getElementById(`subficha-vantagemUnicaLefou-${index}`);
+        if (vuLefouSub) {
+            vuLefouSub.onchange = () => {
+                sub.vantagemUnicaLefou = vuLefouSub.checked;
+                atualizarCustoVisualVantagemUnicaSub(index);
+                liberarRecalculoSub(index);
+                atualizarPontosSub(index);
+                debounceSaveSubFicha();
+            };
+        }
+
+        // Habilidades da Vantagem Única (subficha)
+        const vuHabSub = document.getElementById(`subficha-vantagemUnicaHabilidades-${index}`);
+        if (vuHabSub) {
+            if (!Array.isArray(sub.vantagemUnicaHabilidades)) sub.vantagemUnicaHabilidades = [];
+            vuHabSub.innerHTML = renderizarHabilidadesVantagemUnica(sub.vantagemUnicaHabilidades, true, index);
+            configurarEventosVantagemUnicaHabilidades(vuHabSub, true, index);
+        }
+        const btnAddVUSub = document.querySelector(`[data-sub-vu-add-hab="${index}"]`);
+        if (btnAddVUSub) {
+            btnAddVUSub.onclick = () => {
+                if (!Array.isArray(sub.vantagemUnicaHabilidades)) sub.vantagemUnicaHabilidades = [];
+                sub.vantagemUnicaHabilidades.push({ nome: '', descricao: '', visivel: false });
+                const el = document.getElementById(`subficha-vantagemUnicaHabilidades-${index}`);
+                if (el) {
+                    el.innerHTML = renderizarHabilidadesVantagemUnica(sub.vantagemUnicaHabilidades, true, index);
+                    configurarEventosVantagemUnicaHabilidades(el, true, index);
+                }
+                debounceSaveSubFicha();
+            };
+        }
         const subXpField = document.getElementById(`subficha-xp-${index}`);
         const subBtnConverter = document.getElementById(`subficha-btnConverterXP-${index}`);
         const subConverterAmount = document.getElementById(`subficha-xpConverterAmount-${index}`);
@@ -6622,6 +6695,8 @@
         if (uploadInput && avatarDiv) {
             uploadInput.onchange = async (e) => { const file = e.target.files[0]; if (!file) return; const avatarComprimido = await comprimirAvatar(file); sub.avatarSrc = avatarComprimido; avatarDiv.innerHTML = `<img src="${sub.avatarSrc}">`; debounceSaveSubFicha(); };
         }
+                // Corrige o valor visual do custo da Vantagem Única com Lefou
+        setTimeout(() => atualizarCustoVisualVantagemUnicaSub(index), 0);
         const subContainerInfoBtn = document.getElementById(`subficha-conteudo-${index}`);
         if (subContainerInfoBtn) {
             subContainerInfoBtn.querySelectorAll('.subficha-info-btn[data-sub-info-tipo="vantagemRegional"]').forEach(btn => {
@@ -6739,6 +6814,133 @@
             html += `<div class="habilidade-item"><input type="text" value="${escapeHtml(hab.nome || '')}" placeholder="Habilidade" data-hab-sub-field="nome" data-kit-idx="${kitIndex}" data-hab-idx="${habIndex}" data-sub-idx="${subIndex}" style="flex:2;"><input type="text" inputmode="numeric" pattern="[0-9-]*" class="habilidade-custo" value="${hab.custo || 0}" placeholder="Custo" data-hab-sub-field="custo" data-kit-idx="${kitIndex}" data-hab-idx="${habIndex}" data-sub-idx="${subIndex}" style="width:60px;"><button class="btn-desc-hab-sub" data-kit-idx="${kitIndex}" data-hab-idx="${habIndex}" data-sub-idx="${subIndex}">📖</button><button class="btn-info-sub" data-info-tipo="habKitSub" data-sub-idx="${subIndex}" data-kit-idx="${kitIndex}" data-hab-idx="${habIndex}">i</button><button class="btn-del-hab-sub" data-kit-idx="${kitIndex}" data-hab-idx="${habIndex}" data-sub-idx="${subIndex}">❌</button></div><div id="${descId}" class="habilidade-desc-editor" style="display: ${visivel};"><textarea rows="3" placeholder="Descrição da habilidade..." data-hab-sub-field="descricao" data-kit-idx="${kitIndex}" data-hab-idx="${habIndex}" data-sub-idx="${subIndex}">${escapeHtml(hab.descricao || '')}</textarea></div>`;
         });
         return html;
+    }
+        // ============================================================
+    // VANTAGEM ÚNICA - HABILIDADES (sem custo)
+    // ============================================================
+    function renderizarHabilidadesVantagemUnica(habilidades, isSub = false, subIndex = null) {
+        const lista = habilidades || [];
+        if (lista.length === 0) {
+            return '<div style="color:var(--texto-suave); font-size:11px; padding:5px;">Nenhuma habilidade adicionada</div>';
+        }
+        let html = '';
+        lista.forEach((hab, habIndex) => {
+            const descId = isSub
+                ? `vu-hab-desc-sub-${subIndex}-${habIndex}`
+                : `vu-hab-desc-principal-${habIndex}`;
+            const visivel = hab.visivel ? 'block' : 'none';
+            const dataAttrs = isSub
+                ? `data-vu-hab-field="nome" data-vu-hab-idx="${habIndex}" data-vu-sub-idx="${subIndex}"`
+                : `data-vu-hab-field="nome" data-vu-hab-idx="${habIndex}"`;
+            const dataAttrsDesc = isSub
+                ? `data-vu-hab-field="descricao" data-vu-hab-idx="${habIndex}" data-vu-sub-idx="${subIndex}"`
+                : `data-vu-hab-field="descricao" data-vu-hab-idx="${habIndex}"`;
+            html += `<div class="habilidade-item">
+                <input type="text" value="${escapeHtml(hab.nome || '')}" placeholder="Habilidade" ${dataAttrs} style="flex:2;">
+                <button type="button" class="btn-desc-vu-hab" data-vu-hab-desc-idx="${habIndex}" ${isSub ? `data-vu-sub-idx="${subIndex}"` : ''}>📖</button>
+                <button type="button" class="btn-info-item btn-info-vu-hab" data-vu-hab-info-idx="${habIndex}" ${isSub ? `data-vu-sub-idx="${subIndex}"` : ''}>i</button>
+                <button type="button" class="btn-del-vu-hab" data-vu-hab-del-idx="${habIndex}" ${isSub ? `data-vu-sub-idx="${subIndex}"` : ''}>❌</button>
+            </div>
+            <div id="${descId}" class="habilidade-desc-editor" style="display: ${visivel};">
+                <textarea rows="3" placeholder="Descrição da habilidade..." ${dataAttrsDesc}>${escapeHtml(hab.descricao || '')}</textarea>
+            </div>`;
+        });
+        return html;
+    }
+        // ============================================================
+    // VANTAGEM ÚNICA - Atualizar exibição visual do custo com Lefou
+    // ============================================================
+    function atualizarCustoVisualVantagemUnica() {
+        const input = document.getElementById('vantagemUnicaCusto');
+        const chk = document.getElementById('vantagemUnicaLefou');
+        if (!input) return;
+        // Se o usuário está com foco no campo, não sobrescreve (ele está digitando)
+        if (document.activeElement === input) return;
+        const base = parseInt(input.dataset.custoBase);
+        const baseSeguro = Number.isFinite(base) ? base : (parseInt(input.value) || 0);
+        const lefou = chk?.checked === true ? 2 : 0;
+        input.value = baseSeguro + lefou;
+    }
+    function renderizarVantagemUnicaHabilidades() {
+        const container = document.getElementById('vantagemUnicaHabilidades');
+        if (!container) return;
+        container.innerHTML = renderizarHabilidadesVantagemUnica(vantagemUnicaHabilidades, false, null);
+        configurarEventosVantagemUnicaHabilidades(container, false, null);
+    }
+
+    function configurarEventosVantagemUnicaHabilidades(container, isSub, subIndex) {
+        const getLista = () => {
+            if (isSub && subIndex !== null) {
+                const sub = subFichas[subIndex];
+                if (!sub) return null;
+                if (!sub.vantagemUnicaHabilidades) sub.vantagemUnicaHabilidades = [];
+                return sub.vantagemUnicaHabilidades;
+            }
+            if (!Array.isArray(vantagemUnicaHabilidades)) vantagemUnicaHabilidades = [];
+            return vantagemUnicaHabilidades;
+        };
+        const saveFn = isSub ? debounceSaveSubFicha : debounceSave;
+        const reRender = () => {
+            if (isSub && subIndex !== null) {
+                const el = document.getElementById(`subficha-vantagemUnicaHabilidades-${subIndex}`);
+                if (el) {
+                    el.innerHTML = renderizarHabilidadesVantagemUnica(getLista(), true, subIndex);
+                    configurarEventosVantagemUnicaHabilidades(el, true, subIndex);
+                }
+            } else {
+                renderizarVantagemUnicaHabilidades();
+            }
+        };
+
+        container.querySelectorAll('[data-vu-hab-field="nome"]').forEach(inp => {
+            inp.oninput = () => {
+                const idx = parseInt(inp.dataset.vuHabIdx);
+                const lista = getLista();
+                if (lista && lista[idx]) { lista[idx].nome = inp.value; saveFn(); }
+            };
+        });
+        container.querySelectorAll('[data-vu-hab-field="descricao"]').forEach(tx => {
+            tx.oninput = () => {
+                const idx = parseInt(tx.dataset.vuHabIdx);
+                const lista = getLista();
+                if (lista && lista[idx]) { lista[idx].descricao = tx.value; saveFn(); }
+            };
+        });
+        container.querySelectorAll('.btn-desc-vu-hab').forEach(btn => {
+            btn.onclick = () => {
+                const idx = parseInt(btn.dataset.vuHabDescIdx);
+                const lista = getLista();
+                if (lista && lista[idx]) {
+                    lista[idx].visivel = !lista[idx].visivel;
+                    const descId = isSub
+                        ? `vu-hab-desc-sub-${subIndex}-${idx}`
+                        : `vu-hab-desc-principal-${idx}`;
+                    const el = document.getElementById(descId);
+                    if (el) el.style.display = lista[idx].visivel ? 'block' : 'none';
+                    saveFn();
+                }
+            };
+        });
+        container.querySelectorAll('.btn-info-vu-hab, .btn-info-item[data-vu-hab-info-idx]').forEach(btn => {
+            btn.onclick = () => {
+                const idx = parseInt(btn.dataset.vuHabInfoIdx);
+                const lista = getLista();
+                if (lista && lista[idx]) {
+                    exibirInfo(lista[idx].nome || 'Habilidade sem nome', lista[idx].descricao || '');
+                }
+            };
+        });
+        container.querySelectorAll('.btn-del-vu-hab').forEach(btn => {
+            btn.onclick = () => {
+                const idx = parseInt(btn.dataset.vuHabDelIdx);
+                const lista = getLista();
+                if (lista) {
+                    lista.splice(idx, 1);
+                    reRender();
+                    saveFn();
+                }
+            };
+        });
     }
     
     function renderizarSubListas(index) {
@@ -8041,6 +8243,7 @@ window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!f
             pontosBase: 0, xp: 0, dinheiro: 0, gastosManuais: null,
             vantagemRegionalNome: '', vantagemRegionalCusto: 0, vantagemRegionalDesc: '',
             vantagemUnicaNome: '', vantagemUnicaCusto: 0, vantagemUnicaDesc: '',
+            vantagemUnicaLefou: false, vantagemUnicaHabilidades: [],
             avatarSrc: '',
             listas: { vantagens: [], desvantagens: [], pericias: [], especializacoes: [], itens: [], equipamentos: [], tiposDano: [], magias: [], kits: [] },
             subFichas: [], testes: {}, statusFicha: { ...statusInicial },
@@ -8111,8 +8314,15 @@ window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!f
             vantagemRegionalCusto: parseInt(document.getElementById('vantagemRegionalCusto').value) || 0,
             vantagemRegionalDesc: document.getElementById('vantagemRegionalDesc').value,
             vantagemUnicaNome: document.getElementById('vantagemUnicaNome').value,
-            vantagemUnicaCusto: parseInt(document.getElementById('vantagemUnicaCusto').value) || 0,
+            vantagemUnicaCusto: (() => {
+                const el = document.getElementById('vantagemUnicaCusto');
+                if (!el) return 0;
+                const base = parseInt(el.dataset.custoBase);
+                return Number.isFinite(base) ? base : (parseInt(el.value) || 0);
+            })(),
             vantagemUnicaDesc: document.getElementById('vantagemUnicaDesc').value,
+                        vantagemUnicaLefou: (document.getElementById('vantagemUnicaLefou')?.checked === true),
+            vantagemUnicaHabilidades: JSON.parse(JSON.stringify(vantagemUnicaHabilidades || [])),
             avatarSrc: (document.getElementById('avatarBtn').querySelector('img')?.src) || '',
             listas: fichaListas,
             subFichas: subFichasSalvar,
@@ -8163,8 +8373,23 @@ window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!f
         document.getElementById('vantagemRegionalCusto').value = f.vantagemRegionalCusto ?? 0;
         document.getElementById('vantagemRegionalDesc').value = f.vantagemRegionalDesc || '';
         document.getElementById('vantagemUnicaNome').value = f.vantagemUnicaNome || '';
-        document.getElementById('vantagemUnicaCusto').value = f.vantagemUnicaCusto ?? 0;
+        const vuCustoEl = document.getElementById('vantagemUnicaCusto');
+        if (vuCustoEl) {
+            const base = parseInt(f.vantagemUnicaCusto) || 0;
+            vuCustoEl.dataset.custoBase = String(base);
+            const lefou = f.vantagemUnicaLefou === true ? 2 : 0;
+            vuCustoEl.value = base + lefou;
+            vuCustoEl.dataset.valorAnterior = String(base + lefou);
+        }
         document.getElementById('vantagemUnicaDesc').value = f.vantagemUnicaDesc || '';
+                // Lefou
+        const vuLefouInject = document.getElementById('vantagemUnicaLefou');
+        if (vuLefouInject) vuLefouInject.checked = f.vantagemUnicaLefou === true;
+
+        // Habilidades da Vantagem Única
+        vantagemUnicaHabilidades = Array.isArray(f.vantagemUnicaHabilidades)
+            ? f.vantagemUnicaHabilidades.map(h => ({ ...h, nome: h.nome || '', descricao: h.descricao || '', visivel: h.visivel === true }))
+            : [];
         const pontosBase = f.pontosBase !== undefined ? f.pontosBase : (parseFloat(f.pontos) || 0);
         const pontosGastos = f.pontosGastos !== undefined ? f.pontosGastos : 0;
         const pontosBaseEl = document.getElementById('pontosBase');
@@ -8252,6 +8477,8 @@ window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!f
                 if (subCopy.listas?.vantagens) subCopy.listas.vantagens = subCopy.listas.vantagens.map(v => ({ ...v, sustentado: v.sustentado === true }));
                 if (!subCopy.statusSub) { const s = {}; STATUS_LISTA.forEach(x => { s[x.id] = false; }); subCopy.statusSub = s; }
                 if (subCopy.escala === undefined) subCopy.escala = '';
+                if (subCopy.vantagemUnicaLefou === undefined) subCopy.vantagemUnicaLefou = false;
+                if (!Array.isArray(subCopy.vantagemUnicaHabilidades)) subCopy.vantagemUnicaHabilidades = [];
                 if (!Number.isFinite(subCopy.pontosBase)) subCopy.pontosBase = 0;
                 if (!Number.isFinite(subCopy._basePura)) subCopy._basePura = subCopy.pontosBase;
                 if (!subCopy.atributosCustom || !Array.isArray(subCopy.atributosCustom)) subCopy.atributosCustom = [];
@@ -8286,6 +8513,8 @@ window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!f
         if (f.statusFicha) { statusFicha = { ...f.statusFicha }; for (const status of STATUS_LISTA) { const chk = document.getElementById(`status-${status.id}`); if (chk) chk.checked = statusFicha[status.id] || false; } }
         else { const s = {}; STATUS_LISTA.forEach(x => { s[x.id] = false; }); statusFicha = s; for (const status of STATUS_LISTA) { const chk = document.getElementById(`status-${status.id}`); if (chk) chk.checked = false; } }
         renderizarAtributosCustom(false, null);
+        renderizarVantagemUnicaHabilidades();
+        setTimeout(() => atualizarCustoVisualVantagemUnica(), 0);
         renderizarLista('vantagens', 'vantagensLista');
         renderizarLista('desvantagens', 'desvantagensLista');
         renderizarLista('pericias', 'periciasLista');
@@ -8698,6 +8927,8 @@ listaJogadoresUnsubscribe = () => {};
                     vantagemRegionalNome: dados.vantagemRegionalNome || '', vantagemRegionalCusto: dados.vantagemRegionalCusto || 0,
                     vantagemRegionalDesc: dados.vantagemRegionalDesc || '', vantagemUnicaNome: dados.vantagemUnicaNome || '',
                     vantagemUnicaCusto: dados.vantagemUnicaCusto || 0, vantagemUnicaDesc: dados.vantagemUnicaDesc || '',
+                    vantagemUnicaLefou: dados.vantagemUnicaLefou === true,
+                    vantagemUnicaHabilidades: dados.vantagemUnicaHabilidades || [],
                     avatarSrc: dados.avatarSrc || '',
                     listas: { vantagens: dados.listas?.vantagens || [], desvantagens: dados.listas?.desvantagens || [], pericias: dados.listas?.pericias || [], especializacoes: dados.listas?.especializacoes || [], itens: dados.listas?.itens || [], equipamentos: dados.listas?.equipamentos || [], tiposDano: dados.listas?.tiposDano || [], magias: dados.listas?.magias || [], kits: dados.listas?.kits || [] },
                     subFichas: dados.subFichas || [], testes: dados.testes || {},
@@ -8852,6 +9083,8 @@ listaJogadoresUnsubscribe = () => {};
         baralhosCombate = {};
         oficiosPrincipais = []; oficiosSub = {};
         atributosCustom = []; atributosCustomSub = {};
+        vantagemUnicaHabilidades = [];
+        vantagemUnicaLefou = false;
         gastosEditadoManualmente = false;
         baseEditadaManualmente = false;
         gastosEditadoManualmenteSub = {};
@@ -8893,9 +9126,63 @@ listaJogadoresUnsubscribe = () => {};
     document.getElementById('vantagemRegionalNome').addEventListener('input', salvarForcado);
     document.getElementById('vantagemRegionalCusto').addEventListener('input', () => { liberarRecalculoPrincipal(); salvarForcado(); atualizarPontos(); });
     document.getElementById('vantagemRegionalDesc').addEventListener('input', salvarForcado);
+        (function() {
+        const btnAddVU = document.getElementById('btnAddHabilidadeVantagemUnica');
+        if (btnAddVU) {
+            btnAddVU.onclick = () => {
+                if (!Array.isArray(vantagemUnicaHabilidades)) vantagemUnicaHabilidades = [];
+                vantagemUnicaHabilidades.push({ nome: '', descricao: '', visivel: false });
+                renderizarVantagemUnicaHabilidades();
+                debounceSave();
+            };
+        }
+    })();
     document.getElementById('btnToggleVantagemUnica').onclick = () => { const e = document.getElementById('vantagemUnicaDescEditor'); e.style.display = e.style.display === 'none' ? 'block' : 'none'; };
     document.getElementById('vantagemUnicaNome').addEventListener('input', salvarForcado);
-    document.getElementById('vantagemUnicaCusto').addEventListener('input', () => { liberarRecalculoPrincipal(); salvarForcado(); atualizarPontos(); });
+    (function() {
+        const vuCustoInput = document.getElementById('vantagemUnicaCusto');
+        const vuLefouChk = document.getElementById('vantagemUnicaLefou');
+        if (!vuCustoInput) return;
+
+        // Ao focar: mostra o valor BASE (sem o +2 do Lefou) para o usuário editar
+        vuCustoInput.addEventListener('focus', () => {
+            const lefou = vuLefouChk?.checked === true ? 2 : 0;
+            const valorVisivel = parseInt(vuCustoInput.value) || 0;
+            const base = valorVisivel - lefou;
+            vuCustoInput.dataset.custoBase = String(base);
+            vuCustoInput.dataset.valorAnterior = String(valorVisivel);
+            vuCustoInput.value = base;
+        });
+
+        // Ao digitar: atualiza a base e o cálculo de gastos
+        vuCustoInput.addEventListener('input', () => {
+            const base = parseInt(vuCustoInput.value) || 0;
+            vuCustoInput.dataset.custoBase = String(base);
+            liberarRecalculoPrincipal();
+            atualizarPontos();
+            debounceSave();
+        });
+
+        // Ao sair do campo: mostra o valor final (base + Lefou) e registra o gasto
+        vuCustoInput.addEventListener('blur', () => {
+            const base = parseInt(vuCustoInput.dataset.custoBase) || 0;
+            const lefou = vuLefouChk?.checked === true ? 2 : 0;
+            vuCustoInput.value = base + lefou;
+            const valorAnterior = parseInt(vuCustoInput.dataset.valorAnterior) || 0;
+            const valorNovo = base + lefou;
+            const deltaGasto = valorNovo - valorAnterior;
+            if (deltaGasto !== 0) registrarGasto(deltaGasto, false, null);
+            vuCustoInput.dataset.valorAnterior = String(valorNovo);
+        });
+    })();
+        const vuLefouEl = document.getElementById('vantagemUnicaLefou');
+    if (vuLefouEl) vuLefouEl.addEventListener('change', () => {
+        vantagemUnicaLefou = vuLefouEl.checked;
+        atualizarCustoVisualVantagemUnica();
+        liberarRecalculoPrincipal();
+        atualizarPontos();
+        debounceSave();
+    });
     document.getElementById('vantagemUnicaDesc').addEventListener('input', salvarForcado);
     (function() {
         const vrCusto = document.getElementById('vantagemRegionalCusto');
