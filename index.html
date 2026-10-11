@@ -2008,6 +2008,10 @@
                                             <input type="checkbox" id="vantagemUnicaLefou" style="width:16px; height:16px; cursor:pointer; accent-color:var(--dourado);">
                                             🩸 Lefou
                                         </label>
+                                        <label style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:bold; color:var(--texto-suave); cursor:pointer; white-space:nowrap;">
+                                            <input type="checkbox" id="vantagemUnicaFeraCoral" style="width:16px; height:16px; cursor:pointer; accent-color:var(--dourado);">
+                                            🪸 Fera-coral
+                                        </label>
                                         <button class="btn-desc" id="btnToggleVantagemUnica">📖</button>
                                         <button class="btn-info-item" data-info-tipo="vantagemUnica">i</button>
                                     </div>
@@ -6113,7 +6117,7 @@
             pontosBase: 0, _basePura: 0, xp: 0, dinheiro: 0, gastosManuais: null,
             vantagemRegionalNome: '', vantagemRegionalCusto: 0, vantagemRegionalDesc: '',
             vantagemUnicaNome: '', vantagemUnicaCusto: 0, vantagemUnicaDesc: '',
-            vantagemUnicaLefou: false, vantagemUnicaHabilidades: [],
+            vantagemUnicaLefou: false, vantagemUnicaFeraCoral: false, vantagemUnicaHabilidades: [],
             listas: { vantagens: [], desvantagens: [], pericias: [], especializacoes: [], itens: [], equipamentos: [], tiposDano: [], magias: [], kits: [] },
             testes: {}, statusSub: { ...statusSubInicial },
             oficios: [],
@@ -6267,13 +6271,24 @@
     }
         function atualizarCustoVisualVantagemUnicaSub(index) {
         const input = document.getElementById(`subficha-vantagemUnicaCusto-${index}`);
-        const chk = document.getElementById(`subficha-vantagemUnicaLefou-${index}`);
+        const chkLefou = document.getElementById(`subficha-vantagemUnicaLefou-${index}`);
+        const chkFera = document.getElementById(`subficha-vantagemUnicaFeraCoral-${index}`);
         if (!input) return;
         if (document.activeElement === input) return;
-        const base = parseInt(input.dataset.custoBase);
-        const baseSeguro = Number.isFinite(base) ? base : (parseInt(input.value) || 0);
-        const lefou = chk?.checked === true ? 2 : 0;
-        input.value = baseSeguro + lefou;
+        // Descobre os bônus que estão sendo removidos/alterados a partir do estado anterior salvo no dataset
+        const lefouAnterior = input.dataset.lefouAtivo === 'true' ? 2 : 0;
+        const feraAnterior = input.dataset.feraAtivo === 'true' ? 1 : 0;
+        const lefouAtual = chkLefou?.checked === true ? 2 : 0;
+        const feraAtual = chkFera?.checked === true ? 1 : 0;
+        // O valor base real = valor visível atual - bônus anteriores
+        const valorVisivel = parseInt(input.value) || 0;
+        const baseReal = valorVisivel - lefouAnterior - feraAnterior;
+        // Aplica os novos bônus
+        input.value = baseReal + lefouAtual + feraAtual;
+        // Salva o estado dos checkboxes para o próximo cálculo
+        input.dataset.lefouAtivo = chkLefou?.checked === true ? 'true' : 'false';
+        input.dataset.feraAtivo = chkFera?.checked === true ? 'true' : 'false';
+        input.dataset.custoBase = String(baseReal);
     }
     function renderizarSubFichaInline(sub, index) {
         const container = document.getElementById('subfichasContainer');
@@ -6405,7 +6420,7 @@
             <div id="subficha-aba-vantagens-${index}" class="subficha-aba-conteudo">
                 <div class="grid-4">
                     <div class="card-full" style="margin-bottom: 20px;"><h3>🌟 Vantagem Regional</h3><div class="item"><div class="item-linha"><input type="text" id="subficha-vantagemRegionalNome-${index}" placeholder="Nome da Vantagem Regional" style="flex:2;" value="${escapeHtml(sub.vantagemRegionalNome || '')}"><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-vantagemRegionalCusto-${index}" class="valor" placeholder="Custo" value="${sub.vantagemRegionalCusto || 0}"><button class="btn-desc-sub" id="subficha-btnToggleVantagemRegional-${index}">📖</button><button class="btn-info-sub-item subficha-info-btn" data-sub-info-tipo="vantagemRegional" data-sub-info-idx="${index}">i</button></div><div id="subficha-vantagemRegionalDescEditor-${index}" style="display:none;" class="desc-editor"><textarea id="subficha-vantagemRegionalDesc-${index}" rows="3" placeholder="Descrição da Vantagem Regional...">${escapeHtml(sub.vantagemRegionalDesc || '')}</textarea></div></div></div>
-                    <div class="card-full" style="margin-bottom: 20px;"><h3>🌟 Vantagem Única</h3><div class="item"><div class="item-linha"><input type="text" id="subficha-vantagemUnicaNome-${index}" placeholder="Nome da Vantagem Única" value="${escapeHtml(sub.vantagemUnicaNome)}"><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-vantagemUnicaCusto-${index}" class="valor" placeholder="Custo" value="${sub.vantagemUnicaCusto}"><label style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:bold; color:var(--texto-suave); cursor:pointer; white-space:nowrap;"><input type="checkbox" id="subficha-vantagemUnicaLefou-${index}" style="width:16px; height:16px; cursor:pointer; accent-color:var(--dourado);" ${sub.vantagemUnicaLefou ? 'checked' : ''}>🩸 Lefou</label><button class="btn-desc-sub" id="subficha-btnToggleVantagemUnica-${index}">📖</button><button class="btn-info-sub-item subficha-info-btn" data-sub-info-tipo="vantagemUnica" data-sub-info-idx="${index}">i</button></div><div id="subficha-vantagemUnicaDescEditor-${index}" style="display:none;" class="desc-editor"><textarea id="subficha-vantagemUnicaDesc-${index}" rows="3" placeholder="Descrição da Vantagem Única...">${escapeHtml(sub.vantagemUnicaDesc)}</textarea></div><div id="subficha-vantagemUnicaHabilidades-${index}" class="kit-habilidades" style="margin-top:8px; border-left-color: var(--dourado);"></div><button type="button" class="btn-add-habilidade" data-sub-vu-add-hab="${index}" style="margin-top:6px;">+ Adicionar Habilidade</button></div></div>
+                    <div class="card-full" style="margin-bottom: 20px;"><h3>🌟 Vantagem Única</h3><div class="item"><div class="item-linha"><input type="text" id="subficha-vantagemUnicaNome-${index}" placeholder="Nome da Vantagem Única" value="${escapeHtml(sub.vantagemUnicaNome)}"><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-vantagemUnicaCusto-${index}" class="valor" placeholder="Custo" value="${sub.vantagemUnicaCusto}"><label style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:bold; color:var(--texto-suave); cursor:pointer; white-space:nowrap;"><input type="checkbox" id="subficha-vantagemUnicaLefou-${index}" style="width:16px; height:16px; cursor:pointer; accent-color:var(--dourado);" ${sub.vantagemUnicaLefou ? 'checked' : ''}>🩸 Lefou</label><label style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:bold; color:var(--texto-suave); cursor:pointer; white-space:nowrap;"><input type="checkbox" id="subficha-vantagemUnicaFeraCoral-${index}" style="width:16px; height:16px; cursor:pointer; accent-color:var(--dourado);" ${sub.vantagemUnicaFeraCoral ? 'checked' : ''}>🪸 Fera-coral</label><button class="btn-desc-sub" id="subficha-btnToggleVantagemUnica-${index}">📖</button><button class="btn-info-sub-item subficha-info-btn" data-sub-info-tipo="vantagemUnica" data-sub-info-idx="${index}">i</button></div><div id="subficha-vantagemUnicaDescEditor-${index}" style="display:none;" class="desc-editor"><textarea id="subficha-vantagemUnicaDesc-${index}" rows="3" placeholder="Descrição da Vantagem Única...">${escapeHtml(sub.vantagemUnicaDesc)}</textarea></div><div id="subficha-vantagemUnicaHabilidades-${index}" class="kit-habilidades" style="margin-top:8px; border-left-color: var(--dourado);"></div><button type="button" class="btn-add-habilidade" data-sub-vu-add-hab="${index}" style="margin-top:6px;">+ Adicionar Habilidade</button></div></div>
                     <div class="card-lista"><h3>✅ Vantagens</h3><div id="subficha-vantagensLista-${index}" class="lista"></div><button class="btn-add" onclick="window.adicionarItemSubLista(${index}, 'vantagens')">+ Adicionar Vantagem</button></div>
                     <div class="card-lista"><h3>❌ Desvantagens</h3><div id="subficha-desvantagensLista-${index}" class="lista"></div><button class="btn-add" onclick="window.adicionarItemSubLista(${index}, 'desvantagens')">+ Adicionar Desvantagem</button></div>
                     <div class="card-lista"><h3>⚡ Perícias</h3><div id="subficha-periciasLista-${index}" class="lista"></div><button class="btn-add" onclick="window.adicionarItemSubLista(${index}, 'pericias')">+ Adicionar Perícia</button></div>
@@ -6600,11 +6615,13 @@
         if (vUN) vUN.oninput = () => { sub.vantagemUnicaNome = vUN.value; debounceSaveSubFicha(); };
         const vUC = document.getElementById(`subficha-vantagemUnicaCusto-${index}`);
         const vULefou = document.getElementById(`subficha-vantagemUnicaLefou-${index}`);
+        const vUFera = document.getElementById(`subficha-vantagemUnicaFeraCoral-${index}`);
         if (vUC) {
             vUC.addEventListener('focus', () => {
                 const lefou = vULefou?.checked === true ? 2 : 0;
+                const fera = vUFera?.checked === true ? 1 : 0;
                 const valorVisivel = parseInt(vUC.value) || 0;
-                const base = valorVisivel - lefou;
+                const base = valorVisivel - lefou - fera;
                 vUC.dataset.custoBase = String(base);
                 vUC.dataset.valorAnterior = String(valorVisivel);
                 vUC.value = base;
@@ -6612,7 +6629,10 @@
             vUC.addEventListener('input', () => {
                 const base = parseInt(vUC.value) || 0;
                 vUC.dataset.custoBase = String(base);
-                sub.vantagemUnicaCusto = base;
+                // Salva o valor FINAL (base + bônus) em sub.vantagemUnicaCusto
+                const lefou = vULefou?.checked === true ? 2 : 0;
+                const fera = vUFera?.checked === true ? 1 : 0;
+                sub.vantagemUnicaCusto = base + lefou + fera;
                 liberarRecalculoSub(index);
                 atualizarPontosSub(index);
                 debounceSaveSubFicha();
@@ -6620,9 +6640,11 @@
             vUC.addEventListener('blur', () => {
                 const base = parseInt(vUC.dataset.custoBase) || 0;
                 const lefou = vULefou?.checked === true ? 2 : 0;
-                vUC.value = base + lefou;
+                const fera = vUFera?.checked === true ? 1 : 0;
+                vUC.value = base + lefou + fera;
+                sub.vantagemUnicaCusto = base + lefou + fera;
                 const valorAnterior = parseInt(vUC.dataset.valorAnterior) || 0;
-                const valorNovo = base + lefou;
+                const valorNovo = base + lefou + fera;
                 const deltaGasto = valorNovo - valorAnterior;
                 if (deltaGasto !== 0) registrarGasto(deltaGasto, true, index);
                 vUC.dataset.valorAnterior = String(valorNovo);
@@ -6637,6 +6659,36 @@
         if (vuLefouSub) {
             vuLefouSub.onchange = () => {
                 sub.vantagemUnicaLefou = vuLefouSub.checked;
+                // Atualiza o VALOR ARMAZENADO com base + bônus (para o cálculo de gastos)
+                const inputCusto = document.getElementById(`subficha-vantagemUnicaCusto-${index}`);
+                const chkFera = document.getElementById(`subficha-vantagemUnicaFeraCoral-${index}`);
+                if (inputCusto) {
+                    const base = parseInt(inputCusto.dataset.custoBase) || 0;
+                    const lefou = vuLefouSub.checked ? 2 : 0;
+                    const fera = chkFera?.checked === true ? 1 : 0;
+                    sub.vantagemUnicaCusto = base + lefou + fera;
+                }
+                atualizarCustoVisualVantagemUnicaSub(index);
+                liberarRecalculoSub(index);
+                atualizarPontosSub(index);
+                debounceSaveSubFicha();
+            };
+        }
+
+        // Fera-coral (subficha)
+        const vuFeraCoralSub = document.getElementById(`subficha-vantagemUnicaFeraCoral-${index}`);
+        if (vuFeraCoralSub) {
+            vuFeraCoralSub.onchange = () => {
+                sub.vantagemUnicaFeraCoral = vuFeraCoralSub.checked;
+                // Atualiza o VALOR ARMAZENADO com base + bônus (para o cálculo de gastos)
+                const inputCusto = document.getElementById(`subficha-vantagemUnicaCusto-${index}`);
+                const chkLefou = document.getElementById(`subficha-vantagemUnicaLefou-${index}`);
+                if (inputCusto) {
+                    const base = parseInt(inputCusto.dataset.custoBase) || 0;
+                    const lefou = chkLefou?.checked === true ? 2 : 0;
+                    const fera = vuFeraCoralSub.checked ? 1 : 0;
+                    sub.vantagemUnicaCusto = base + lefou + fera;
+                }
                 atualizarCustoVisualVantagemUnicaSub(index);
                 liberarRecalculoSub(index);
                 atualizarPontosSub(index);
@@ -6695,8 +6747,18 @@
         if (uploadInput && avatarDiv) {
             uploadInput.onchange = async (e) => { const file = e.target.files[0]; if (!file) return; const avatarComprimido = await comprimirAvatar(file); sub.avatarSrc = avatarComprimido; avatarDiv.innerHTML = `<img src="${sub.avatarSrc}">`; debounceSaveSubFicha(); };
         }
-                // Corrige o valor visual do custo da Vantagem Única com Lefou
-        setTimeout(() => atualizarCustoVisualVantagemUnicaSub(index), 0);
+                // Corrige o valor visual do custo da Vantagem Única com Lefou/Fera-coral
+        setTimeout(() => {
+            const inputCusto = document.getElementById(`subficha-vantagemUnicaCusto-${index}`);
+            const chkL = document.getElementById(`subficha-vantagemUnicaLefou-${index}`);
+            const chkF = document.getElementById(`subficha-vantagemUnicaFeraCoral-${index}`);
+            if (inputCusto) {
+                // Sincroniza o estado inicial dos checkboxes no dataset
+                inputCusto.dataset.lefouAtivo = chkL?.checked === true ? 'true' : 'false';
+                inputCusto.dataset.feraAtivo = chkF?.checked === true ? 'true' : 'false';
+            }
+            atualizarCustoVisualVantagemUnicaSub(index);
+        }, 0);
         const subContainerInfoBtn = document.getElementById(`subficha-conteudo-${index}`);
         if (subContainerInfoBtn) {
             subContainerInfoBtn.querySelectorAll('.subficha-info-btn[data-sub-info-tipo="vantagemRegional"]').forEach(btn => {
@@ -6852,14 +6914,16 @@
     // ============================================================
     function atualizarCustoVisualVantagemUnica() {
         const input = document.getElementById('vantagemUnicaCusto');
-        const chk = document.getElementById('vantagemUnicaLefou');
+        const chkLefou = document.getElementById('vantagemUnicaLefou');
+        const chkFera = document.getElementById('vantagemUnicaFeraCoral');
         if (!input) return;
         // Se o usuário está com foco no campo, não sobrescreve (ele está digitando)
         if (document.activeElement === input) return;
         const base = parseInt(input.dataset.custoBase);
         const baseSeguro = Number.isFinite(base) ? base : (parseInt(input.value) || 0);
-        const lefou = chk?.checked === true ? 2 : 0;
-        input.value = baseSeguro + lefou;
+        const lefou = chkLefou?.checked === true ? 2 : 0;
+        const feraCoral = chkFera?.checked === true ? 1 : 0;
+        input.value = baseSeguro + lefou + feraCoral;
     }
     function renderizarVantagemUnicaHabilidades() {
         const container = document.getElementById('vantagemUnicaHabilidades');
@@ -8243,7 +8307,7 @@ window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!f
             pontosBase: 0, xp: 0, dinheiro: 0, gastosManuais: null,
             vantagemRegionalNome: '', vantagemRegionalCusto: 0, vantagemRegionalDesc: '',
             vantagemUnicaNome: '', vantagemUnicaCusto: 0, vantagemUnicaDesc: '',
-            vantagemUnicaLefou: false, vantagemUnicaHabilidades: [],
+            vantagemUnicaLefou: false, vantagemUnicaFeraCoral: false, vantagemUnicaHabilidades: [],
             avatarSrc: '',
             listas: { vantagens: [], desvantagens: [], pericias: [], especializacoes: [], itens: [], equipamentos: [], tiposDano: [], magias: [], kits: [] },
             subFichas: [], testes: {}, statusFicha: { ...statusInicial },
@@ -8322,6 +8386,7 @@ window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!f
             })(),
             vantagemUnicaDesc: document.getElementById('vantagemUnicaDesc').value,
                         vantagemUnicaLefou: (document.getElementById('vantagemUnicaLefou')?.checked === true),
+            vantagemUnicaFeraCoral: (document.getElementById('vantagemUnicaFeraCoral')?.checked === true),
             vantagemUnicaHabilidades: JSON.parse(JSON.stringify(vantagemUnicaHabilidades || [])),
             avatarSrc: (document.getElementById('avatarBtn').querySelector('img')?.src) || '',
             listas: fichaListas,
@@ -8385,6 +8450,10 @@ window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!f
                 // Lefou
         const vuLefouInject = document.getElementById('vantagemUnicaLefou');
         if (vuLefouInject) vuLefouInject.checked = f.vantagemUnicaLefou === true;
+
+        // Fera-coral
+        const vuFeraCoralInject = document.getElementById('vantagemUnicaFeraCoral');
+        if (vuFeraCoralInject) vuFeraCoralInject.checked = f.vantagemUnicaFeraCoral === true;
 
         // Habilidades da Vantagem Única
         vantagemUnicaHabilidades = Array.isArray(f.vantagemUnicaHabilidades)
@@ -8478,6 +8547,7 @@ window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!f
                 if (!subCopy.statusSub) { const s = {}; STATUS_LISTA.forEach(x => { s[x.id] = false; }); subCopy.statusSub = s; }
                 if (subCopy.escala === undefined) subCopy.escala = '';
                 if (subCopy.vantagemUnicaLefou === undefined) subCopy.vantagemUnicaLefou = false;
+                if (subCopy.vantagemUnicaFeraCoral === undefined) subCopy.vantagemUnicaFeraCoral = false;
                 if (!Array.isArray(subCopy.vantagemUnicaHabilidades)) subCopy.vantagemUnicaHabilidades = [];
                 if (!Number.isFinite(subCopy.pontosBase)) subCopy.pontosBase = 0;
                 if (!Number.isFinite(subCopy._basePura)) subCopy._basePura = subCopy.pontosBase;
@@ -8928,6 +8998,7 @@ listaJogadoresUnsubscribe = () => {};
                     vantagemRegionalDesc: dados.vantagemRegionalDesc || '', vantagemUnicaNome: dados.vantagemUnicaNome || '',
                     vantagemUnicaCusto: dados.vantagemUnicaCusto || 0, vantagemUnicaDesc: dados.vantagemUnicaDesc || '',
                     vantagemUnicaLefou: dados.vantagemUnicaLefou === true,
+                    vantagemUnicaFeraCoral: dados.vantagemUnicaFeraCoral === true,
                     vantagemUnicaHabilidades: dados.vantagemUnicaHabilidades || [],
                     avatarSrc: dados.avatarSrc || '',
                     listas: { vantagens: dados.listas?.vantagens || [], desvantagens: dados.listas?.desvantagens || [], pericias: dados.listas?.pericias || [], especializacoes: dados.listas?.especializacoes || [], itens: dados.listas?.itens || [], equipamentos: dados.listas?.equipamentos || [], tiposDano: dados.listas?.tiposDano || [], magias: dados.listas?.magias || [], kits: dados.listas?.kits || [] },
@@ -9142,13 +9213,15 @@ listaJogadoresUnsubscribe = () => {};
     (function() {
         const vuCustoInput = document.getElementById('vantagemUnicaCusto');
         const vuLefouChk = document.getElementById('vantagemUnicaLefou');
+        const vuFeraChk = document.getElementById('vantagemUnicaFeraCoral');
         if (!vuCustoInput) return;
 
-        // Ao focar: mostra o valor BASE (sem o +2 do Lefou) para o usuário editar
+        // Ao focar: mostra o valor BASE (sem os bônus de Lefou/Fera-coral) para o usuário editar
         vuCustoInput.addEventListener('focus', () => {
             const lefou = vuLefouChk?.checked === true ? 2 : 0;
+            const fera = vuFeraChk?.checked === true ? 1 : 0;
             const valorVisivel = parseInt(vuCustoInput.value) || 0;
-            const base = valorVisivel - lefou;
+            const base = valorVisivel - lefou - fera;
             vuCustoInput.dataset.custoBase = String(base);
             vuCustoInput.dataset.valorAnterior = String(valorVisivel);
             vuCustoInput.value = base;
@@ -9163,13 +9236,14 @@ listaJogadoresUnsubscribe = () => {};
             debounceSave();
         });
 
-        // Ao sair do campo: mostra o valor final (base + Lefou) e registra o gasto
+        // Ao sair do campo: mostra o valor final (base + Lefou + Fera-coral) e registra o gasto
         vuCustoInput.addEventListener('blur', () => {
             const base = parseInt(vuCustoInput.dataset.custoBase) || 0;
             const lefou = vuLefouChk?.checked === true ? 2 : 0;
-            vuCustoInput.value = base + lefou;
+            const fera = vuFeraChk?.checked === true ? 1 : 0;
+            vuCustoInput.value = base + lefou + fera;
             const valorAnterior = parseInt(vuCustoInput.dataset.valorAnterior) || 0;
-            const valorNovo = base + lefou;
+            const valorNovo = base + lefou + fera;
             const deltaGasto = valorNovo - valorAnterior;
             if (deltaGasto !== 0) registrarGasto(deltaGasto, false, null);
             vuCustoInput.dataset.valorAnterior = String(valorNovo);
@@ -9178,6 +9252,13 @@ listaJogadoresUnsubscribe = () => {};
         const vuLefouEl = document.getElementById('vantagemUnicaLefou');
     if (vuLefouEl) vuLefouEl.addEventListener('change', () => {
         vantagemUnicaLefou = vuLefouEl.checked;
+        atualizarCustoVisualVantagemUnica();
+        liberarRecalculoPrincipal();
+        atualizarPontos();
+        debounceSave();
+    });
+    const vuFeraCoralEl = document.getElementById('vantagemUnicaFeraCoral');
+    if (vuFeraCoralEl) vuFeraCoralEl.addEventListener('change', () => {
         atualizarCustoVisualVantagemUnica();
         liberarRecalculoPrincipal();
         atualizarPontos();
