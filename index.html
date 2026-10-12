@@ -6229,73 +6229,75 @@
     }
 
         function calcularEmpates() {
-        // 1) Marca grupos de empate "novos" por valorOriginal
-        const mapa = {};
+        // Garante campos
         listaIniciativas.forEach(i => {
-            if (i.valorOriginal === undefined || i.valorOriginal === null) {
-                i.valorOriginal = i.valor;
-            }
-            const k = String(i.valorOriginal);
-            if (!mapa[k]) mapa[k] = [];
-            mapa[k].push(i);
+            if (i.valorOriginal === undefined || i.valorOriginal === null) i.valorOriginal = i.valor;
+            if (i.hTotal === undefined || i.hTotal === null) i.hTotal = 0;
         });
 
-        for (const grupo of Object.values(mapa)) {
-            if (grupo.length > 1) {
-                let grupoId = grupo.find(i => i.grupoEmpateId)?.grupoEmpateId;
+        // Limpa flags de empate (recalcula do zero)
+        listaIniciativas.forEach(i => { i.empatado = false; });
+
+        // 1) Agrupa SOMENTE quem ainda não rerrolou (desempatado !== true)
+        //    Chave do grupo = valorOriginal + hTotal (só quem compartilha AMBOS precisa rerrolar)
+        const gruposNovos = {};
+        listaIniciativas.forEach(i => {
+            if (i.desempatado === true) return;
+            const chave = `${i.valorOriginal}::${i.hTotal}`;
+            if (!gruposNovos[chave]) gruposNovos[chave] = [];
+            gruposNovos[chave].push(i);
+        });
+
+        for (const membros of Object.values(gruposNovos)) {
+            if (membros.length > 1) {
+                let grupoId = membros.find(m => m.grupoEmpateId)?.grupoEmpateId;
                 if (!grupoId) grupoId = 'grupo_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
-                grupo.forEach(i => {
-                    i.grupoEmpateId = grupoId;
-                    i.empatado = true;
-                    if (i.desempatado === undefined) i.desempatado = false;
+                membros.forEach(m => {
+                    m.empatado = true;
+                    m.grupoEmpateId = grupoId;
                 });
             }
         }
 
-        // 2) Reavalia grupos: só dissolve quando TODOS rerrolaram (desempatado = true)
-        const grupos = {};
+        // 2) Reavalia grupos antigos: se todos rerrolaram, dissolve;
+        //    senão, mantém TODOS os membros empatados (aguardando o resto).
+        const gruposAntigos = {};
         listaIniciativas.forEach(i => {
             if (i.grupoEmpateId) {
-                if (!grupos[i.grupoEmpateId]) grupos[i.grupoEmpateId] = [];
-                grupos[i.grupoEmpateId].push(i);
+                if (!gruposAntigos[i.grupoEmpateId]) gruposAntigos[i.grupoEmpateId] = [];
+                gruposAntigos[i.grupoEmpateId].push(i);
             }
         });
 
-        for (const [grupoId, membros] of Object.entries(grupos)) {
+        for (const membros of Object.values(gruposAntigos)) {
             const todosDesempataram = membros.every(m => m.desempatado === true);
             if (todosDesempataram) {
                 membros.forEach(m => {
                     m.empatado = false;
+                    m.desempatado = false;
                     m.grupoEmpateId = null;
                 });
             } else {
                 membros.forEach(m => { m.empatado = true; });
             }
         }
-
-        // 3) Entradas sem grupo: flags limpos
-        listaIniciativas.forEach(i => {
-            if (!i.grupoEmpateId) {
-                i.empatado = false;
-            }
-        });
     }
 
     function getOrdemIniciativas() {
         // Se houver qualquer empate pendente, não libera a ordem
         if (listaIniciativas.some(i => i.empatado)) return [];
 
-        // 1) Ordena por valorOriginal (maior primeiro).
-        //    Empates por valorOriginal → desempate pelo valor do desempate (maior primeiro).
-        //    Se alguém não tem valorOriginal definido, usa o próprio valor.
+        // Ordena por valorOriginal (maior primeiro).
+        // Empate por valorOriginal → hTotal (maior primeiro) — desempate automático por H.
+        // Se alguém do mesmo valorOriginal já rerrolou, o `valor` (novo) é o critério final.
         return [...listaIniciativas].sort((a, b) => {
             const vOA = (a.valorOriginal !== undefined && a.valorOriginal !== null) ? a.valorOriginal : a.valor;
             const vOB = (b.valorOriginal !== undefined && b.valorOriginal !== null) ? b.valorOriginal : b.valor;
             if (vOB !== vOA) return vOB - vOA;
-            // Empate no valor original → usa o valor atual (resultado do desempate)
-            if (b.valor !== a.valor) return b.valor - a.valor;
-            // Ainda empatado → por H
+            // Mesmo valorOriginal → maior hTotal primeiro (desempate automático por H)
             if (b.hTotal !== a.hTotal) return b.hTotal - a.hTotal;
+            // Mesmo valorOriginal E mesmo hTotal → usa o valor do desempate (rerrolagem)
+            if (b.valor !== a.valor) return b.valor - a.valor;
             return 0;
         });
     }
