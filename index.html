@@ -608,7 +608,70 @@
     .subficha-recurso-converter .converter-linha button:hover { background: var(--sucesso-hover); }
     .subficha-recurso-converter .converter-linha button:disabled { background: var(--borda-clara); cursor: not-allowed; }
     .subficha-recurso-converter .xp-info { font-size: 6px; color: var(--texto-medio); text-align: center; }
+        /* ===== INICIATIVAS ===== */
+    .iniciativa-badge {
+        background: var(--roxo); color: #fff; padding: 4px 12px; border-radius: 20px;
+        font-size: 12px; cursor: pointer; display: inline-flex; align-items: center;
+        gap: 6px; border: none; font-weight: bold; transition: all 0.2s;
+    }
+    .iniciativa-badge:hover { background: var(--roxo-hover); transform: scale(1.05); }
+    .iniciativa-badge .contador { background: var(--perigo-forte); border-radius: 50%; padding: 0 6px; font-size: 10px; min-width: 18px; text-align: center; }
 
+    .iniciativa-popup-overlay {
+        display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.8); z-index: 4003; overflow-y: auto; padding: 30px;
+        justify-content: center; align-items: center;
+    }
+    .iniciativa-popup-content {
+        max-width: 650px; width: 100%; margin: 0 auto; background: var(--fundo-painel-claro);
+        border-radius: 20px; border: 2px solid var(--roxo); padding: 25px;
+    }
+    .iniciativa-popup-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--borda-clara); }
+    .iniciativa-popup-header h2 { margin: 0; border: none; color: var(--roxo); }
+    .close-iniciativa-popup { background: var(--perigo); border: none; color: #fff; padding: 8px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; }
+    .close-iniciativa-popup:hover { background: var(--perigo-hover); }
+    .iniciativa-lista { display: flex; flex-direction: column; gap: 8px; max-height: 500px; overflow-y: auto; }
+    .iniciativa-item {
+        background: var(--fundo-painel); border-radius: 8px; padding: 10px 14px;
+        display: flex; justify-content: space-between; align-items: center;
+        flex-wrap: wrap; gap: 8px; border-left: 4px solid var(--roxo);
+    }
+    .iniciativa-item.atual { background: var(--fundo-bonus); border-left-color: var(--sucesso); box-shadow: 0 0 0 2px var(--sucesso) inset; }
+    .iniciativa-item.empatado { border-left-color: var(--dourado); }
+    .iniciativa-item .pos { font-weight: bold; color: var(--roxo); font-size: 16px; min-width: 28px; }
+    .iniciativa-item.atual .pos { color: var(--sucesso); }
+    .iniciativa-item .nome { font-weight: bold; color: var(--texto); font-size: 14px; flex: 1; }
+    /* valor removido da badge — a ordem agora é apenas posicional */
+    .iniciativa-item .tag-empatado { font-size: 10px; background: var(--dourado); color: #fff; padding: 2px 8px; border-radius: 12px; font-weight: bold; }
+    .iniciativa-item .tag-atual { font-size: 10px; background: var(--sucesso); color: #fff; padding: 2px 8px; border-radius: 12px; font-weight: bold; }
+    .iniciativa-item .btn-ir-ficha { background: var(--primaria); color: #fff; border: none; border-radius: 4px; padding: 4px 10px; cursor: pointer; font-size: 11px; font-weight: bold; }
+    .iniciativa-item .btn-ir-ficha:hover { background: var(--primaria-hover); }
+    .iniciativa-item .btn-remover-inic { background: var(--perigo); color: #fff; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 11px; }
+    .iniciativa-item .btn-remover-inic:hover { background: var(--perigo-hover); }
+    .iniciativa-vazia { text-align: center; color: var(--texto-claro); padding: 30px; }
+
+    .chat-iniciativa-fixa {
+        background: var(--fundo-painel-medio); border-bottom: 2px solid var(--roxo);
+        padding: 8px 12px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+        justify-content: space-between;
+    }
+    .chat-iniciativa-fixa .info { font-size: 12px; font-weight: bold; color: var(--roxo); }
+    .chat-iniciativa-fixa .info .proximo { color: var(--sucesso); }
+    .chat-iniciativa-fixa .btn-finalizar-turno {
+        background: var(--sucesso); color: #fff; border: none; border-radius: 6px;
+        padding: 6px 14px; cursor: pointer; font-size: 12px; font-weight: bold;
+    }
+    .chat-iniciativa-fixa .btn-finalizar-turno:hover { background: var(--sucesso-hover); }
+    .chat-iniciativa-fixa .btn-limpar-inic {
+        background: var(--perigo); color: #fff; border: none; border-radius: 6px;
+        padding: 6px 14px; cursor: pointer; font-size: 12px; font-weight: bold;
+    }
+    .chat-iniciativa-fixa .btn-limpar-inic:hover { background: var(--perigo-hover); }
+
+    .secret-row .chk-iniciativa-label {
+        display: inline-flex; align-items: center; gap: 6px; font-weight: bold;
+        color: var(--roxo); cursor: pointer;
+    }
     .toast {
         position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
         background: rgba(0,0,0,0.85); color: #fff; padding: 12px 24px; border-radius: 8px;
@@ -1736,6 +1799,10 @@
                 <button class="status-badge" id="btnAbrirStatus" title="Ver condições ativas">
                     ⚠️ Condições
                 </button>
+                <button class="iniciativa-badge" id="btnAbrirIniciativa" title="Ver ordem de iniciativa">
+                    ⚔️ Iniciativa
+                    <span class="contador" id="iniciativaNumero">0</span>
+                </button>
             </div>
             <div>
                 <button class="btn-voltar" id="btnVoltarLista">⬅️ Voltar para Lista</button>
@@ -1894,8 +1961,13 @@
                                                 </div>
                                                 <button class="btn-roll" id="btnRolarGenerico">🎲 Rolar</button>
                                                 <div id="secretRollContainer" class="secret-row" style="display: none;">
-                                                    <input type="checkbox" id="chkSecretRoll"> 🕵️ Segredo
-                                                </div>
+                                                <input type="checkbox" id="chkSecretRoll"> 🕵️ Segredo
+                                            </div>
+                                            <div class="secret-row">
+                                                <label class="chk-iniciativa-label">
+                                                    <input type="checkbox" id="chkIniciativa"> ⚔️ Iniciativa
+                                                </label>
+                                            </div>
                                             </div>
                                         </div>
                                         <div id="atributosCustomContainer" style="display: contents;"></div>
@@ -2080,6 +2152,13 @@
             <div class="coluna-chat">
                 <div class="chat-lateral">
                     <div class="chat-header-lateral"><span class="chat-title-lateral">💬 Chat de Rolagens</span></div>
+                    <div id="chatIniciativaFixa" class="chat-iniciativa-fixa" style="display: none;">
+                        <span class="info">🎯 Turno atual: <span class="proximo" id="chatTurnoAtual">—</span></span>
+                        <div style="display: flex; gap: 6px;">
+                            <button class="btn-finalizar-turno" id="btnFinalizarTurno">⏭️ Finalizar Turno</button>
+                            <button class="btn-limpar-inic" id="btnLimparIniciativas">🗑️ Limpar</button>
+                        </div>
+                    </div>
                     <div id="chatMensagensLateral" class="chat-mensagens-lateral"><div class="empty-chat">📢 Nenhuma rolagem ainda.</div></div>
                 </div>
             </div>
@@ -2128,6 +2207,18 @@
         </div>
         <div id="statusListaContainer" class="status-lista">
             <div class="status-vazio">Nenhuma condição ativa no momento.</div>
+        </div>
+    </div>
+</div>
+
+<div id="iniciativaPopup" class="iniciativa-popup-overlay">
+    <div class="iniciativa-popup-content">
+        <div class="iniciativa-popup-header">
+            <h2>⚔️ Ordem de Iniciativa</h2>
+            <button class="close-iniciativa-popup" id="closeIniciativaPopup">✕ Fechar</button>
+        </div>
+        <div id="iniciativaListaContainer" class="iniciativa-lista">
+            <div class="iniciativa-vazia">Nenhuma iniciativa registrada.</div>
         </div>
     </div>
 </div>
@@ -3224,6 +3315,11 @@
     let cartaViradaAguardandoUsoSub = {};
 
     let baralhosCombate = {};
+
+    // ===== INICIATIVAS =====
+    let listaIniciativas = [];       // [{ id, nome, valor, hTotal, empatado, desempatado, jogadorId, jogadorNome }]
+    let indiceTurnoAtual = 0;        // posição atual na ordem já ordenada
+    let _iniciativaChannel = null;
 
     // Flags persistentes de edição manual (impedem recálculo automático até o jogador mexer)
     let gastosEditadoManualmente = false;
@@ -6024,6 +6120,11 @@
     
     function rolarGenerico() {
         animarDado();
+        const chkIniciativa = document.getElementById('chkIniciativa');
+        if (chkIniciativa && chkIniciativa.checked) {
+            rolarIniciativa();
+            return;
+        }
         const qtd = parseInt(document.getElementById('qtdDados').value) || 1;
         const mod = parseInt(document.getElementById('modRoll').value) || 0;
         let resultados = [], soma = 0;
@@ -6034,6 +6135,388 @@
         addMensagem(resultado, ehSecreta);
         if (!ehSecreta) enviarRolagemFirebase(resultado, false);
         debounceSave();
+    }
+
+    // ===== INICIATIVA =====
+    function getHTotalPrincipal() {
+        const h = parseInt(document.getElementById('habilidade')?.value) || 0;
+        const b1 = parseInt(document.getElementById('bonusHabilidade')?.value) || 0;
+        const b2 = parseInt(document.getElementById('bonusHabilidade2')?.value) || 0;
+        const chk1 = document.getElementById('chkBonusHabilidade')?.checked !== false;
+        const chk2 = document.getElementById('chkBonusHabilidade2')?.checked !== false;
+        return h + (chk1 ? b1 : 0) + (chk2 ? b2 : 0);
+    }
+
+    async function rolarIniciativa() {
+        animarDado();
+        if (!currentPin) { mostrarToast('⚠️ Sem mesa ativa.', '#c0392b'); return; }
+        const jogadorId = visualizandoId || currentUserId;
+        if (!jogadorId) { mostrarToast('⚠️ Nenhuma ficha aberta.', '#c0392b'); return; }
+
+        const nomePersonagem = document.getElementById('nomePersonagem')?.value?.trim() || 'Personagem';
+        const hTotal = getHTotalPrincipal();
+        const dado = Math.floor(Math.random() * 6) + 1;
+        const valor = dado + hTotal;
+
+        const entradaExistente = listaIniciativas.find(i => i.jogadorId === jogadorId);
+        const haEmpatePendente = listaIniciativas.some(i => i.empatado);
+
+        // Se já rolou e não está empatado → descarta
+        if (entradaExistente && !entradaExistente.empatado) {
+            mostrarToast(`⚠️ ${nomePersonagem} já rolou iniciativa.`, '#c0392b');
+            addMensagem(`⚠️ ${nomePersonagem} já rolou iniciativa. Ignorado.`, false);
+            return;
+        }
+
+        // Se há empate pendente e esse personagem NÃO está entre eles → bloqueia
+        if (haEmpatePendente && (!entradaExistente || !entradaExistente.empatado)) {
+            mostrarToast(`⏳ Aguarde o desempate antes de rolar novamente.`, '#c0392b');
+            addMensagem(`⏳ ${nomePersonagem} não pode rolar agora — há empate pendente.`, false);
+            return;
+        }
+
+        const ehSecreta = isGM && document.getElementById('chkSecretRoll')?.checked === true;
+        const prefixo = isMaster ? '[Mestre] ' : '';
+
+        if (entradaExistente && entradaExistente.empatado) {
+            // DESEMPATE: atualiza apenas o campo `valor` (usado só para desempate).
+            // `valorOriginal` permanece intacto — é ele que define a posição geral.
+            if (entradaExistente.valorOriginal === undefined || entradaExistente.valorOriginal === null) {
+                entradaExistente.valorOriginal = entradaExistente.valor;
+            }
+            entradaExistente.valor = valor;
+            entradaExistente.hTotal = hTotal;
+            entradaExistente.desempatado = true;
+            // grupoEmpateId é mantido até o grupo inteiro se resolver
+            const texto = `${prefixo}⚔️ DESEMPATE de ${nomePersonagem}: 🎲 ${dado} + ${hTotal}(H) = ${valor}`;
+            addMensagem(texto, ehSecreta);
+            if (!ehSecreta) enviarRolagemFirebase(texto, false);
+        } else {
+            // NOVA INICIATIVA
+            const nova = {
+                id: 'ini_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+                nome: nomePersonagem,
+                valor: valor,
+                valorOriginal: valor,
+                hTotal: hTotal,
+                empatado: false,
+                desempatado: false,
+                grupoEmpateId: null,
+                jogadorId: jogadorId,
+                jogadorNome: currentUserName || 'Jogador'
+            };
+            listaIniciativas.push(nova);
+            const texto = `${prefixo}⚔️ Iniciativa de ${nomePersonagem}: 🎲 ${dado} + ${hTotal}(H) = ${valor}`;
+            addMensagem(texto, ehSecreta);
+            if (!ehSecreta) enviarRolagemFirebase(texto, false);
+        }
+
+        calcularEmpates();
+        await salvarIniciativasMesa();
+        atualizarBadgeIniciativa();
+        atualizarBotaoIniciativaFixo();
+
+        // Se todos os empates foram resolvidos, anuncia a ordem final no chat
+        if (!listaIniciativas.some(i => i.empatado)) {
+            const ordem = getOrdemIniciativas();
+            if (ordem.length > 0) {
+                const nomes = ordem.map((o, idx) => `${idx + 1}º ${o.nome}`).join(' → ');
+                const texto = `✅ Ordem final definida: ${nomes}`;
+                addMensagem(texto, false);
+                enviarRolagemFirebase(texto, false);
+            }
+        }
+    }
+
+        function calcularEmpates() {
+        // 1) Marca grupos de empate "novos" por valorOriginal
+        const mapa = {};
+        listaIniciativas.forEach(i => {
+            if (i.valorOriginal === undefined || i.valorOriginal === null) {
+                i.valorOriginal = i.valor;
+            }
+            const k = String(i.valorOriginal);
+            if (!mapa[k]) mapa[k] = [];
+            mapa[k].push(i);
+        });
+
+        for (const grupo of Object.values(mapa)) {
+            if (grupo.length > 1) {
+                let grupoId = grupo.find(i => i.grupoEmpateId)?.grupoEmpateId;
+                if (!grupoId) grupoId = 'grupo_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
+                grupo.forEach(i => {
+                    i.grupoEmpateId = grupoId;
+                    i.empatado = true;
+                    if (i.desempatado === undefined) i.desempatado = false;
+                });
+            }
+        }
+
+        // 2) Reavalia grupos: só dissolve quando TODOS rerrolaram (desempatado = true)
+        const grupos = {};
+        listaIniciativas.forEach(i => {
+            if (i.grupoEmpateId) {
+                if (!grupos[i.grupoEmpateId]) grupos[i.grupoEmpateId] = [];
+                grupos[i.grupoEmpateId].push(i);
+            }
+        });
+
+        for (const [grupoId, membros] of Object.entries(grupos)) {
+            const todosDesempataram = membros.every(m => m.desempatado === true);
+            if (todosDesempataram) {
+                membros.forEach(m => {
+                    m.empatado = false;
+                    m.grupoEmpateId = null;
+                });
+            } else {
+                membros.forEach(m => { m.empatado = true; });
+            }
+        }
+
+        // 3) Entradas sem grupo: flags limpos
+        listaIniciativas.forEach(i => {
+            if (!i.grupoEmpateId) {
+                i.empatado = false;
+            }
+        });
+    }
+
+    function getOrdemIniciativas() {
+        // Se houver qualquer empate pendente, não libera a ordem
+        if (listaIniciativas.some(i => i.empatado)) return [];
+
+        // 1) Ordena por valorOriginal (maior primeiro).
+        //    Empates por valorOriginal → desempate pelo valor do desempate (maior primeiro).
+        //    Se alguém não tem valorOriginal definido, usa o próprio valor.
+        return [...listaIniciativas].sort((a, b) => {
+            const vOA = (a.valorOriginal !== undefined && a.valorOriginal !== null) ? a.valorOriginal : a.valor;
+            const vOB = (b.valorOriginal !== undefined && b.valorOriginal !== null) ? b.valorOriginal : b.valor;
+            if (vOB !== vOA) return vOB - vOA;
+            // Empate no valor original → usa o valor atual (resultado do desempate)
+            if (b.valor !== a.valor) return b.valor - a.valor;
+            // Ainda empatado → por H
+            if (b.hTotal !== a.hTotal) return b.hTotal - a.hTotal;
+            return 0;
+        });
+    }
+
+    function getTurnoAtual() {
+        const ordem = getOrdemIniciativas();
+        if (ordem.length === 0) return null;
+        if (indiceTurnoAtual >= ordem.length) indiceTurnoAtual = 0;
+        return ordem[indiceTurnoAtual];
+    }
+
+    async function finalizarTurno() {
+        if (!isMaster) { mostrarToast('⚠️ Apenas o mestre.', '#c0392b'); return; }
+        if (listaIniciativas.some(i => i.empatado)) {
+            mostrarToast('⏳ Há empates pendentes. Aguarde o desempate.', '#c0392b');
+            return;
+        }
+        const ordem = getOrdemIniciativas();
+        if (ordem.length === 0) { mostrarToast('⚠️ Nenhuma iniciativa na lista.', '#c0392b'); return; }
+        indiceTurnoAtual = (indiceTurnoAtual + 1) % ordem.length;
+        const atual = getTurnoAtual();
+        await salvarIniciativasMesa();
+        atualizarBotaoIniciativaFixo();
+        if (atual) {
+            const texto = `🎯 Turno de: ${atual.nome}`;
+            addMensagem(texto, false);
+            enviarRolagemFirebase(texto, false);
+        }
+    }
+
+    async function limparIniciativas() {
+        if (!isMaster) { mostrarToast('⚠️ Apenas o mestre.', '#c0392b'); return; }
+        if (!confirm('Limpar TODAS as iniciativas?')) return;
+        listaIniciativas = [];
+        indiceTurnoAtual = 0;
+        await salvarIniciativasMesa();
+        atualizarBadgeIniciativa();
+        atualizarBotaoIniciativaFixo();
+        renderizarPopupIniciativa();
+        const texto = `🗑️ O Mestre limpou a lista de iniciativas.`;
+        addMensagem(texto, false);
+        enviarRolagemFirebase(texto, false);
+    }
+
+    async function removerIniciativaPorId(id) {
+        if (!isMaster) return;
+        const idx = listaIniciativas.findIndex(i => i.id === id);
+        if (idx < 0) return;
+        const nomeRemovido = listaIniciativas[idx].nome;
+        listaIniciativas.splice(idx, 1);
+        calcularEmpates();
+        if (indiceTurnoAtual >= getOrdemIniciativas().length) indiceTurnoAtual = 0;
+        await salvarIniciativasMesa();
+        atualizarBadgeIniciativa();
+        atualizarBotaoIniciativaFixo();
+        renderizarPopupIniciativa();
+        const texto = `❌ ${nomeRemovido} foi removido da ordem de iniciativa pelo Mestre.`;
+        addMensagem(texto, false);
+        enviarRolagemFirebase(texto, false);
+    }
+
+    async function salvarIniciativasMesa() {
+        if (!currentPin) return;
+        try {
+            const payload = listaIniciativas.map(i => ({
+                id: i.id, nome: i.nome, valor: i.valor,
+                valorOriginal: (i.valorOriginal !== undefined && i.valorOriginal !== null) ? i.valorOriginal : i.valor,
+                hTotal: i.hTotal,
+                empatado: i.empatado, desempatado: i.desempatado,
+                grupoEmpateId: i.grupoEmpateId || null,
+                jogadorId: i.jogadorId, jogadorNome: i.jogadorNome
+            }));
+            await supabase.from('mesas').update({
+                iniciativas: payload,
+                iniciativa_turno_atual: indiceTurnoAtual,
+                iniciativa_atualizada_em: new Date().toISOString()
+            }).eq('pin', currentPin);
+        } catch (e) { console.warn('⚠️ Erro ao salvar iniciativas:', e); }
+    }
+
+    function atualizarBadgeIniciativa() {
+        const badge = document.getElementById('btnAbrirIniciativa');
+        const contador = document.getElementById('iniciativaNumero');
+        if (!badge) return;
+        if (contador) contador.textContent = listaIniciativas.length;
+        const ordem = getOrdemIniciativas();
+        const temEmpate = listaIniciativas.some(i => i.empatado);
+        badge.classList.toggle('ativo', listaIniciativas.length > 0 && (temEmpate || ordem.length > 0));
+    }
+
+    function atualizarBotaoIniciativaFixo() {
+        const fixo = document.getElementById('chatIniciativaFixa');
+        const spanAtual = document.getElementById('chatTurnoAtual');
+        if (!fixo) return;
+        const temEmpate = listaIniciativas.some(i => i.empatado);
+        const ordem = getOrdemIniciativas();
+        // Só mostra para o mestre, se há iniciativas E não há empate pendente
+        if (!isMaster || listaIniciativas.length === 0 || temEmpate || ordem.length === 0) {
+            fixo.style.display = 'none';
+            return;
+        }
+        fixo.style.display = 'flex';
+        const atual = getTurnoAtual();
+        if (spanAtual) spanAtual.textContent = atual ? atual.nome : '—';
+    }
+
+    function abrirPopupIniciativa() {
+        renderizarPopupIniciativa();
+        document.getElementById('iniciativaPopup').style.display = 'flex';
+    }
+    function fecharPopupIniciativa() {
+        document.getElementById('iniciativaPopup').style.display = 'none';
+    }
+
+    function renderizarPopupIniciativa() {
+        const container = document.getElementById('iniciativaListaContainer');
+        if (!container) return;
+        const temEmpate = listaIniciativas.some(i => i.empatado);
+        const ordem = getOrdemIniciativas();
+
+        if (listaIniciativas.length === 0) {
+            container.innerHTML = '<div class="iniciativa-vazia">Nenhuma iniciativa registrada.</div>';
+            return;
+        }
+
+        let html = '';
+
+        if (temEmpate) {
+            // Aviso de empate + lista dos empatados (sem posição)
+            const empatados = listaIniciativas.filter(i => i.empatado);
+            html += `<div style="background: var(--fundo-pen); border-left: 4px solid var(--dourado); padding: 10px 14px; border-radius: 8px; margin-bottom: 12px;">
+                <div style="font-weight: bold; color: var(--dourado); margin-bottom: 6px;">⏳ Aguardando desempate</div>
+                <div style="font-size: 12px; color: var(--texto-suave);">Os seguintes personagens precisam rerrolar a iniciativa:</div>
+            </div>`;
+            empatados.forEach(p => {
+                const btnRem = isMaster ? `<button class="btn-remover-inic" data-remover-inic="${p.id}">❌</button>` : '';
+                html += `<div class="iniciativa-item empatado">
+                    <span class="nome">${escapeHtml(p.nome)} <span class="tag-empatado">⚔️ EMPATADO</span></span>
+                    <div style="display: flex; gap: 4px;">${btnRem}</div>
+                </div>`;
+            });
+        } else {
+            // Ordem completa, só posição + nome (SEM valores)
+            const atual = getTurnoAtual();
+            ordem.forEach((item, idx) => {
+                const isAtual = atual && atual.id === item.id;
+                const classes = ['iniciativa-item'];
+                if (isAtual) classes.push('atual');
+                const tagAtual = isAtual ? '<span class="tag-atual">▶️ AGINDO</span>' : '';
+                const btnIr = isMaster ? `<button class="btn-ir-ficha" data-ir-ficha="${item.jogadorId}">👁️ Ir</button>` : '';
+                const btnRem = isMaster ? `<button class="btn-remover-inic" data-remover-inic="${item.id}">❌</button>` : '';
+                html += `<div class="${classes.join(' ')}">
+                    <span class="pos">${idx + 1}º</span>
+                    <span class="nome">${escapeHtml(item.nome)} ${tagAtual}</span>
+                    <div style="display: flex; gap: 4px;">${btnIr}${btnRem}</div>
+                </div>`;
+            });
+        }
+
+        container.innerHTML = html;
+        container.querySelectorAll('[data-ir-ficha]').forEach(b => {
+            b.onclick = async () => {
+                await carregarFichaPorId(b.dataset.irFicha);
+                fecharPopupIniciativa();
+            };
+        });
+        container.querySelectorAll('[data-remover-inic]').forEach(b => {
+            b.onclick = () => removerIniciativaPorId(b.dataset.removerInic);
+        });
+    }
+
+    async function carregarIniciativasMesa() {
+        if (!currentPin) return;
+        try {
+            const { data } = await supabase.from('mesas').select('iniciativas, iniciativa_turno_atual').eq('pin', currentPin).maybeSingle();
+            if (data && Array.isArray(data.iniciativas)) {
+                listaIniciativas = data.iniciativas.map(i => ({
+                    id: i.id, nome: i.nome, valor: i.valor,
+                    valorOriginal: (i.valorOriginal !== undefined && i.valorOriginal !== null) ? i.valorOriginal : i.valor,
+                    hTotal: i.hTotal,
+                    empatado: i.empatado === true, desempatado: i.desempatado === true,
+                    grupoEmpateId: i.grupoEmpateId || null,
+                    jogadorId: i.jogadorId, jogadorNome: i.jogadorNome
+                }));
+                indiceTurnoAtual = parseInt(data.iniciativa_turno_atual) || 0;
+            } else {
+                listaIniciativas = [];
+                indiceTurnoAtual = 0;
+            }
+        } catch (e) { console.warn('⚠️ Erro ao carregar iniciativas:', e); }
+        atualizarBadgeIniciativa();
+        atualizarBotaoIniciativaFixo();
+    }
+
+    function escutarIniciativasMesa() {
+        if (!currentPin) return;
+        if (_iniciativaChannel) { try { supabase.removeChannel(_iniciativaChannel); } catch(e) {} _iniciativaChannel = null; }
+        const channelName = `iniciativas-${currentPin}-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
+        const channel = supabase.channel(channelName)
+            .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'mesas', filter: `pin=eq.${currentPin}` }, async (payload) => {
+                const novo = payload.new || {};
+                if (Array.isArray(novo.iniciativas)) {
+                    listaIniciativas = novo.iniciativas.map(i => ({
+                        id: i.id, nome: i.nome, valor: i.valor,
+                        valorOriginal: (i.valorOriginal !== undefined && i.valorOriginal !== null) ? i.valorOriginal : i.valor,
+                        hTotal: i.hTotal,
+                        empatado: i.empatado === true, desempatado: i.desempatado === true,
+                        grupoEmpateId: i.grupoEmpateId || null,
+                        jogadorId: i.jogadorId, jogadorNome: i.jogadorNome
+                    }));
+                    indiceTurnoAtual = parseInt(novo.iniciativa_turno_atual) || 0;
+                    calcularEmpates();
+                    atualizarBadgeIniciativa();
+                    atualizarBotaoIniciativaFixo();
+                    const popup = document.getElementById('iniciativaPopup');
+                    if (popup && popup.style.display === 'flex') renderizarPopupIniciativa();
+                }
+            })
+            .subscribe();
+        _iniciativaChannel = channel;
+        realtimeChannels.push(channel);
     }
     
     function atualizarBotaoConverter() {
@@ -9168,6 +9651,11 @@ listaJogadoresUnsubscribe = () => {};
             escutarStatusGlobais();
         }
         escutarSustentadosGlobais();
+        carregarIniciativasMesa().then(() => {
+            atualizarBadgeIniciativa();
+            atualizarBotaoIniciativaFixo();
+        });
+        escutarIniciativasMesa();
         document.getElementById('btnAtualizarFicha').onclick = atualizarFichaUsuario;
         document.getElementById('btnCriarNovaFicha').onclick = criarNovaFicha;
         document.getElementById('btnMigrarCodigos').onclick = migrarCodigosFichasExistentes;
@@ -9204,6 +9692,9 @@ listaJogadoresUnsubscribe = () => {};
         cartaViradaAguardandoUsoSub = {};
         baralhosSubFichas = {};
         baralhosCombate = {};
+        listaIniciativas = [];
+        indiceTurnoAtual = 0;
+        if (_iniciativaChannel) { try { supabase.removeChannel(_iniciativaChannel); } catch(e) {} _iniciativaChannel = null; }
         oficiosPrincipais = []; oficiosSub = {};
         atributosCustom = []; atributosCustomSub = {};
         vantagemUnicaHabilidades = [];
@@ -9222,6 +9713,11 @@ listaJogadoresUnsubscribe = () => {};
     document.getElementById('btnEntrarMestre').onclick = entrarComoMestre;
     document.getElementById('btnEntrarJogador').onclick = entrarComoJogador;
     document.getElementById('btnRolarGenerico').onclick = rolarGenerico;
+    document.getElementById('btnAbrirIniciativa').onclick = abrirPopupIniciativa;
+    document.getElementById('closeIniciativaPopup').onclick = fecharPopupIniciativa;
+    document.getElementById('iniciativaPopup').addEventListener('click', (e) => { if (e.target === e.currentTarget) fecharPopupIniciativa(); });
+    document.getElementById('btnFinalizarTurno').onclick = finalizarTurno;
+    document.getElementById('btnLimparIniciativas').onclick = limparIniciativas;
     document.getElementById('btnConverterXP').onclick = converterXP;
     document.getElementById('xp').addEventListener('input', atualizarBotaoConverter);
     document.getElementById('xpConverterAmount').addEventListener('input', atualizarBotaoConverter);
