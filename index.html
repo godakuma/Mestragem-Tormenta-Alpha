@@ -3803,7 +3803,7 @@
                     attr[campo] = novoValor;
                     if (campo === 'valor') {
                         // Registra gasto/ganho: valor positivo = gastou, negativo = ganhou
-                        const deltaGasto = novoValor - valorAnterior;
+                        const deltaGasto = custoAtributo(novoValor) - custoAtributo(valorAnterior);
                         if (deltaGasto !== 0) registrarGasto(deltaGasto, isSubInp, subIdx);
                     }
                 }
@@ -3834,7 +3834,7 @@
                         const attr = lista[i];
                         const valorAttr = parseInt(attr.valor) || 0;
                         // Ao apagar, devolve o gasto: se valor positivo era gasto, remove o gasto (-valorAttr)
-                        if (valorAttr !== 0) registrarGasto(-valorAttr, true, subIdx);
+                        if (valorAttr !== 0) registrarGasto(-custoAtributo(valorAttr), true, subIdx);
                         lista.splice(i, 1);
                     }
                     renderizarAtributosCustom(true, subIdx);
@@ -3848,7 +3848,7 @@
                     if (i >= 0) {
                         const attr = lista[i];
                         const valorAttr = parseInt(attr.valor) || 0;
-                        if (valorAttr !== 0) registrarGasto(-valorAttr, false, null);
+                        if (valorAttr !== 0) registrarGasto(-custoAtributo(valorAttr), false, null);
                         lista.splice(i, 1);
                     }
                     renderizarAtributosCustom(false, null);
@@ -3940,33 +3940,48 @@
     }
     
     function atualizarIndicadoresAtributos() {
-        const forcaInput = document.getElementById('forca');
-        const totalForcaEl = document.getElementById('totalForca');
-        if (forcaInput && totalForcaEl) {
-            totalForcaEl.textContent = calcularTotalAtributoPrincipal('F');
-        }
-        const habInput = document.getElementById('habilidade');
-        const totalHabEl = document.getElementById('totalHabilidade');
-        if (habInput && totalHabEl) {
-            totalHabEl.textContent = calcularTotalAtributoPrincipal('H');
-        }
-        const resInput = document.getElementById('resistencia');
-        const totalResEl = document.getElementById('totalResistencia');
-        if (resInput && totalResEl) {
-            totalResEl.textContent = calcularTotalAtributoPrincipal('R');
-        }
-        const armInput = document.getElementById('armadura');
-        const totalArmEl = document.getElementById('totalArmadura');
-        if (armInput && totalArmEl) {
-            totalArmEl.textContent = calcularTotalAtributoPrincipal('A');
-        }
-        const pdfInput = document.getElementById('pdf');
-        const totalPdfEl = document.getElementById('totalPdf');
-        if (pdfInput && totalPdfEl) {
-            totalPdfEl.textContent = calcularTotalAtributoPrincipal('PdF');
-        }
-        atualizarIndicadoresAtributosCustom(false, null);
+    const forcaInput = document.getElementById('forca');
+    const totalForcaEl = document.getElementById('totalForca');
+    if (forcaInput && totalForcaEl) {
+        const v = calcularTotalAtributoPrincipal('F');
+        totalForcaEl.textContent = v;
+        totalForcaEl.title = `Total: ${v} | Custo (base): ${custoAtributo(parseInt(forcaInput.value) || 0)} pts`;
     }
+
+    const habInput = document.getElementById('habilidade');
+    const totalHabEl = document.getElementById('totalHabilidade');
+    if (habInput && totalHabEl) {
+        const v = calcularTotalAtributoPrincipal('H');
+        totalHabEl.textContent = v;
+        totalHabEl.title = `Total: ${v} | Custo (base): ${custoAtributo(parseInt(habInput.value) || 0)} pts`;
+    }
+
+    const resInput = document.getElementById('resistencia');
+    const totalResEl = document.getElementById('totalResistencia');
+    if (resInput && totalResEl) {
+        const v = calcularTotalAtributoPrincipal('R');
+        totalResEl.textContent = v;
+        totalResEl.title = `Total: ${v} | Custo (base): ${custoAtributo(parseInt(resInput.value) || 0)} pts`;
+    }
+
+    const armInput = document.getElementById('armadura');
+    const totalArmEl = document.getElementById('totalArmadura');
+    if (armInput && totalArmEl) {
+        const v = calcularTotalAtributoPrincipal('A');
+        totalArmEl.textContent = v;
+        totalArmEl.title = `Total: ${v} | Custo (base): ${custoAtributo(parseInt(armInput.value) || 0)} pts`;
+    }
+
+    const pdfInput = document.getElementById('pdf');
+    const totalPdfEl = document.getElementById('totalPdf');
+    if (pdfInput && totalPdfEl) {
+        const v = calcularTotalAtributoPrincipal('PdF');
+        totalPdfEl.textContent = v;
+        totalPdfEl.title = `Total: ${v} | Custo (base): ${custoAtributo(parseInt(pdfInput.value) || 0)} pts`;
+    }
+
+    atualizarIndicadoresAtributosCustom(false, null);
+}
     
     function atualizarIndicadoresAtributosSub(index) {
         const sub = subFichas[index];
@@ -4275,29 +4290,53 @@
         customs.forEach(a => bonus += somarNeg(a.valor));
         return bonus;
     }
-    
+    // ============================================================
+// CUSTO PROGRESSIVO DE ATRIBUTOS
+// Faixas: 1–5 → 1/pt | 6–10 → 2/pt | 11–15 → 3/pt
+//         16–20 → 5/pt | 21+ → 10/pt
+// Aplica-se SOMENTE à base dos atributos (F, H, R, A, PdF)
+// e aos atributos customizados. NÃO se aplica a B1/B2.
+// ============================================================
+function custoAtributo(valor) {
+    const v = Math.max(0, parseInt(valor) || 0);
+    let custo = 0;
+    custo += Math.min(v, 5) * 1;
+    if (v > 5)  custo += (Math.min(v, 10) - 5) * 2;
+    if (v > 10) custo += (Math.min(v, 15) - 10) * 3;
+    if (v > 15) custo += (Math.min(v, 20) - 15) * 5;
+    if (v > 20) custo += (v - 20) * 10;
+    return custo;
+}
     // GASTOS: x + (-y) = z  →  soma ALGÉBRICA (positivos + negativos).
     function calcularGastosTotais() {
-        let gastos = 0;
-        const somar = (v) => parseInt(v) || 0;
-        gastos += somar(document.getElementById('forca').value);
-        gastos += somar(document.getElementById('habilidade').value);
-        gastos += somar(document.getElementById('resistencia').value);
-        gastos += somar(document.getElementById('armadura').value);
-        gastos += somar(document.getElementById('pdf').value);
-        gastos += somar(document.getElementById('vantagemRegionalCusto').value);
-        gastos += somar(document.getElementById('vantagemUnicaCusto').value);
-        // Lefou: o custo extra (+2) já está somado no valor visual do campo da Vantagem Única.
-        // Não somar novamente aqui para evitar dupla contagem.
-        if (fichaListas.vantagens) fichaListas.vantagens.forEach(v => gastos += somar(v.valor));
-        if (fichaListas.desvantagens) fichaListas.desvantagens.forEach(d => gastos += somar(d.valor));
-        if (fichaListas.pericias) fichaListas.pericias.forEach(p => gastos += somar(p.valor));
-        if (fichaListas.especializacoes) fichaListas.especializacoes.forEach(e => gastos += somar(e.valor));
-        if (fichaListas.kits) fichaListas.kits.forEach(kit => { gastos += somar(kit.custo); if (kit.habilidades) kit.habilidades.forEach(hab => gastos += somar(hab.custo)); });
-        const customs = Array.isArray(atributosCustom) ? atributosCustom : [];
-        customs.forEach(attr => { gastos += somar(attr.valor); });
-        return gastos;
-    }
+    let gastos = 0;
+    const somar = (v) => parseInt(v) || 0;
+
+    // Atributos com CURVA progressiva (apenas base)
+    gastos += custoAtributo(document.getElementById('forca').value);
+    gastos += custoAtributo(document.getElementById('habilidade').value);
+    gastos += custoAtributo(document.getElementById('resistencia').value);
+    gastos += custoAtributo(document.getElementById('armadura').value);
+    gastos += custoAtributo(document.getElementById('pdf').value);
+
+    // Itens de custo FIXO (sem curva)
+    gastos += somar(document.getElementById('vantagemRegionalCusto').value);
+    gastos += somar(document.getElementById('vantagemUnicaCusto').value);
+    if (fichaListas.vantagens) fichaListas.vantagens.forEach(v => gastos += somar(v.valor));
+    if (fichaListas.desvantagens) fichaListas.desvantagens.forEach(d => gastos += somar(d.valor));
+    if (fichaListas.pericias) fichaListas.pericias.forEach(p => gastos += somar(p.valor));
+    if (fichaListas.especializacoes) fichaListas.especializacoes.forEach(e => gastos += somar(e.valor));
+    if (fichaListas.kits) fichaListas.kits.forEach(kit => {
+        gastos += somar(kit.custo);
+        if (kit.habilidades) kit.habilidades.forEach(hab => gastos += somar(hab.custo));
+    });
+
+    // Atributos customizados com CURVA
+    const customs = Array.isArray(atributosCustom) ? atributosCustom : [];
+    customs.forEach(attr => { gastos += custoAtributo(attr.valor); });
+
+    return gastos;
+}
     
     // ============================================================
     // ATUALIZAR PONTOS - REGRA CORRIGIDA
@@ -4416,29 +4455,37 @@
     
     // GASTOS Sub: x + (-y) = z  →  soma ALGÉBRICA.
     function calcularGastosTotaisSub(sub) {
-        let gastos = 0;
-        const somar = (v) => parseInt(v) || 0;
-        gastos += somar(sub.forca);
-        gastos += somar(sub.habilidade);
-        gastos += somar(sub.resistencia);
-        gastos += somar(sub.armadura);
-        gastos += somar(sub.pdf);
-        gastos += somar(sub.vantagemRegionalCusto);
-        gastos += somar(sub.vantagemUnicaCusto);
-        // Lefou: o custo extra (+2) já está somado no valor visual do campo da Vantagem Única.
-        // Não somar novamente aqui para evitar dupla contagem.
-        if (sub.listas?.vantagens) sub.listas.vantagens.forEach(v => gastos += somar(v.valor));
-        if (sub.listas?.desvantagens) sub.listas.desvantagens.forEach(d => gastos += somar(d.valor));
-        if (sub.listas?.pericias) sub.listas.pericias.forEach(p => gastos += somar(p.valor));
-        if (sub.listas?.especializacoes) sub.listas.especializacoes.forEach(e => gastos += somar(e.valor));
-        if (sub.listas?.kits) sub.listas.kits.forEach(kit => { gastos += somar(kit.custo); if (kit.habilidades) kit.habilidades.forEach(hab => gastos += somar(hab.custo)); });
-        const subIdx = subFichas.indexOf(sub);
-        const customs = subIdx >= 0
-            ? (Array.isArray(atributosCustomSub[subIdx]) ? atributosCustomSub[subIdx] : [])
-            : (Array.isArray(sub.atributosCustom) ? sub.atributosCustom : []);
-        customs.forEach(attr => { gastos += somar(attr.valor); });
-        return gastos;
-    }
+    let gastos = 0;
+    const somar = (v) => parseInt(v) || 0;
+
+    // Atributos com CURVA progressiva (apenas base)
+    gastos += custoAtributo(sub.forca);
+    gastos += custoAtributo(sub.habilidade);
+    gastos += custoAtributo(sub.resistencia);
+    gastos += custoAtributo(sub.armadura);
+    gastos += custoAtributo(sub.pdf);
+
+    // Itens de custo FIXO (sem curva)
+    gastos += somar(sub.vantagemRegionalCusto);
+    gastos += somar(sub.vantagemUnicaCusto);
+    if (sub.listas?.vantagens) sub.listas.vantagens.forEach(v => gastos += somar(v.valor));
+    if (sub.listas?.desvantagens) sub.listas.desvantagens.forEach(d => gastos += somar(d.valor));
+    if (sub.listas?.pericias) sub.listas.pericias.forEach(p => gastos += somar(p.valor));
+    if (sub.listas?.especializacoes) sub.listas.especializacoes.forEach(e => gastos += somar(e.valor));
+    if (sub.listas?.kits) sub.listas.kits.forEach(kit => {
+        gastos += somar(kit.custo);
+        if (kit.habilidades) kit.habilidades.forEach(hab => gastos += somar(hab.custo));
+    });
+
+    // Atributos customizados da subficha com CURVA
+    const subIdx = subFichas.indexOf(sub);
+    const customs = subIdx >= 0
+        ? (Array.isArray(atributosCustomSub[subIdx]) ? atributosCustomSub[subIdx] : [])
+        : (Array.isArray(sub.atributosCustom) ? sub.atributosCustom : []);
+    customs.forEach(attr => { gastos += custoAtributo(attr.valor); });
+
+    return gastos;
+}
     
     // ============================================================
     // ATUALIZAR PONTOS SUB - REGRA CORRIGIDA
@@ -7014,7 +7061,7 @@
                     input.onblur = () => {
                         const valorAnterior = parseInt(input.dataset.valorAnterior) || 0;
                         const valorNovo = parseInt(input.value) || 0;
-                        const deltaGasto = valorNovo - valorAnterior;
+                        const deltaGasto = custoAtributo(valorNovo) - custoAtributo(valorAnterior);
                         if (deltaGasto !== 0) registrarGasto(deltaGasto, true, index);
                         input.dataset.valorAnterior = String(valorNovo);
                     };
@@ -9857,7 +9904,7 @@ listaJogadoresUnsubscribe = () => {};
             el.addEventListener('blur', () => {
                 const valorAnterior = parseInt(el.dataset.valorAnterior) || 0;
                 const valorNovo = parseInt(el.value) || 0;
-                const deltaGasto = valorNovo - valorAnterior;
+                const deltaGasto = custoAtributo(valorNovo) - custoAtributo(valorAnterior);
                 if (deltaGasto !== 0) registrarGasto(deltaGasto, false, null);
                 el.dataset.valorAnterior = String(valorNovo);
             });
