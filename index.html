@@ -404,32 +404,70 @@
     .recurso-pontos .pontos-linha input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     .recurso-pontos .pontos-linha input:focus { outline: 2px solid var(--primaria); }
 
-    /* Subficha - módulo de pontos */
+    /* Subficha - módulo de pontos (Padronizado igual à ficha principal) */
     .subficha-recurso-pontos {
         flex: 0 0 calc(33.333% - 3px);
         min-width: 80px;
         background: var(--fundo-painel);
-        padding: 2px 4px;
+        padding: 4px 6px;
         border-radius: 4px;
         display: flex;
         flex-direction: column;
-        gap: 1px;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 3px;
+        box-sizing: border-box;
     }
     .subficha-recurso-pontos label.titulo {
         display: block;
-        font-size: 8px;
+        font-size: 9px;
         color: var(--texto-medio);
         margin-bottom: 1px;
         font-weight: bold;
         text-align: center;
     }
-    .subficha-recurso-pontos .pontos-linha {
-        display: flex;
-        gap: 3px;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
+    .subficha-recurso-pontos :where(.pontos-linha, .extra-linha) {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        gap: 4px !important;
     }
+    .subficha-recurso-pontos :where(.pontos-linha, .extra-linha) span.rotulo,
+    .subficha-recurso-pontos :where(.pontos-linha, .extra-linha) label {
+        font-size: 8px;
+        font-weight: bold;
+        white-space: nowrap;
+        color: var(--texto-medio);
+        text-align: left;
+        margin: 0;
+        flex: 0 0 auto !important;
+    }
+    .subficha-recurso-pontos :where(.pontos-linha, .extra-linha) input {
+        width: 44px !important;
+        background: var(--fundo-input);
+        color: var(--texto);
+        border: 1px solid var(--borda-clara);
+        border-radius: 3px;
+        padding: 2px;
+        text-align: center;
+        font-size: 10px;
+        font-weight: bold;
+        -moz-appearance: textfield;
+        appearance: textfield;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        flex-shrink: 0 !important;
+        box-sizing: border-box;
+    }
+    .subficha-recurso-pontos :where(.pontos-linha, .extra-linha) input::-webkit-outer-spin-button,
+    .subficha-recurso-pontos :where(.pontos-linha, .extra-linha) input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    .subficha-recurso-pontos .pontos-linha span.rotulo.gastos { color: var(--perigo); }
     .subficha-recurso-pontos .pontos-linha span.rotulo {
         font-size: 8px;
         font-weight: bold;
@@ -588,8 +626,156 @@
     .subficha-rolagem-generica-item .btn-roll-sub { width: 100%; padding: 3px 6px; background: var(--primaria); color: #fff; border: none; border-radius: 3px; cursor: pointer; font-weight: bold; font-size: 11px; margin-top: 2px; }
     .subficha-rolagem-generica-item .btn-roll-sub:hover { background: var(--primaria-hover); }
 
-    .subficha-recursos-3colunas { display: flex; flex-wrap: wrap; gap: 4px; background: var(--fundo-painel-claro); border-radius: 12px; padding: 4px 6px; }
-    .subficha-recurso { flex: 0 0 calc(33.333% - 3px); min-width: 80px; text-align: center; background: var(--fundo-painel); padding: 2px 4px; border-radius: 4px; }
+    /* ===== RECURSOS DA SUBFICHA - ALINHADOS COM A FICHA PRINCIPAL ===== */
+    .subficha-recursos-3colunas {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+        background: var(--fundo-painel-claro);
+        border-radius: 12px;
+        padding: 8px 10px;
+        align-items: stretch;
+    }
+
+    .subficha-recursos-3colunas > * {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .subficha-recurso {
+        flex: initial;
+        text-align: center;
+        background: var(--fundo-painel);
+        padding: 4px 6px;
+        border-radius: 4px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 2px;
+    }
+    .subficha-recurso label {
+        display: block;
+        font-size: 9px;
+        color: var(--texto-medio);
+        margin-bottom: 2px;
+        font-weight: bold;
+    }
+    .subficha-recurso .recurso-linha {
+        display: flex;
+        gap: 2px;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 1px;
+        width: 100%;
+    }
+    .subficha-recurso .recurso-linha input {
+        width: 32px;
+        background: var(--fundo-input);
+        color: var(--texto);
+        border: 1px solid var(--borda-clara);
+        border-radius: 3px;
+        padding: 2px;
+        text-align: center;
+        font-size: 12px;
+        font-weight: bold;
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
+    .subficha-recurso .recurso-linha input::-webkit-outer-spin-button,
+    .subficha-recurso .recurso-linha input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .subficha-recurso .recurso-linha .bonus-pv-pm {
+        width: 40px;
+        border-color: var(--primaria);
+        background: var(--fundo-input);
+        color: var(--primaria-escura);
+    }
+    .subficha-recurso .recurso-linha span {
+        font-size: 8px;
+        color: var(--texto-medio);
+        margin: 0 1px;
+    }
+    .subficha-recurso .recurso-linha input.input-full {
+        width: 100%;
+        font-size: 12px;
+    }
+
+    .subficha-recurso-converter {
+        flex: initial;
+        text-align: center;
+        background: var(--fundo-painel);
+        padding: 3px 4px;
+        border-radius: 4px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1px;
+        box-sizing: border-box;
+    }
+    .subficha-recurso-converter label {
+        font-size: 8px;
+        color: var(--texto-medio);
+        font-weight: bold;
+    }
+    .subficha-recurso-converter .converter-linha {
+        display: flex;
+        gap: 3px;
+        align-items: center;
+        width: 100%;
+        justify-content: center;
+    }
+    .subficha-recurso-converter .converter-linha input {
+        width: 40px;
+        background: var(--fundo-input);
+        color: var(--texto);
+        border: 1px solid var(--borda-clara);
+        border-radius: 3px;
+        padding: 2px;
+        text-align: center;
+        font-size: 10px;
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
+    .subficha-recurso-converter .converter-linha input::-webkit-outer-spin-button,
+    .subficha-recurso-converter .converter-linha input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .subficha-recurso-converter .converter-linha button {
+        padding: 2px 6px;
+        background: var(--sucesso);
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 9px;
+        font-weight: bold;
+        white-space: nowrap;
+    }
+    .subficha-recurso-converter .converter-linha button:hover { background: var(--sucesso-hover); }
+    .subficha-recurso-converter .converter-linha button:disabled { background: var(--borda-clara); cursor: not-allowed; }
+    .subficha-recurso-converter .xp-info {
+        font-size: 7px;
+        color: var(--texto-medio);
+        text-align: center;
+    }
+
+    /* Módulo de Pontos da subficha — mesmo padrão visual da ficha principal */
+    .subficha-recurso-pontos {
+        flex: initial;
+        background: var(--fundo-painel);
+        padding: 4px 6px;
+        border-radius: 4px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 3px;
+        box-sizing: border-box;
+        width: 100%;
+    }
+    .subficha-recurso .recurso-linha { display: flex; gap: 2px; justify-content: center; align-items: center; flex-wrap: wrap; margin-top: 1px; width: 100%; }
     .subficha-recurso label { display: block; font-size: 8px; color: var(--texto-medio); margin-bottom: 1px; font-weight: bold; }
     .subficha-recurso .recurso-linha { display: flex; gap: 2px; justify-content: center; align-items: center; flex-wrap: wrap; margin-top: 1px; }
     .subficha-recurso .recurso-linha input { width: 26px; background: var(--fundo-input); color: var(--texto); border: 1px solid var(--borda-clara); border-radius: 3px; padding: 2px; text-align: center; font-size: 10px; font-weight: bold; -moz-appearance: textfield; appearance: textfield; }
@@ -1760,6 +1946,28 @@
     flex: 0 0 auto !important;
     margin: 0 !important;
     text-align: left !important;
+    /* ===== ALINHAMENTO DO MÓDULO DE PONTOS (SUBFICHAS) ===== */
+.subficha-recurso-pontos :where(.pontos-linha, .extra-linha) {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    gap: 3px !important;
+}
+.subficha-recurso-pontos :where(.pontos-linha, .extra-linha) input {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    flex-shrink: 0 !important;
+    width: 44px !important;
+}
+.subficha-recurso-pontos :where(.pontos-linha, .extra-linha) span.rotulo,
+.subficha-recurso-pontos :where(.pontos-linha, .extra-linha) label {
+    flex: 0 0 auto !important;
+    margin: 0 !important;
+    text-align: left !important;
+    }
 }
 </style>
 </head>
@@ -1949,6 +2157,8 @@
                                                 <input type="checkbox" id="chkBonusPdf2" class="bonus-checkbox" checked>
                                             </div>
                                         </div>
+                                        <div id="containerAtributoMacula" style="display: contents;"></div>
+                                        <div id="containerAtributoReputacao" style="display: contents;"></div>
                                         <div class="rolagem-generica-item">
                                             <div class="rolagem-titulo">🎲 Rolagem Genérica</div>
                                             <div class="rolagem-campos">
@@ -2373,6 +2583,7 @@
     function renderizarPontosEspeciais() {
         renderizarPontosEspeciaisPrincipal();
         subFichas.forEach((_, idx) => renderizarPontosEspeciaisSub(idx));
+        atualizarIndicadoresAtributosMaculaReputacao();
     }
 
     function renderizarPontosEspeciaisPrincipal() {
@@ -2430,7 +2641,35 @@
                     <input type="text" inputmode="numeric" pattern="[0-9-]*" id="pontosMacula" value="${window._pontosEspeciais?.pontosMacula ?? 0}" ${editavel ? '' : 'readonly'}>
                 </div>`;
                 const el = document.getElementById('pontosMacula');
-                if (el) el.oninput = () => { if (!window._pontosEspeciais) window._pontosEspeciais = {}; window._pontosEspeciais.pontosMacula = parseInt(el.value) || 0; debounceSave(); };
+                if (el) {
+                    el.dataset.maculaConcedida = String(parseInt(window._pontosEspeciais?.pontosMacula) || 0);
+                    el.onfocus = () => {
+                        if (isGM || isMaster) {
+                            el.dataset.masterEditing = 'true';
+                            el.dataset.valorAntesEdicao = String(parseInt(el.value) || 0);
+                            el.value = parseInt(el.dataset.maculaConcedida) || 0;
+                        }
+                    };
+                    el.onblur = () => {
+                        if (isGM || isMaster) {
+                            el.dataset.masterEditing = 'false';
+                            const valorAntes = parseInt(el.dataset.valorAntesEdicao) || 0;
+                            const valorAgora = parseInt(el.dataset.maculaConcedida) || 0;
+                            if (valorAntes !== valorAgora) {
+                                if (!window._pontosEspeciais) window._pontosEspeciais = {};
+                                window._pontosEspeciais.pontosMacula = valorAgora;
+                                debounceSave();
+                            }
+                            atualizarIndicadoresAtributosMaculaReputacao();
+                        }
+                    };
+                    el.oninput = () => {
+                        if (el.dataset.masterEditing === 'true') {
+                            el.dataset.maculaConcedida = String(parseInt(el.value) || 0);
+                        }
+                        atualizarIndicadoresAtributosMaculaReputacao();
+                    };
+                }
             } else {
                 cMC.outerHTML = `<div id="containerMC" style="display: none;"></div>`;
             }
@@ -2445,7 +2684,35 @@
                     <input type="text" inputmode="numeric" pattern="[0-9-]*" id="pontosRP" value="${window._pontosEspeciais?.pontosRP ?? 0}" ${editavel ? '' : 'readonly'}>
                 </div>`;
                 const el = document.getElementById('pontosRP');
-                if (el) el.oninput = () => { if (!window._pontosEspeciais) window._pontosEspeciais = {}; window._pontosEspeciais.pontosRP = parseInt(el.value) || 0; debounceSave(); };
+                if (el) {
+                    el.dataset.reputacaoConcedida = String(parseInt(window._pontosEspeciais?.pontosRP) || 0);
+                    el.onfocus = () => {
+                        if (isGM || isMaster) {
+                            el.dataset.masterEditing = 'true';
+                            el.dataset.valorAntesEdicao = String(parseInt(el.value) || 0);
+                            el.value = parseInt(el.dataset.reputacaoConcedida) || 0;
+                        }
+                    };
+                    el.onblur = () => {
+                        if (isGM || isMaster) {
+                            el.dataset.masterEditing = 'false';
+                            const valorAntes = parseInt(el.dataset.valorAntesEdicao) || 0;
+                            const valorAgora = parseInt(el.dataset.reputacaoConcedida) || 0;
+                            if (valorAntes !== valorAgora) {
+                                if (!window._pontosEspeciais) window._pontosEspeciais = {};
+                                window._pontosEspeciais.pontosRP = valorAgora;
+                                debounceSave();
+                            }
+                            atualizarIndicadoresAtributosMaculaReputacao();
+                        }
+                    };
+                    el.oninput = () => {
+                        if (el.dataset.masterEditing === 'true') {
+                            el.dataset.reputacaoConcedida = String(parseInt(el.value) || 0);
+                        }
+                        atualizarIndicadoresAtributosMaculaReputacao();
+                    };
+                }
             } else {
                 cRP.outerHTML = `<div id="containerRP" style="display: none;"></div>`;
             }
@@ -2541,6 +2808,228 @@
                 cConvRep.outerHTML = `<div id="containerConversorReputacao"></div>`;
             }
         }
+        // Módulos de atributo Mácula e Reputação (junto aos F/H/R/A/PdF)
+        renderizarAtributosMaculaReputacao();
+    }
+
+    // ============================================================
+    // MÓDULOS DE ATRIBUTO MÁCULA E REPUTAÇÃO
+    // ============================================================
+    function renderizarAtributosMaculaReputacao() {
+        // --- Ficha principal ---
+        const cMac = document.getElementById('containerAtributoMacula');
+        if (cMac) {
+            if (regraAtiva('pontosMacula')) {
+                // Prioriza o valor já existente no DOM (injetado por injetarDadosNaTela);
+                // só cai para ultimoEstadoFicha se o input ainda não existir.
+                const inpExistente = document.getElementById('maculaAtributo');
+                const valorBase = inpExistente
+                    ? (parseInt(inpExistente.value) || 0)
+                    : (parseInt((ultimoEstadoFicha || {}).maculaAtributo) || 0);
+                cMac.innerHTML = `<div class="atributo-item" data-atributo-macula="1">
+                    <div class="atributo-header"><span class="atributo-titulo">🩸 Mác</span></div>
+                    <div class="atributo-linha-com-total">
+                        <div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="maculaAtributo" value="${valorBase}"></div>
+                        <div class="atributo-total-losango" title="Total de Mácula"><span class="atributo-total-valor" id="totalMaculaAtributo">0</span></div>
+                    </div>
+                </div>`;
+                const inp = document.getElementById('maculaAtributo');
+                if (inp) {
+                    inp.oninput = () => {
+                        if (!window._maculaAtributo) window._maculaAtributo = 0;
+                        window._maculaAtributo = parseInt(inp.value) || 0;
+                        atualizarIndicadoresAtributosMaculaReputacao();
+                        debounceSave();
+                    };
+                }
+                if (window._maculaAtributo === undefined) window._maculaAtributo = valorBase;
+            } else {
+                cMac.innerHTML = '';
+            }
+        }
+        // --- Reputação principal ---
+        const cRep = document.getElementById('containerAtributoReputacao');
+        if (cRep) {
+            if (regraAtiva('pontosReputacao')) {
+                const inpExistente = document.getElementById('reputacaoAtributo');
+                const valorBase = inpExistente
+                    ? (parseInt(inpExistente.value) || 0)
+                    : (parseInt((ultimoEstadoFicha || {}).reputacaoAtributo) || 0);
+                cRep.innerHTML = `<div class="atributo-item" data-atributo-reputacao="1">
+                    <div class="atributo-header"><span class="atributo-titulo">🏆 Rep.</span></div>
+                    <div class="atributo-linha-com-total">
+                        <div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="reputacaoAtributo" value="${valorBase}"></div>
+                        <div class="atributo-total-losango" title="Total de Reputação"><span class="atributo-total-valor" id="totalReputacaoAtributo">0</span></div>
+                    </div>
+                </div>`;
+                const inp = document.getElementById('reputacaoAtributo');
+                if (inp) {
+                    inp.oninput = () => {
+                        if (!window._reputacaoAtributo) window._reputacaoAtributo = 0;
+                        window._reputacaoAtributo = parseInt(inp.value) || 0;
+                        atualizarIndicadoresAtributosMaculaReputacao();
+                        debounceSave();
+                    };
+                }
+                if (window._reputacaoAtributo === undefined) window._reputacaoAtributo = valorBase;
+            } else {
+                cRep.innerHTML = '';
+            }
+        }
+        // --- Sub-fichas ---
+        subFichas.forEach((sub, idx) => {
+            const cMacSub = document.getElementById(`subficha-containerAtributoMacula-${idx}`);
+            if (cMacSub) {
+                if (regraAtiva('pontosMacula')) {
+                    const valorBase = parseInt(sub.maculaAtributo) || 0;
+                    cMacSub.innerHTML = `<div class="subficha-atributo-item" data-atributo-macula-sub="${idx}">
+                        <div class="atributo-header"><span class="atributo-titulo">🩸 Mác</span></div>
+                        <div class="atributo-linha-com-total">
+                            <div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-maculaAtributo-${idx}" value="${valorBase}"></div>
+                            <div class="subficha-total-losango" title="Total de Mácula"><span class="atributo-total-valor" id="subficha-totalMaculaAtributo-${idx}">0</span></div>
+                        </div>
+                    </div>`;
+                    const inp = document.getElementById(`subficha-maculaAtributo-${idx}`);
+                    if (inp) {
+                        inp.oninput = () => {
+                            sub.maculaAtributo = parseInt(inp.value) || 0;
+                            atualizarIndicadoresAtributosMaculaReputacao();
+                            debounceSaveSubFicha();
+                        };
+                    }
+                } else {
+                    cMacSub.innerHTML = '';
+                }
+            }
+            const cRepSub = document.getElementById(`subficha-containerAtributoReputacao-${idx}`);
+            if (cRepSub) {
+                if (regraAtiva('pontosReputacao')) {
+                    const valorBase = parseInt(sub.reputacaoAtributo) || 0;
+                    cRepSub.innerHTML = `<div class="subficha-atributo-item" data-atributo-reputacao-sub="${idx}">
+                        <div class="atributo-header"><span class="atributo-titulo">🏆 Rep.</span></div>
+                        <div class="atributo-linha-com-total">
+                            <div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-reputacaoAtributo-${idx}" value="${valorBase}"></div>
+                            <div class="subficha-total-losango" title="Total de Reputação"><span class="atributo-total-valor" id="subficha-totalReputacaoAtributo-${idx}">0</span></div>
+                        </div>
+                    </div>`;
+                    const inp = document.getElementById(`subficha-reputacaoAtributo-${idx}`);
+                    if (inp) {
+                        inp.oninput = () => {
+                            sub.reputacaoAtributo = parseInt(inp.value) || 0;
+                            atualizarIndicadoresAtributosMaculaReputacao();
+                            debounceSaveSubFicha();
+                        };
+                    }
+                } else {
+                    cRepSub.innerHTML = '';
+                }
+            }
+        });
+        atualizarIndicadoresAtributosMaculaReputacao();
+    }
+
+    function atualizarIndicadoresAtributosMaculaReputacao() {
+        // ----- Mácula principal (debita de pontosMacula) -----
+        const elMacTotal = document.getElementById('totalMaculaAtributo');
+        const elMacInput = document.getElementById('maculaAtributo');
+        const elMacCampo = document.getElementById('pontosMacula');
+        if (elMacTotal && elMacInput) {
+            const valor = parseInt(elMacInput.value) || 0;
+            elMacTotal.textContent = valor;
+            const custo = custoAtributo(valor);
+            let concedido = 0;
+            if (elMacCampo) {
+                let dsVal = parseInt(elMacCampo.dataset.maculaConcedida);
+                if (!Number.isFinite(dsVal)) dsVal = 0;
+                const dbVal = parseInt(window._pontosEspeciais?.pontosMacula) || 0;
+                concedido = (dsVal !== 0 || elMacCampo.dataset.masterEditing === 'true') ? dsVal : dbVal;
+                if (elMacCampo.dataset.masterEditing !== 'true' && dsVal === 0 && dbVal !== 0) {
+                    elMacCampo.dataset.maculaConcedida = String(dbVal);
+                }
+                const disponivel = concedido - custo;
+                if (elMacCampo.dataset.masterEditing !== 'true') {
+                    elMacCampo.value = disponivel;
+                }
+                elMacTotal.parentElement.title = `Valor: ${valor} | Custo: ${custo} | Mácula disponível: ${disponivel} (concedido: ${concedido})`;
+                elMacTotal.parentElement.classList.toggle('pontos-negativo', disponivel < 0);
+            }
+        }
+        // ----- Reputação principal (debita de pontosRP) -----
+        const elRepTotal = document.getElementById('totalReputacaoAtributo');
+        const elRepInput = document.getElementById('reputacaoAtributo');
+        const elRepCampo = document.getElementById('pontosRP');
+        if (elRepTotal && elRepInput) {
+            const valor = parseInt(elRepInput.value) || 0;
+            elRepTotal.textContent = valor;
+            const custo = custoAtributo(valor);
+            let concedido = 0;
+            if (elRepCampo) {
+                let dsVal = parseInt(elRepCampo.dataset.reputacaoConcedida);
+                if (!Number.isFinite(dsVal)) dsVal = 0;
+                const dbVal = parseInt(window._pontosEspeciais?.pontosRP) || 0;
+                concedido = (dsVal !== 0 || elRepCampo.dataset.masterEditing === 'true') ? dsVal : dbVal;
+                if (elRepCampo.dataset.masterEditing !== 'true' && dsVal === 0 && dbVal !== 0) {
+                    elRepCampo.dataset.reputacaoConcedida = String(dbVal);
+                }
+                const disponivel = concedido - custo;
+                if (elRepCampo.dataset.masterEditing !== 'true') {
+                    elRepCampo.value = disponivel;
+                }
+                elRepTotal.parentElement.title = `Valor: ${valor} | Custo: ${custo} | Reputação disponível: ${disponivel} (concedido: ${concedido})`;
+                elRepTotal.parentElement.classList.toggle('pontos-negativo', disponivel < 0);
+            }
+        }
+        // ----- Sub-fichas -----
+        subFichas.forEach((sub, idx) => {
+            const elMacTotalSub = document.getElementById(`subficha-totalMaculaAtributo-${idx}`);
+            const elMacInputSub = document.getElementById(`subficha-maculaAtributo-${idx}`);
+            const elMacCampoSub = document.getElementById(`subficha-pontosMacula-${idx}`);
+            if (elMacTotalSub && elMacInputSub) {
+                const valor = parseInt(elMacInputSub.value) || 0;
+                elMacTotalSub.textContent = valor;
+                const custo = custoAtributo(valor);
+                let concedido = 0;
+                if (elMacCampoSub) {
+                    let dsVal = parseInt(elMacCampoSub.dataset.maculaConcedida);
+                    if (!Number.isFinite(dsVal)) dsVal = 0;
+                    const dbVal = parseInt(sub?._pontosEspeciais?.pontosMacula) || 0;
+                    concedido = (dsVal !== 0 || elMacCampoSub.dataset.masterEditing === 'true') ? dsVal : dbVal;
+                    if (elMacCampoSub.dataset.masterEditing !== 'true' && dsVal === 0 && dbVal !== 0) {
+                        elMacCampoSub.dataset.maculaConcedida = String(dbVal);
+                    }
+                    const disponivel = concedido - custo;
+                    if (elMacCampoSub.dataset.masterEditing !== 'true') {
+                        elMacCampoSub.value = disponivel;
+                    }
+                    elMacTotalSub.parentElement.title = `Valor: ${valor} | Custo: ${custo} | Mácula disponível: ${disponivel} (concedido: ${concedido})`;
+                    elMacTotalSub.parentElement.classList.toggle('pontos-negativo', disponivel < 0);
+                }
+            }
+            const elRepTotalSub = document.getElementById(`subficha-totalReputacaoAtributo-${idx}`);
+            const elRepInputSub = document.getElementById(`subficha-reputacaoAtributo-${idx}`);
+            const elRepCampoSub = document.getElementById(`subficha-pontosRP-${idx}`);
+            if (elRepTotalSub && elRepInputSub) {
+                const valor = parseInt(elRepInputSub.value) || 0;
+                elRepTotalSub.textContent = valor;
+                const custo = custoAtributo(valor);
+                let concedido = 0;
+                if (elRepCampoSub) {
+                    let dsVal = parseInt(elRepCampoSub.dataset.reputacaoConcedida);
+                    if (!Number.isFinite(dsVal)) dsVal = 0;
+                    const dbVal = parseInt(sub?._pontosEspeciais?.pontosRP) || 0;
+                    concedido = (dsVal !== 0 || elRepCampoSub.dataset.masterEditing === 'true') ? dsVal : dbVal;
+                    if (elRepCampoSub.dataset.masterEditing !== 'true' && dsVal === 0 && dbVal !== 0) {
+                        elRepCampoSub.dataset.reputacaoConcedida = String(dbVal);
+                    }
+                    const disponivel = concedido - custo;
+                    if (elRepCampoSub.dataset.masterEditing !== 'true') {
+                        elRepCampoSub.value = disponivel;
+                    }
+                    elRepTotalSub.parentElement.title = `Valor: ${valor} | Custo: ${custo} | Reputação disponível: ${disponivel} (concedido: ${concedido})`;
+                    elRepTotalSub.parentElement.classList.toggle('pontos-negativo', disponivel < 0);
+                }
+            }
+        });
     }
 
     function renderizarPontosEspeciaisSub(index) {
@@ -2601,7 +3090,34 @@
                     <input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-pontosMacula-${index}" value="${sub._pontosEspeciais.pontosMacula ?? 0}" ${editavel ? '' : 'readonly'}>
                 </div>`;
                 const el = document.getElementById(`subficha-pontosMacula-${index}`);
-                if (el) el.oninput = () => { sub._pontosEspeciais.pontosMacula = parseInt(el.value) || 0; debounceSaveSubFicha(); };
+                if (el) {
+                    el.dataset.maculaConcedida = String(parseInt(sub._pontosEspeciais.pontosMacula) || 0);
+                    el.onfocus = () => {
+                        if (isGM || isMaster) {
+                            el.dataset.masterEditing = 'true';
+                            el.dataset.valorAntesEdicao = String(parseInt(el.value) || 0);
+                            el.value = parseInt(el.dataset.maculaConcedida) || 0;
+                        }
+                    };
+                    el.onblur = () => {
+                        if (isGM || isMaster) {
+                            el.dataset.masterEditing = 'false';
+                            const valorAntes = parseInt(el.dataset.valorAntesEdicao) || 0;
+                            const valorAgora = parseInt(el.dataset.maculaConcedida) || 0;
+                            if (valorAntes !== valorAgora) {
+                                sub._pontosEspeciais.pontosMacula = valorAgora;
+                                debounceSaveSubFicha();
+                            }
+                            atualizarIndicadoresAtributosMaculaReputacao();
+                        }
+                    };
+                    el.oninput = () => {
+                        if (el.dataset.masterEditing === 'true') {
+                            el.dataset.maculaConcedida = String(parseInt(el.value) || 0);
+                        }
+                        atualizarIndicadoresAtributosMaculaReputacao();
+                    };
+                }
             } else {
                 cMC.outerHTML = `<div id="subficha-containerMC-${index}"></div>`;
             }
@@ -2616,7 +3132,34 @@
                     <input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-pontosRP-${index}" value="${sub._pontosEspeciais.pontosRP ?? 0}" ${editavel ? '' : 'readonly'}>
                 </div>`;
                 const el = document.getElementById(`subficha-pontosRP-${index}`);
-                if (el) el.oninput = () => { sub._pontosEspeciais.pontosRP = parseInt(el.value) || 0; debounceSaveSubFicha(); };
+                if (el) {
+                    el.dataset.reputacaoConcedida = String(parseInt(sub._pontosEspeciais.pontosRP) || 0);
+                    el.onfocus = () => {
+                        if (isGM || isMaster) {
+                            el.dataset.masterEditing = 'true';
+                            el.dataset.valorAntesEdicao = String(parseInt(el.value) || 0);
+                            el.value = parseInt(el.dataset.reputacaoConcedida) || 0;
+                        }
+                    };
+                    el.onblur = () => {
+                        if (isGM || isMaster) {
+                            el.dataset.masterEditing = 'false';
+                            const valorAntes = parseInt(el.dataset.valorAntesEdicao) || 0;
+                            const valorAgora = parseInt(el.dataset.reputacaoConcedida) || 0;
+                            if (valorAntes !== valorAgora) {
+                                sub._pontosEspeciais.pontosRP = valorAgora;
+                                debounceSaveSubFicha();
+                            }
+                            atualizarIndicadoresAtributosMaculaReputacao();
+                        }
+                    };
+                    el.oninput = () => {
+                        if (el.dataset.masterEditing === 'true') {
+                            el.dataset.reputacaoConcedida = String(parseInt(el.value) || 0);
+                        }
+                        atualizarIndicadoresAtributosMaculaReputacao();
+                    };
+                }
             } else {
                 cRP.outerHTML = `<div id="subficha-containerRP-${index}"></div>`;
             }
@@ -6929,6 +7472,8 @@ function custoAtributo(valor) {
                                 <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">🛡️ R</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-resistencia-${index}" value="${sub.resistencia}"></div><div class="subficha-total-losango" title="Total de Resistência"><span class="atributo-total-valor" id="subficha-totalResistencia-${index}">0</span></div></div><div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-bonusResistencia-${index}" value="${sub.bonusResistencia}"></div><input type="checkbox" id="subficha-chkBonusResistencia-${index}" class="bonus-checkbox" checked></div><div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-bonusResistencia2-${index}" value="${sub.bonusResistencia2}"></div><input type="checkbox" id="subficha-chkBonusResistencia2-${index}" class="bonus-checkbox" checked></div></div>
                                 <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">⚔️ A</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-armadura-${index}" value="${sub.armadura}"></div><div class="subficha-total-losango" title="Total de Armadura"><span class="atributo-total-valor" id="subficha-totalArmadura-${index}">0</span></div></div><div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-bonusArmadura-${index}" value="${sub.bonusArmadura || 0}"></div><input type="checkbox" id="subficha-chkBonusArmadura-${index}" class="bonus-checkbox" checked></div><div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-bonusArmadura2-${index}" value="${sub.bonusArmadura2 || 0}"></div><input type="checkbox" id="subficha-chkBonusArmadura2-${index}" class="bonus-checkbox" checked></div></div>
                                 <div class="subficha-atributo-item"><div class="atributo-header"><span class="atributo-titulo">🔮 PdF</span></div><div class="atributo-linha-com-total"><div class="atributo-linha"><label>Valor</label><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-pdf-${index}" value="${sub.pdf}"></div><div class="subficha-total-losango" title="Total de Poder de Fogo"><span class="atributo-total-valor" id="subficha-totalPdf-${index}">0</span></div></div><div class="atributo-linha"><div class="bonus1"><label>B1</label><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-bonusPdf-${index}" value="${sub.bonusPdf || 0}"></div><input type="checkbox" id="subficha-chkBonusPdf-${index}" class="bonus-checkbox" checked></div><div class="atributo-linha"><div class="bonus2"><label>B2</label><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-bonusPdf2-${index}" value="${sub.bonusPdf2 || 0}"></div><input type="checkbox" id="subficha-chkBonusPdf2-${index}" class="bonus-checkbox" checked></div></div>
+                                <div id="subficha-containerAtributoMacula-${index}" style="display: contents;"></div>
+                                <div id="subficha-containerAtributoReputacao-${index}" style="display: contents;"></div>
                                 <div class="subficha-rolagem-generica-item"><div class="rolagem-titulo">🎲 Rolagem Genérica</div><div class="rolagem-campos"><div class="roll-row"><label>Dados</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="subficha-qtdDados-${index}" value="1"><label>Mod</label><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-modRoll-${index}" value="0"></div><button class="btn-roll-sub" data-sub="${index}">🎲 Rolar</button></div></div>
                                 <div id="subficha-atributosCustom-${index}" style="display: contents;"></div>
                                 <button type="button" class="btn-add-atributo" data-custom-add-sub="${index}">➕ Novo Atributo</button>
@@ -7013,6 +7558,7 @@ function custoAtributo(valor) {
         configurarEventosStatusSub(index);
         renderizarBaralhoSub(index);
         renderizarPontosEspeciaisSub(index);
+        renderizarAtributosMaculaReputacao();
         const testesContainer = document.getElementById(`subficha-testesContainer-${index}`);
         if (testesContainer) {
             let oficiosDiv = document.getElementById(`subficha-oficios-${index}`);
@@ -8974,6 +9520,17 @@ window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!f
             const subCopy = JSON.parse(JSON.stringify(sub));
             if (baralhosSubFichas[idx]) subCopy.baralhoSubEstado = JSON.parse(JSON.stringify(baralhosSubFichas[idx]));
             if (atributosCustomSub[idx]) subCopy.atributosCustom = JSON.parse(JSON.stringify(atributosCustomSub[idx]));
+            // Mácula/Reputação convertidos da sub-ficha → salvam o concedido do dataset
+            const elMacSub = document.getElementById(`subficha-pontosMacula-${idx}`);
+            if (elMacSub && elMacSub.dataset.maculaConcedida !== undefined) {
+                if (!subCopy._pontosEspeciais) subCopy._pontosEspeciais = {};
+                subCopy._pontosEspeciais.pontosMacula = parseInt(elMacSub.dataset.maculaConcedida) || 0;
+            }
+            const elRepSub = document.getElementById(`subficha-pontosRP-${idx}`);
+            if (elRepSub && elRepSub.dataset.reputacaoConcedida !== undefined) {
+                if (!subCopy._pontosEspeciais) subCopy._pontosEspeciais = {};
+                subCopy._pontosEspeciais.pontosRP = parseInt(elRepSub.dataset.reputacaoConcedida) || 0;
+            }
             return subCopy;
         });
         for (const status of STATUS_LISTA) { const chk = document.getElementById(`status-${status.id}`); if (chk) statusFicha[status.id] = chk.checked; }
@@ -9013,6 +9570,8 @@ window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!f
             bonusPm: parseInt(document.getElementById('bonusPm').value) || 0,
             pontosBase,
             pontosGastos: pontosGastosVal,
+            maculaAtributo: parseInt(document.getElementById('maculaAtributo')?.value) || 0,
+            reputacaoAtributo: parseInt(document.getElementById('reputacaoAtributo')?.value) || 0,
             xp: parseInt(document.getElementById('xp').value) || 0,
             dinheiro: parseInt(document.getElementById('dinheiro').value) || 0,
             vantagemRegionalNome: document.getElementById('vantagemRegionalNome').value,
@@ -9042,12 +9601,28 @@ window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!f
             atributosCustom: JSON.parse(JSON.stringify(getAtributosCustom())),
             baralhoEstado: JSON.parse(JSON.stringify(baralhoEstado)),
             baralhosCombate: JSON.parse(JSON.stringify(baralhosCombate)),
-            pontosEspeciais: JSON.parse(JSON.stringify(window._pontosEspeciais || {}))
+            pontosEspeciais: (() => {
+                const pe = JSON.parse(JSON.stringify(window._pontosEspeciais || {}));
+                // Mácula/Reputação (convertidos, módulo Pontos) → salvam o concedido do dataset
+                const elMac = document.getElementById('pontosMacula');
+                if (elMac && elMac.dataset.maculaConcedida !== undefined) pe.pontosMacula = parseInt(elMac.dataset.maculaConcedida) || 0;
+                const elRep = document.getElementById('pontosRP');
+                if (elRep && elRep.dataset.reputacaoConcedida !== undefined) pe.pontosRP = parseInt(elRep.dataset.reputacaoConcedida) || 0;
+                // Mác/Rep. (brutos, módulo XP) já estão em window._pontosEspeciais.macula/.reputacao
+                // via oninput simples — nada a fazer aqui.
+                return pe;
+            })()
         };
     }
     
     function injetarDadosNaTela(f) {
         if (!f) return;
+        // Pontos Especiais (Destino, Ação, Ferimento, Mácula, Reputação)
+        // Precisa ser definido ANTES de qualquer atualizarPontos()/renderizarPontosEspeciais(),
+        // senão o módulo de Mácula/Reputação calcula com concedido=0 e fica negativo.
+        window._pontosEspeciais = (f.pontosEspeciais && typeof f.pontosEspeciais === 'object')
+            ? JSON.parse(JSON.stringify(f.pontosEspeciais))
+            : {};
         document.getElementById('nomePersonagem').value = f.nome || '';
         const escalaField = document.getElementById('escalaPersonagem');
         if (escalaField) escalaField.value = f.escala || '';
@@ -9115,6 +9690,13 @@ window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!f
             : [];
         const pontosBase = f.pontosBase !== undefined ? f.pontosBase : (parseFloat(f.pontos) || 0);
         const pontosGastos = f.pontosGastos !== undefined ? f.pontosGastos : 0;
+        // Restaura os valores base dos módulos Mácula e Reputação
+        const _injMac = parseInt(f.maculaAtributo) || 0;
+        const _injRep = parseInt(f.reputacaoAtributo) || 0;
+        const elInjMac = document.getElementById('maculaAtributo');
+        if (elInjMac) elInjMac.value = _injMac;
+        const elInjRep = document.getElementById('reputacaoAtributo');
+        if (elInjRep) elInjRep.value = _injRep;
         const pontosBaseEl = document.getElementById('pontosBase');
         const pontosGastosEl = document.getElementById('pontosGastosInput');
         if (pontosBaseEl) {
@@ -9280,11 +9862,14 @@ window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!f
         renderizarBaralhoPrincipal();
         subFichas.forEach((_, idx) => renderizarBaralhoSub(idx));
 
-        // Pontos Especiais (Destino, Ação, Ferimento, Mácula, Reputação)
-        window._pontosEspeciais = (f.pontosEspeciais && typeof f.pontosEspeciais === 'object') ? JSON.parse(JSON.stringify(f.pontosEspeciais)) : {};
+        // Pontos Especiais: window._pontosEspeciais já foi definido no início da função.
         renderizarPontosEspeciais();
 
         ultimoEstadoFicha = JSON.parse(JSON.stringify(extrairDadosDaTela()));
+
+        // Recalcula os indicadores de Mácula/Reputação DEPOIS que ultimoEstadoFicha
+        // foi atualizado — garante que o desconto apareça mesmo em fichas carregadas.
+        atualizarIndicadoresAtributosMaculaReputacao();
     }
         async function salvarFichaAtual() {
         if (!currentPin || !visualizandoId) return;
