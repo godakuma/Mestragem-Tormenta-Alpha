@@ -629,7 +629,7 @@
     /* ===== RECURSOS DA SUBFICHA - ALINHADOS COM A FICHA PRINCIPAL ===== */
     .subficha-recursos-3colunas {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2,1fr);
         gap: 6px;
         background: var(--fundo-painel-claro);
         border-radius: 12px;
@@ -2538,7 +2538,7 @@
         { id: 'periciasCartas', categoria: 'testes', nome: 'Teste alternativo de perícias (com cartas)', descricao: 'Baralho de 54 cartas (com 2 coringas). Cada jogador tem uma mão de 4 cartas. Selecione uma perícia (radio), depois clique numa carta da mão para revelá-la e usá-la. Ás a 10 = metade do valor nominal (arredondado para cima); J/Q/K = 6 (falha automática); Coringa = puxa carta do monte (vermelha = sucesso absoluto, preta = falha total). Só compra nova mão quando zerar as 4. Quando o monte acaba, embaralha descartes.', temConfig: false, subopcoes: [{ id: 'comDificuldades', label: 'Combinar com as dificuldades de rolagem (a carta vira a rolagem e é comparada com a dificuldade global)' }, { id: 'comContraDificuldade', label: 'Usar em conjunto com rolagem contra dificuldade (soma o valor da carta à característica; figuras = crítico, dobram a característica)' }] },
         { id: 'periciasEsforco', categoria: 'testes', nome: 'Teste alternativo de perícias (sem fatores aleatórios)', descricao: 'Substitui o d6 por Pontos de Esforço (PE), que valem de 1 a 6 como se fossem o resultado do dado. Mesmas regras base da "contra dificuldade": soma característica + bônus de treino (+4) + PE + bônus da linha − penalidade da linha e compara com a dificuldade. Não há sucesso/falha automática. PE máximo grátis = R + B1 + B2 + (treinado?4:0); o excedente custa 1 PM (depois 1 PV).', temConfig: false },
         { id: 'periciasNivelSucesso', categoria: 'testes', nome: 'Teste alternativo de perícias (nível de sucesso)', descricao: 'Determina o nível de sucesso de um teste olhando o valor rolado no dado: quanto mais alto, maior o sucesso (um 3 é melhor que um 2, que é melhor que um 1). Você ainda precisa ser bem-sucedido — um 6 é sempre falha. O nível máximo de sucesso é igual ao valor da característica + modificadores, limitado entre 1 e 5. Nível 1: sucesso simples; Nível 2: sucesso bom; Nível 3: sucesso ótimo; Nível 4: sucesso excelente; Nível 5: perfeição.', temConfig: false },
-        { id: 'combateTesteAtaque', categoria: 'ataques', nome: 'Testes de Ataque (teste antes do dano)', descricao: 'Antes de atacar, cada personagem precisa fazer um teste de Habilidade (ou da perícia Combate, se o mestre optar por usá-la). Caso passe, o dano é rolado com F ou PdF + 1d, e a defesa do alvo, com A + 1d. Um 6 na rolagem de dano ou de defesa conta como acerto crítico. Alternativamente, use testes Fáceis: um personagem com a perícia adequada (Combate, ou Máquinas em combate de mechas) tem sucesso automático e passa direto para o dano; sem a perícia, precisa de um teste de H-1 ou perde a ação.', temConfig: false, subopcoes: [{ id: 'usarPericiaCombate', label: 'Usar a perícia Combate (em vez de Habilidade pura) no teste de ataque' }, { id: 'testeFacil', label: 'Usar testes Fáceis (treinado = sucesso automático; sem perícia = H-1 ou perde a ação)' }, { id: 'comNivelSucesso', label: 'Combinar com níveis de sucesso (FA = F/PdF + nível de sucesso; FD = A + nível de sucesso; falha = nível 0; crítico = rolagem exatamente igual ao valor testado)' }] },
+        { id: 'combateTesteAtaque', categoria: 'ataques', nome: 'Testes de Ataque (teste antes do dano)', descricao: 'Antes de atacar, cada personagem precisa fazer um teste de Habilidade (ou da perícia Combate, se o mestre optar por usá-la). Caso passe, o dano é rolado com F ou PdF + 1d, e a defesa do alvo, com A + 1d. Um 6 na rolagem de dano ou de defesa conta como acerto crítico. Alternativamente, use testes Fáceis: um personagem com a perícia adequada (Combate, ou Máquinas em combate de mechas) tem sucesso automático e passa direto para o dano; sem a perícia, precisa de um teste de H-1 ou perde a ação.', temConfig: false, subopcoes: [{ id: 'usarPericiaCombate', label: 'Usar a perícia Combate (em vez de Habilidade pura) no teste de ataque' }, { id: 'usarPericiaMaquinas', label: 'Usar a perícia Máquinas (em vez de Habilidade pura) no teste de ataque' }, { id: 'testeFacil', label: 'Usar testes Fáceis (treinado = sucesso automático; sem perícia = H-1 ou perde a ação)' }, { id: 'comNivelSucesso', label: 'Combinar com níveis de sucesso (FA = F/PdF + nível de sucesso; FD = A + nível de sucesso; falha = nível 0; crítico = rolagem exatamente igual ao valor testado)' }] },
         { id: 'combatePilhaDados', categoria: 'ataques', nome: 'Pilha de dados em combate', descricao: 'Role uma quantidade de dados igual a F ou PdF + H para FA, e A + H para FD. Cada sucesso da defesa elimina um sucesso de ataque; sucessos de ataque restantes causam 1 ponto de dano cada. Alternativamente, multiplique os sucessos pela característica adequada. Outra forma: role 1 dado por ponto de F/PdF e some; para defesa, role 1 dado por ponto de A e some; o resultado é subtraído diretamente dos PVs. H não é usado neste tipo.', temConfig: false, subopcoes: [{ id: 'multiplicarPorCaracteristica', label: 'Multiplicar sucessos pela característica (em vez de 1 ponto de dano por sucesso)' }, { id: 'rolarDadosPorPonto', label: 'Rolar 1 dado por ponto de F/PdF (ataque) e de A (defesa), somando os resultados e subtraindo dos PVs' }] },
         { id: 'combateCartas', categoria: 'ataques', nome: 'Com Cartas em combate', descricao: 'Use as mesmas diretrizes do teste de perícia com cartas. Cada jogador compra duas cartas extras no início do combate, ficando com uma "mão de combate" de seis cartas. FA e FD = F/A/PdF + H + metade do valor da carta usada. Figuras (J/Q/K) contam como 6 (acerto crítico). Coringas: abra e descarte a primeira carta do monte; vermelha = acerto crítico, preta = valor 0 e remove a Habilidade do cálculo. O jogador pode fazer "combo" de cartas de mesmo naipe, somando os valores. A cada rodada, todas as cartas não utilizadas são descartadas e uma nova mão de seis cartas é comprada.', temConfig: false, subopcoes: [{ id: 'comboCartas', label: 'Combo de cartas (permite selecionar várias cartas do mesmo naipe e somar seus valores)' }] },
         { id: 'combatePontosEsforco', categoria: 'ataques', nome: 'Pontos de Esforço em Combate', descricao: 'As regras de Pontos de Esforço também podem ser usadas em combate. FA e FD passam a ser calculadas com F/A/PdF + H + Pontos de Esforço usados. Os pontos só são revelados no chat quando o jogador tiver escolhido e clicado no botão de rolagem. O uso segue as mesmas diretrizes dos testes: limite grátis = R + B1 + B2 + (treinado?4:0); o excedente custa 1 PM, depois 1 PV.', temConfig: false },
@@ -2553,7 +2553,7 @@
     let regrasSubopcoes = {
         periciasPilhaDados: { explosaoSeis: false },
         periciasCartas: { comDificuldades: false, comContraDificuldade: false },
-        combateTesteAtaque: { usarPericiaCombate: false, testeFacil: false, comNivelSucesso: false },
+        combateTesteAtaque: { usarPericiaCombate: false, usarPericiaMaquinas: false, testeFacil: false, comNivelSucesso: false },
         combatePilhaDados: { multiplicarPorCaracteristica: false, rolarDadosPorPonto: false },
         combateCartas: { comboCartas: false },
         combateSemPV: { disputaContraArmadura: false, pilhaDados: false, sistemaFerimentos: false, pilhaFerimentos: false }
@@ -3371,7 +3371,7 @@
                             <span class="regra-status">${ativa ? 'ATIVA' : 'INATIVA'}</span>
                         </div>
                         <div class="regra-descricao">${escapeHtml(r.descricao)}</div>
-                        ${r.subopcoes ? `
+                        ${r.subopcoes && ativa ? `
                             <div class="regra-subopcoes">
                                 ${r.subopcoes.map(s => `
                                     <label>
@@ -3381,7 +3381,7 @@
                                 `).join('')}
                             </div>
                         ` : ''}
-                        ${r.temConfig ? `
+                        ${r.temConfig && ativa ? `
                             <div class="regra-config">
                                 <label>Fácil:</label>
                                 <input type="text" inputmode="numeric" pattern="[0-9]*" data-regra-cfg="${r.id}" data-cfg-campo="facil" value="${cfg.facil ?? 8}">
@@ -3458,6 +3458,20 @@
                 const regraId = chk.dataset.regraSub;
                 const subId = chk.dataset.subId;
                 if (!regrasSubopcoes[regraId]) regrasSubopcoes[regraId] = {};
+
+                // === Exclusividade: marcar uma subopção desmarca as outras da MESMA regra ===
+                if (chk.checked) {
+                    const regraObj = REGRAS_DISPONIVEIS.find(r => r.id === regraId);
+                    const subsDaRegra = (regraObj?.subopcoes || []).map(s => s.id);
+                    subsDaRegra.forEach(outroSubId => {
+                        if (outroSubId !== subId) {
+                            regrasSubopcoes[regraId][outroSubId] = false;
+                            const outroChk = container.querySelector(`[data-regra-sub="${regraId}"][data-sub-id="${outroSubId}"]`);
+                            if (outroChk) outroChk.checked = false;
+                        }
+                    });
+                }
+
                 regrasSubopcoes[regraId][subId] = chk.checked;
                 salvarRegrasMesa();
                 if (visualizandoId) {
@@ -5864,13 +5878,21 @@ function custoAtributo(valor) {
         const regraAtivaCombate = ['combateTesteAtaque', 'combatePilhaDados', 'combateCartas', 'combatePontosEsforco', 'combateSemPV'].find(r => regraAtiva(r)) || null;
 
         if (regraAtivaCombate === 'combateTesteAtaque') {
-            const usarPericia = subopcaoAtiva('combateTesteAtaque', 'usarPericiaCombate');
+            const usarPericiaCombate = subopcaoAtiva('combateTesteAtaque', 'usarPericiaCombate');
+            const usarPericiaMaquinas = subopcaoAtiva('combateTesteAtaque', 'usarPericiaMaquinas');
+            const usarPericia = usarPericiaCombate || usarPericiaMaquinas;
             const testeFacil = subopcaoAtiva('combateTesteAtaque', 'testeFacil');
             const comNivel = subopcaoAtiva('combateTesteAtaque', 'comNivelSucesso');
             const hTeste = habilidadeTotal;
+            // Treinado vem do checkbox da aba TESTES (Manobras de Combate / Pilotagem).
+            // NÃO usa a lista de perícias da aba Vantagens.
             const temCombate = (() => {
-                const listas = isSub && subIndex !== null ? subFichas[subIndex].listas : fichaListas;
-                return (listas?.pericias || []).some(p => (p.nome || '').toLowerCase().includes('combate'));
+                const testes = isSub && subIndex !== null
+                    ? (subFichas[subIndex]?.testes || {})
+                    : (window.testeCheckboxes || {});
+                if (usarPericiaMaquinas) return testes['Pilotagem'] === true;
+                if (usarPericiaCombate) return testes['Manobras de Combate'] === true;
+                return testes['Manobras de Combate'] === true;
             })();
             if (comNivel) {
                 const dadoAtaque = Math.floor(Math.random() * 6) + 1;
@@ -5887,54 +5909,45 @@ function custoAtributo(valor) {
                 return;
             }
             if (usarPericia || testeFacil) {
-                if (testeFacil && temCombate) {
+                // ==== REGRA: teste fácil da perícia da aba TESTES (Manobras de Combate / Pilotagem) ====
+                const nomePericiaTeste = usarPericiaMaquinas ? 'Pilotagem' : 'Manobras de Combate';
+                const nomePericiaUsada = usarPericiaMaquinas ? 'Pilotagem' : 'Manobras de Combate';
+                const testesCtx = isSub && subIndex !== null
+                    ? (subFichas[subIndex]?.testes || {})
+                    : (window.testeCheckboxes || {});
+                const treinadoNaPericia = testesCtx[nomePericiaTeste] === true;
+
+                // 1) Treinado → sucesso automático, rola dano
+                if (treinadoNaPericia) {
                     const dadoDano = Math.floor(Math.random() * 6) + 1;
-                    const dano = atributoTotal + habilidadeTotal + dadoDano + bfa;
-                    const texto = `${prefixo}${tipoStr} [${ataque.nome || 'Ataque'}] (teste fácil, COM perícia): ⭐ SUCESSO AUTOMÁTICO | Dano: ${atributoTotal}(${atributoStr}) + ${habilidadeTotal}(H) + ${dadoDano}(1d6) + ${bfa}(BFA) = ${dano}`;
+                    const dano = atributoTotal + dadoDano + bfa;
+                    const texto = `${prefixo}${tipoStr} [${ataque.nome || 'Ataque'}] (${nomePericiaUsada} — Fácil, TREINADO): ⭐ SUCESSO AUTOMÁTICO | 🎲 Dano ${dadoDano}(1d6) + ${atributoTotal}(${atributoStr}) + ${bfa}(BFA) = ${dano}`;
                     addMensagem(texto, ehSecreta);
                     if (!ehSecreta) enviarRolagemFirebase(texto, false);
                     if (resultEl) { resultEl.textContent = `⭐ Automático | Dano: ${dano}`; resultEl.className = 'resultado-ataque sucesso'; }
                     debounceSave();
                     return;
                 }
-                if (testeFacil && !temCombate) {
-                    const alvo = hTeste - 1;
-                    const dadoAtaque = Math.floor(Math.random() * 6) + 1;
-                    const sucesso = dadoAtaque <= alvo;
-                    if (!sucesso) {
-                        const texto = `${prefixo}${tipoStr} [${ataque.nome || 'Ataque'}] (teste fácil, SEM perícia): 🎲 Ataque ${dadoAtaque} vs H-1=${alvo} → ❌ FALHA (perde a ação)`;
-                        addMensagem(texto, ehSecreta);
-                        if (!ehSecreta) enviarRolagemFirebase(texto, false);
-                        if (resultEl) { resultEl.textContent = `🎲 ${dadoAtaque} vs ${alvo} → ❌ Perde ação`; resultEl.className = 'resultado-ataque falha'; }
-                        debounceSave();
-                        return;
-                    }
-                    const dadoDano = Math.floor(Math.random() * 6) + 1;
-                    const dano = atributoTotal + habilidadeTotal + dadoDano + bfa;
-                    const texto = `${prefixo}${tipoStr} [${ataque.nome || 'Ataque'}] (teste fácil, SEM perícia): 🎲 Ataque ${dadoAtaque} vs H-1=${alvo} → ✅ SUCESSO | Dano: ${atributoTotal}(${atributoStr}) + ${habilidadeTotal}(H) + ${dadoDano}(1d6) + ${bfa}(BFA) = ${dano}`;
-                    addMensagem(texto, ehSecreta);
-                    if (!ehSecreta) enviarRolagemFirebase(texto, false);
-                    if (resultEl) { resultEl.textContent = `🎲 ${dadoAtaque} → ✅ Dano: ${dano}`; resultEl.className = 'resultado-ataque sucesso'; }
-                    debounceSave();
-                    return;
-                }
-                const alvoAtaque = hTeste;
+
+                // 2) Não treinado → teste FÁCIL da regra geral (dado <= H, 6 = falha automática)
+                const alvoFacil = hTeste - 1;
                 const dadoAtaque = Math.floor(Math.random() * 6) + 1;
-                const sucessoAtaque = dadoAtaque <= alvoAtaque;
-                if (!sucessoAtaque) {
-                    const texto = `${prefixo}${tipoStr} [${ataque.nome || 'Ataque'}] (perícia Combate): 🎲 Ataque ${dadoAtaque} vs H+B1+B2=${alvoAtaque} → ❌ FALHA no teste de ataque`;
+                const sucessoTeste = (dadoAtaque !== 6) && (dadoAtaque <= alvoFacil);
+                if (!sucessoTeste) {
+                    const sextoStr = dadoAtaque === 6 ? ' ⚠️ [6 = falha automática]' : '';
+                    const texto = `${prefixo}${tipoStr} [${ataque.nome || 'Ataque'}] (${nomePericiaUsada} — Fácil): 🎲 Teste ${dadoAtaque} vs H${alvoFacil} → ❌ FALHA no teste de ataque (sem dano)${sextoStr}`;
                     addMensagem(texto, ehSecreta);
                     if (!ehSecreta) enviarRolagemFirebase(texto, false);
-                    if (resultEl) { resultEl.textContent = `🎲 ${dadoAtaque} vs ${alvoAtaque} → ❌ Falha`; resultEl.className = 'resultado-ataque falha'; }
+                    if (resultEl) { resultEl.textContent = `🎲 Teste ${dadoAtaque} vs ${alvoFacil} → ❌ Falha (sem dano)`; resultEl.className = 'resultado-ataque falha'; }
                     debounceSave();
                     return;
                 }
                 const dadoDano = Math.floor(Math.random() * 6) + 1;
                 const dano = atributoTotal + dadoDano + bfa;
-                const texto = `${prefixo}${tipoStr} [${ataque.nome || 'Ataque'}] (perícia Combate): 🎲 Ataque ${dadoAtaque} vs H+B1+B2=${alvoAtaque} → ✅ SUCESSO | 🎲 Dano ${dadoDano}(1d6) + ${atributoTotal}(${atributoStr}) + ${bfa}(BFA) = ${dano}`;
+                const texto = `${prefixo}${tipoStr} [${ataque.nome || 'Ataque'}] (${nomePericiaUsada} — Fácil): 🎲 Teste ${dadoAtaque} vs H${alvoFacil} → ✅ SUCESSO | 🎲 Dano ${dadoDano}(1d6) + ${atributoTotal}(${atributoStr}) + ${bfa}(BFA) = ${dano}`;
                 addMensagem(texto, ehSecreta);
                 if (!ehSecreta) enviarRolagemFirebase(texto, false);
-                if (resultEl) { resultEl.textContent = `🎲 ${dadoAtaque} → ✅ | Dano: ${dano}`; resultEl.className = 'resultado-ataque sucesso'; }
+                if (resultEl) { resultEl.textContent = `🎲 Teste ${dadoAtaque} → ✅ | Dano: ${dano}`; resultEl.className = 'resultado-ataque sucesso'; }
                 debounceSave();
                 return;
             }
@@ -6062,7 +6075,8 @@ function custoAtributo(valor) {
             if (pe > 6) pe = 6;
             const temCombate = (() => {
                 const listas = isSub && subIndex !== null ? subFichas[subIndex].listas : fichaListas;
-                return (listas?.pericias || []).some(p => (p.nome || '').toLowerCase().includes('combate'));
+                const nomes = (listas?.pericias || []).map(p => (p.nome || '').toLowerCase());
+                return nomes.some(n => n.includes('combate') || n.includes('máquina') || n.includes('maquina'));
             })();
             const rTotalBonus = rTotal + bonusR1 + bonusR2;
             const limiteGratis = rTotalBonus + (temCombate ? 4 : 0);
@@ -6388,7 +6402,8 @@ function custoAtributo(valor) {
             if (pe < 0) pe = 0; if (pe > 6) pe = 6;
             const temCombate = (() => {
                 const listas = isSub && subIndex !== null ? subFichas[subIndex].listas : fichaListas;
-                return (listas?.pericias || []).some(p => (p.nome || '').toLowerCase().includes('combate'));
+                const nomes = (listas?.pericias || []).map(p => (p.nome || '').toLowerCase());
+                return nomes.some(n => n.includes('combate') || n.includes('máquina') || n.includes('maquina'));
             })();
             const rTotalBonus = rTotal + bonusR1 + bonusR2;
             const limiteGratis = rTotalBonus + (temCombate ? 4 : 0);
@@ -8251,7 +8266,7 @@ function custoAtributo(valor) {
             lista.forEach((elemento, idx) => {
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'item';
-                itemDiv.innerHTML = `<div class="item-linha"><input type="text" value="${escapeHtml(elemento.nome || '')}" placeholder="Nome" oninput="window.atualizarItemSubLista(${index}, 'itens', ${idx}, 'nome', this.value)"><input type="text" class="valor" value="${escapeHtml(String(elemento.valor || 0))}" placeholder="Custo" oninput="window.atualizarItemSubLista(${index}, 'itens', ${idx}, 'valor', this.value)"><button class="btn-desc-sub" onclick="window.toggleDescSubLista(${index}, 'itens', ${idx})">📖</button><button class="btn-del-sub" onclick="window.removerItemSubLista(${index}, 'itens', ${idx})">❌</button></div><div id="subficha-desc-itens-${index}-${idx}" class="desc-editor" style="display: ${elemento.visivel ? 'block' : 'none'};"><textarea rows="3" placeholder="Descrição detalhada..." oninput="window.atualizarItemSubLista(${index}, 'itens', ${idx}, 'desc', this.value)">${escapeHtml(elemento.desc || '')}</textarea></div>`;
+                itemDiv.innerHTML = `<div class="item-linha"><input type="text" value="${escapeHtml(elemento.nome || '')}" placeholder="Nome" oninput="window.atualizarItemSubLista(${index}, 'itens', ${idx}, 'nome', this.value)"><input type="text" class="valor" value="${escapeHtml(String(elemento.valor || 0))}" placeholder="Custo" oninput="window.atualizarItemSubLista(${index}, 'itens', ${idx}, 'valor', this.value)"><button class="btn-desc-sub" onclick="window.toggleDescSubLista(${index}, 'itens', ${idx})">📖</button><button class="btn-info-sub-item" data-info-tipo="itemSub" data-sub-idx="${index}" data-item-idx="${idx}">i</button><button class="btn-del-sub" onclick="window.removerItemSubLista(${index}, 'itens', ${idx})">❌</button></div><div id="subficha-desc-itens-${index}-${idx}" class="desc-editor" style="display: ${elemento.visivel ? 'block' : 'none'};"><textarea rows="3" placeholder="Descrição detalhada..." oninput="window.atualizarItemSubLista(${index}, 'itens', ${idx}, 'desc', this.value)">${escapeHtml(elemento.desc || '')}</textarea></div>`;
                 itensContainer.appendChild(itemDiv);
             });
         }
@@ -8262,7 +8277,7 @@ function custoAtributo(valor) {
             lista.forEach((elemento, idx) => {
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'item';
-                itemDiv.innerHTML = `<div class="item-linha"><input type="text" value="${escapeHtml(elemento.nome || '')}" placeholder="Nome" oninput="window.atualizarItemSubLista(${index}, 'equipamentos', ${idx}, 'nome', this.value)"><input type="text" class="valor" value="${escapeHtml(String(elemento.valor || 0))}" placeholder="Custo" oninput="window.atualizarItemSubLista(${index}, 'equipamentos', ${idx}, 'valor', this.value)"><button class="btn-desc-sub" onclick="window.toggleDescSubLista(${index}, 'equipamentos', ${idx})">📖</button><button class="btn-del-sub" onclick="window.removerItemSubLista(${index}, 'equipamentos', ${idx})">❌</button></div><div id="subficha-desc-equipamentos-${index}-${idx}" class="desc-editor" style="display: ${elemento.visivel ? 'block' : 'none'};"><textarea rows="3" placeholder="Descrição detalhada..." oninput="window.atualizarItemSubLista(${index}, 'equipamentos', ${idx}, 'desc', this.value)">${escapeHtml(elemento.desc || '')}</textarea></div>`;
+                itemDiv.innerHTML = `<div class="item-linha"><input type="text" value="${escapeHtml(elemento.nome || '')}" placeholder="Nome" oninput="window.atualizarItemSubLista(${index}, 'equipamentos', ${idx}, 'nome', this.value)"><input type="text" class="valor" value="${escapeHtml(String(elemento.valor || 0))}" placeholder="Custo" oninput="window.atualizarItemSubLista(${index}, 'equipamentos', ${idx}, 'valor', this.value)"><button class="btn-desc-sub" onclick="window.toggleDescSubLista(${index}, 'equipamentos', ${idx})">📖</button><button class="btn-info-sub-item" data-info-tipo="equipamentoSub" data-sub-idx="${index}" data-item-idx="${idx}">i</button><button class="btn-del-sub" onclick="window.removerItemSubLista(${index}, 'equipamentos', ${idx})">❌</button></div><div id="subficha-desc-equipamentos-${index}-${idx}" class="desc-editor" style="display: ${elemento.visivel ? 'block' : 'none'};"><textarea rows="3" placeholder="Descrição detalhada..." oninput="window.atualizarItemSubLista(${index}, 'equipamentos', ${idx}, 'desc', this.value)">${escapeHtml(elemento.desc || '')}</textarea></div>`;
                 equipamentosContainer.appendChild(itemDiv);
             });
         }
@@ -8273,7 +8288,7 @@ function custoAtributo(valor) {
             lista.forEach((elemento, idx) => {
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'item';
-                itemDiv.innerHTML = `<div class="item-linha"><input type="text" value="${escapeHtml(elemento.nome || '')}" placeholder="Nome" oninput="window.atualizarItemSubLista(${index}, 'tiposDano', ${idx}, 'nome', this.value)"><input type="text" class="valor" value="${escapeHtml(String(elemento.valor || 0))}" placeholder="Custo" oninput="window.atualizarItemSubLista(${index}, 'tiposDano', ${idx}, 'valor', this.value)"><button class="btn-desc-sub" onclick="window.toggleDescSubLista(${index}, 'tiposDano', ${idx})">📖</button><button class="btn-del-sub" onclick="window.removerItemSubLista(${index}, 'tiposDano', ${idx})">❌</button></div><div id="subficha-desc-tiposDano-${index}-${idx}" class="desc-editor" style="display: ${elemento.visivel ? 'block' : 'none'};"><textarea rows="3" placeholder="Descrição detalhada..." oninput="window.atualizarItemSubLista(${index}, 'tiposDano', ${idx}, 'desc', this.value)">${escapeHtml(elemento.desc || '')}</textarea></div>`;
+                itemDiv.innerHTML = `<div class="item-linha"><input type="text" value="${escapeHtml(elemento.nome || '')}" placeholder="Nome" oninput="window.atualizarItemSubLista(${index}, 'tiposDano', ${idx}, 'nome', this.value)"><input type="text" class="valor" value="${escapeHtml(String(elemento.valor || 0))}" placeholder="Custo" oninput="window.atualizarItemSubLista(${index}, 'tiposDano', ${idx}, 'valor', this.value)"><button class="btn-desc-sub" onclick="window.toggleDescSubLista(${index}, 'tiposDano', ${idx})">📖</button><button class="btn-info-sub-item" data-info-tipo="tipoDanoSub" data-sub-idx="${index}" data-item-idx="${idx}">i</button><button class="btn-del-sub" onclick="window.removerItemSubLista(${index}, 'tiposDano', ${idx})">❌</button></div><div id="subficha-desc-tiposDano-${index}-${idx}" class="desc-editor" style="display: ${elemento.visivel ? 'block' : 'none'};"><textarea rows="3" placeholder="Descrição detalhada..." oninput="window.atualizarItemSubLista(${index}, 'tiposDano', ${idx}, 'desc', this.value)">${escapeHtml(elemento.desc || '')}</textarea></div>`;
                 tiposDanoContainer.appendChild(itemDiv);
             });
         }
@@ -9301,7 +9316,7 @@ function custoAtributo(valor) {
             const isSustentado = elemento.sustentado === true;
             const chkHtml = (tipo === 'magias' || tipo === 'vantagens') ? `<input type="checkbox" class="chk-sustentado" id="${tipo}-sustentado-${index}" ${isSustentado ? 'checked' : ''}>` : '';
             let infoTipo = tipo;
-            if (tipo === 'vantagens') infoTipo = 'vantagem'; else if (tipo === 'desvantagens') infoTipo = 'desvantagem'; else if (tipo === 'especializacoes') infoTipo = 'especializacao'; else if (tipo === 'magias') infoTipo = 'magia';
+            if (tipo === 'vantagens') infoTipo = 'vantagem'; else if (tipo === 'desvantagens') infoTipo = 'desvantagem'; else if (tipo === 'especializacoes') infoTipo = 'especializacao'; else if (tipo === 'magias') infoTipo = 'magia'; else if (tipo === 'itens') infoTipo = 'item'; else if (tipo === 'equipamentos') infoTipo = 'equipamento'; else if (tipo === 'tiposDano') infoTipo = 'tipoDano';
             let controlesMagia = '';
             if (tipo === 'magias') controlesMagia = renderizarControlesMagia(elemento, index, false, null);
             itemDiv.innerHTML = `<div class="item-linha">${chkHtml}<input type="text" value="${escapeHtml(elemento.nome || '')}" placeholder="Nome" oninput="window.atualizarItemLista('${tipo}', ${index}, 'nome', this.value)">${tipo === 'magias' ? '' : `<input type="text" class="valor" value="${escapeHtml(String(elemento.valor || 0))}" placeholder="Custo" onfocus="window.focarValorItemLista('${tipo}', ${index}, this)" oninput="window.atualizarItemLista('${tipo}', ${index}, 'valor', this.value)" onblur="window.blurValorItemLista('${tipo}', ${index}, this)">`}<button class="btn-desc" onclick="window.toggleDescLista('${tipo}', ${index})">📖</button><button class="btn-info-item" data-info-tipo="${infoTipo}" data-item-idx="${index}">i</button><button class="btn-del" onclick="window.removerItemLista('${tipo}', ${index}, '${containerId}')">❌</button></div><div id="desc-${tipo}-${index}" class="desc-editor" style="display: ${elemento.visivel ? 'block' : 'none'};"><textarea rows="3" oninput="window.atualizarItemLista('${tipo}', ${index}, 'desc', this.value)">${escapeHtml(elemento.desc || '')}</textarea></div>${controlesMagia}`;
