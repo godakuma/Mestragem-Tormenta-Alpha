@@ -7,11 +7,11 @@
     <style>
         :root {
         --fundo-geral: #eef2f7;
-        --fundo-painel: #dde5ec;
-        --fundo-painel-claro: #f5f8fb;
-        --fundo-input: #f8fafc;
-        --fundo-painel-medio: #cbd5e1;
-        --fundo-hover: #e2e8f0;
+        --fundo-painel: rgba(221, 229, 236, 0.72);
+        --fundo-painel-claro: rgba(245, 248, 251, 0.72);
+        --fundo-input: rgba(248, 250, 252, 0.72);
+        --fundo-painel-medio: rgba(203, 213, 225, 0.72);
+        --fundo-hover: rgba(226, 232, 240, 0.72);
         --borda-clara: #b8c4d0;
         --borda-media: #94a3b8;
         --primaria: #3b6ea5;
@@ -48,7 +48,12 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-        background: linear-gradient(135deg, #eef2f7 0%, #e3eaf3 100%);
+        background-image: linear-gradient(rgba(238, 242, 247, 0.55), rgba(238, 242, 247, 0.55)), url('https://github.com/godakuma/Mestragem-Tormenta-Alpha/blob/main/ilustracao_sem_cores.webp?raw=true');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+        background-color: var(--fundo-geral);
         font-family: 'Segoe UI', Verdana, sans-serif;
         color: var(--texto);
         padding: 16px;
@@ -57,10 +62,10 @@
     .container {
         max-width: 1600px;
         margin: 0 auto;
-        background: var(--fundo-painel);
+        background: rgba(221, 229, 236, 0.72);
         border-radius: 20px;
         border: 1px solid rgba(59, 110, 165, 0.35);
-        box-shadow: 0 10px 30px rgba(44, 82, 130, 0.12), 0 2px 6px rgba(44, 82, 130, 0.06);
+        box-shadow: 0 10px 30px rgba(44, 82, 130, 0.15), 0 2px 6px rgba(44, 82, 130, 0.06);
         padding: 20px;
     }
     h1 { text-align: center; color: var(--primaria-escura); margin-bottom: 20px; font-size: 24px; letter-spacing: 0.3px; }
