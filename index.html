@@ -2357,6 +2357,10 @@
                                             <input type="checkbox" id="vantagemUnicaCriaturaPoluicao" style="width:16px; height:16px; cursor:pointer; accent-color:var(--dourado);">
                                             ☣️ Criatura da Poluição
                                         </label>
+                                        <label style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:bold; color:var(--texto-suave); cursor:pointer; white-space:nowrap;">
+                                            <input type="checkbox" id="vantagemUnicaCriaturaOcular" style="width:16px; height:16px; cursor:pointer; accent-color:var(--dourado);">
+                                            👁️ Criatura Ocular
+                                        </label>
                                     </div>
                                     <div class="item-linha">
                                         <input type="text" id="vantagemUnicaNome" placeholder="Nome da Vantagem Única">
@@ -7273,7 +7277,7 @@ function custoAtributo(valor) {
             pontosBase: 0, _basePura: 0, xp: 0, dinheiro: 0, gastosManuais: null,
             vantagemRegionalNome: '', vantagemRegionalCusto: 0, vantagemRegionalDesc: '',
             vantagemUnicaNome: '', vantagemUnicaCusto: 0, vantagemUnicaDesc: '',
-            vantagemUnicaLefou: false, vantagemUnicaFeraCoral: false, vantagemUnicaSemideus: false, vantagemUnicaCriaturaPoluicao: false, vantagemUnicaHabilidades: [],
+            vantagemUnicaLefou: false, vantagemUnicaFeraCoral: false, vantagemUnicaSemideus: false, vantagemUnicaCriaturaPoluicao: false, vantagemUnicaCriaturaOcular: false, vantagemUnicaHabilidades: [],
             listas: { vantagens: [], desvantagens: [], pericias: [], especializacoes: [], itens: [], equipamentos: [], tiposDano: [], magias: [], kits: [] },
             testes: {}, statusSub: { ...statusSubInicial },
             oficios: [],
@@ -7431,6 +7435,7 @@ function custoAtributo(valor) {
         const chkFera = document.getElementById(`subficha-vantagemUnicaFeraCoral-${index}`);
         const chkSemi = document.getElementById(`subficha-vantagemUnicaSemideus-${index}`);
         const chkPoluicao = document.getElementById(`subficha-vantagemUnicaCriaturaPoluicao-${index}`);
+        const chkOcular = document.getElementById(`subficha-vantagemUnicaCriaturaOcular-${index}`);
         if (!input) return;
         if (document.activeElement === input) return;
         // Descobre os bônus que estão sendo removidos/alterados a partir do estado anterior salvo no dataset
@@ -7438,20 +7443,23 @@ function custoAtributo(valor) {
         const feraAnterior = input.dataset.feraAtivo === 'true' ? 1 : 0;
         const semiAnterior = input.dataset.semiAtivo === 'true' ? 4 : 0;
         const poluicaoAnterior = input.dataset.poluicaoAtivo === 'true' ? -1 : 0;
+        const ocularAnterior = input.dataset.ocularAtivo === 'true' ? 1 : 0;
         const lefouAtual = chkLefou?.checked === true ? 2 : 0;
         const feraAtual = chkFera?.checked === true ? 1 : 0;
         const semiAtual = chkSemi?.checked === true ? 4 : 0;
         const poluicaoAtual = chkPoluicao?.checked === true ? -1 : 0;
+        const ocularAtual = chkOcular?.checked === true ? 1 : 0;
         // O valor base real = valor visível atual - bônus anteriores
         const valorVisivel = parseInt(input.value) || 0;
-        const baseReal = valorVisivel - lefouAnterior - feraAnterior - semiAnterior - poluicaoAnterior;
+        const baseReal = valorVisivel - lefouAnterior - feraAnterior - semiAnterior - poluicaoAnterior - ocularAnterior;
         // Aplica os novos bônus
-        input.value = baseReal + lefouAtual + feraAtual + semiAtual + poluicaoAtual;
+        input.value = baseReal + lefouAtual + feraAtual + semiAtual + poluicaoAtual + ocularAtual;
         // Salva o estado dos checkboxes para o próximo cálculo
         input.dataset.lefouAtivo = chkLefou?.checked === true ? 'true' : 'false';
         input.dataset.feraAtivo = chkFera?.checked === true ? 'true' : 'false';
         input.dataset.semiAtivo = chkSemi?.checked === true ? 'true' : 'false';
         input.dataset.poluicaoAtivo = chkPoluicao?.checked === true ? 'true' : 'false';
+        input.dataset.ocularAtivo = chkOcular?.checked === true ? 'true' : 'false';
         input.dataset.custoBase = String(baseReal);
     }
     function renderizarSubFichaInline(sub, index) {
@@ -7586,7 +7594,7 @@ function custoAtributo(valor) {
             <div id="subficha-aba-vantagens-${index}" class="subficha-aba-conteudo">
                 <div class="grid-4">
                     <div class="card-full" style="margin-bottom: 20px;"><h3>🌟 Vantagem Regional</h3><div class="item"><div class="item-linha"><input type="text" id="subficha-vantagemRegionalNome-${index}" placeholder="Nome da Vantagem Regional" style="flex:2;" value="${escapeHtml(sub.vantagemRegionalNome || '')}"><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-vantagemRegionalCusto-${index}" class="valor" placeholder="Custo" value="${sub.vantagemRegionalCusto || 0}"><button class="btn-desc-sub" id="subficha-btnToggleVantagemRegional-${index}">📖</button><button class="btn-info-sub-item subficha-info-btn" data-sub-info-tipo="vantagemRegional" data-sub-info-idx="${index}">i</button></div><div id="subficha-vantagemRegionalDescEditor-${index}" style="display:none;" class="desc-editor"><textarea id="subficha-vantagemRegionalDesc-${index}" rows="3" placeholder="Descrição da Vantagem Regional...">${escapeHtml(sub.vantagemRegionalDesc || '')}</textarea></div></div></div>
-                    <div class="card-full" style="margin-bottom: 20px;"><h3>🌟 Vantagem Única</h3><div class="item"><div style="display:flex; align-items:center; gap:12px; padding:8px 10px; flex-wrap:wrap;"><label style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:bold; color:var(--texto-suave); cursor:pointer; white-space:nowrap;"><input type="checkbox" id="subficha-vantagemUnicaLefou-${index}" style="width:16px; height:16px; cursor:pointer; accent-color:var(--dourado);" ${sub.vantagemUnicaLefou ? 'checked' : ''}>🩸 Lefou</label><label style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:bold; color:var(--texto-suave); cursor:pointer; white-space:nowrap;"><input type="checkbox" id="subficha-vantagemUnicaFeraCoral-${index}" style="width:16px; height:16px; cursor:pointer; accent-color:var(--dourado);" ${sub.vantagemUnicaFeraCoral ? 'checked' : ''}>🪸 Fera-coral</label><label style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:bold; color:var(--texto-suave); cursor:pointer; white-space:nowrap;"><input type="checkbox" id="subficha-vantagemUnicaSemideus-${index}" style="width:16px; height:16px; cursor:pointer; accent-color:var(--dourado);" ${sub.vantagemUnicaSemideus ? 'checked' : ''}>⚡ Semideus</label><label style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:bold; color:var(--texto-suave); cursor:pointer; white-space:nowrap;"><input type="checkbox" id="subficha-vantagemUnicaCriaturaPoluicao-${index}" style="width:16px; height:16px; cursor:pointer; accent-color:var(--dourado);" ${sub.vantagemUnicaCriaturaPoluicao ? 'checked' : ''}>☣️ Criatura da Poluição</label></div><div class="item-linha"><input type="text" id="subficha-vantagemUnicaNome-${index}" placeholder="Nome da Vantagem Única" value="${escapeHtml(sub.vantagemUnicaNome)}"><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-vantagemUnicaCusto-${index}" class="valor" placeholder="Custo" value="${sub.vantagemUnicaCusto}"><button class="btn-desc-sub" id="subficha-btnToggleVantagemUnica-${index}">📖</button><button class="btn-info-sub-item subficha-info-btn" data-sub-info-tipo="vantagemUnica" data-sub-info-idx="${index}">i</button></div><div id="subficha-vantagemUnicaDescEditor-${index}" style="display:none;" class="desc-editor"><textarea id="subficha-vantagemUnicaDesc-${index}" rows="3" placeholder="Descrição da Vantagem Única...">${escapeHtml(sub.vantagemUnicaDesc)}</textarea></div><div id="subficha-vantagemUnicaHabilidades-${index}" class="kit-habilidades" style="margin-top:8px; border-left-color: var(--dourado);"></div><button type="button" class="btn-add-habilidade" data-sub-vu-add-hab="${index}" style="margin-top:6px;">+ Adicionar Habilidade</button></div></div>
+                    <div class="card-full" style="margin-bottom: 20px;"><h3>🌟 Vantagem Única</h3><div class="item"><div style="display:flex; align-items:center; gap:12px; padding:8px 10px; flex-wrap:wrap;"><label style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:bold; color:var(--texto-suave); cursor:pointer; white-space:nowrap;"><input type="checkbox" id="subficha-vantagemUnicaLefou-${index}" style="width:16px; height:16px; cursor:pointer; accent-color:var(--dourado);" ${sub.vantagemUnicaLefou ? 'checked' : ''}>🩸 Lefou</label><label style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:bold; color:var(--texto-suave); cursor:pointer; white-space:nowrap;"><input type="checkbox" id="subficha-vantagemUnicaFeraCoral-${index}" style="width:16px; height:16px; cursor:pointer; accent-color:var(--dourado);" ${sub.vantagemUnicaFeraCoral ? 'checked' : ''}>🪸 Fera-coral</label><label style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:bold; color:var(--texto-suave); cursor:pointer; white-space:nowrap;"><input type="checkbox" id="subficha-vantagemUnicaSemideus-${index}" style="width:16px; height:16px; cursor:pointer; accent-color:var(--dourado);" ${sub.vantagemUnicaSemideus ? 'checked' : ''}>⚡ Semideus</label><label style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:bold; color:var(--texto-suave); cursor:pointer; white-space:nowrap;"><input type="checkbox" id="subficha-vantagemUnicaCriaturaPoluicao-${index}" style="width:16px; height:16px; cursor:pointer; accent-color:var(--dourado);" ${sub.vantagemUnicaCriaturaPoluicao ? 'checked' : ''}>☣️ Criatura da Poluição</label><label style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:bold; color:var(--texto-suave); cursor:pointer; white-space:nowrap;"><input type="checkbox" id="subficha-vantagemUnicaCriaturaOcular-${index}" style="width:16px; height:16px; cursor:pointer; accent-color:var(--dourado);" ${sub.vantagemUnicaCriaturaOcular ? 'checked' : ''}>👁️ Criatura Ocular</label></div><div class="item-linha"><input type="text" id="subficha-vantagemUnicaNome-${index}" placeholder="Nome da Vantagem Única" value="${escapeHtml(sub.vantagemUnicaNome)}"><input type="text" inputmode="numeric" pattern="[0-9-]*" id="subficha-vantagemUnicaCusto-${index}" class="valor" placeholder="Custo" value="${sub.vantagemUnicaCusto}"><button class="btn-desc-sub" id="subficha-btnToggleVantagemUnica-${index}">📖</button><button class="btn-info-sub-item subficha-info-btn" data-sub-info-tipo="vantagemUnica" data-sub-info-idx="${index}">i</button></div><div id="subficha-vantagemUnicaDescEditor-${index}" style="display:none;" class="desc-editor"><textarea id="subficha-vantagemUnicaDesc-${index}" rows="3" placeholder="Descrição da Vantagem Única...">${escapeHtml(sub.vantagemUnicaDesc)}</textarea></div><div id="subficha-vantagemUnicaHabilidades-${index}" class="kit-habilidades" style="margin-top:8px; border-left-color: var(--dourado);"></div><button type="button" class="btn-add-habilidade" data-sub-vu-add-hab="${index}" style="margin-top:6px;">+ Adicionar Habilidade</button></div></div>
                     <div class="card-lista"><h3>✅ Vantagens</h3><div id="subficha-vantagensLista-${index}" class="lista"></div><button class="btn-add" onclick="window.adicionarItemSubLista(${index}, 'vantagens')">+ Adicionar Vantagem</button></div>
                     <div class="card-lista"><h3>❌ Desvantagens</h3><div id="subficha-desvantagensLista-${index}" class="lista"></div><button class="btn-add" onclick="window.adicionarItemSubLista(${index}, 'desvantagens')">+ Adicionar Desvantagem</button></div>
                     <div class="card-lista"><h3>⚡ Perícias</h3><div id="subficha-periciasLista-${index}" class="lista"></div><button class="btn-add" onclick="window.adicionarItemSubLista(${index}, 'pericias')">+ Adicionar Perícia</button></div>
@@ -7909,13 +7917,41 @@ function custoAtributo(valor) {
                 const chkLefou = document.getElementById(`subficha-vantagemUnicaLefou-${index}`);
                 const chkFera = document.getElementById(`subficha-vantagemUnicaFeraCoral-${index}`);
                 const chkSemi = document.getElementById(`subficha-vantagemUnicaSemideus-${index}`);
+                const chkOcular = document.getElementById(`subficha-vantagemUnicaCriaturaOcular-${index}`);
                 if (inputCusto) {
                     const base = parseInt(inputCusto.dataset.custoBase) || 0;
                     const lefou = chkLefou?.checked === true ? 2 : 0;
                     const fera = chkFera?.checked === true ? 1 : 0;
                     const semi = chkSemi?.checked === true ? 4 : 0;
                     const poluicao = vuCriaturaPoluicaoSub.checked ? -1 : 0;
-                    sub.vantagemUnicaCusto = base + lefou + fera + semi + poluicao;
+                    const ocular = chkOcular?.checked === true ? 1 : 0;
+                    sub.vantagemUnicaCusto = base + lefou + fera + semi + poluicao + ocular;
+                }
+                atualizarCustoVisualVantagemUnicaSub(index);
+                liberarRecalculoSub(index);
+                atualizarPontosSub(index);
+                debounceSaveSubFicha();
+            };
+        }
+
+        // Criatura Ocular (subficha) — vantagem de +1, entra no custo visual da Vantagem Única
+        const vuCriaturaOcularSub = document.getElementById(`subficha-vantagemUnicaCriaturaOcular-${index}`);
+        if (vuCriaturaOcularSub) {
+            vuCriaturaOcularSub.onchange = () => {
+                sub.vantagemUnicaCriaturaOcular = vuCriaturaOcularSub.checked;
+                const inputCusto = document.getElementById(`subficha-vantagemUnicaCusto-${index}`);
+                const chkLefou = document.getElementById(`subficha-vantagemUnicaLefou-${index}`);
+                const chkFera = document.getElementById(`subficha-vantagemUnicaFeraCoral-${index}`);
+                const chkSemi = document.getElementById(`subficha-vantagemUnicaSemideus-${index}`);
+                const chkPoluicao = document.getElementById(`subficha-vantagemUnicaCriaturaPoluicao-${index}`);
+                if (inputCusto) {
+                    const base = parseInt(inputCusto.dataset.custoBase) || 0;
+                    const lefou = chkLefou?.checked === true ? 2 : 0;
+                    const fera = chkFera?.checked === true ? 1 : 0;
+                    const semi = chkSemi?.checked === true ? 4 : 0;
+                    const poluicao = chkPoluicao?.checked === true ? -1 : 0;
+                    const ocular = vuCriaturaOcularSub.checked ? 1 : 0;
+                    sub.vantagemUnicaCusto = base + lefou + fera + semi + poluicao + ocular;
                 }
                 atualizarCustoVisualVantagemUnicaSub(index);
                 liberarRecalculoSub(index);
@@ -8005,12 +8041,14 @@ function custoAtributo(valor) {
             const chkF = document.getElementById(`subficha-vantagemUnicaFeraCoral-${index}`);
             const chkS = document.getElementById(`subficha-vantagemUnicaSemideus-${index}`);
             const chkP = document.getElementById(`subficha-vantagemUnicaCriaturaPoluicao-${index}`);
+            const chkO = document.getElementById(`subficha-vantagemUnicaCriaturaOcular-${index}`);
             if (inputCusto) {
                 // Sincroniza o estado inicial dos checkboxes no dataset
                 inputCusto.dataset.lefouAtivo = chkL?.checked === true ? 'true' : 'false';
                 inputCusto.dataset.feraAtivo = chkF?.checked === true ? 'true' : 'false';
                 inputCusto.dataset.semiAtivo = chkS?.checked === true ? 'true' : 'false';
                 inputCusto.dataset.poluicaoAtivo = chkP?.checked === true ? 'true' : 'false';
+                inputCusto.dataset.ocularAtivo = chkO?.checked === true ? 'true' : 'false';
             }
             atualizarCustoVisualVantagemUnicaSub(index);
         }, 0);
@@ -8173,6 +8211,7 @@ function custoAtributo(valor) {
         const chkFera = document.getElementById('vantagemUnicaFeraCoral');
         const chkSemi = document.getElementById('vantagemUnicaSemideus');
         const chkPoluicao = document.getElementById('vantagemUnicaCriaturaPoluicao');
+        const chkOcular = document.getElementById('vantagemUnicaCriaturaOcular');
         if (!input) return;
         // Se o usuário está com foco no campo, não sobrescreve (ele está digitando)
         if (document.activeElement === input) return;
@@ -8182,7 +8221,8 @@ function custoAtributo(valor) {
         const feraCoral = chkFera?.checked === true ? 1 : 0;
         const semideus = chkSemi?.checked === true ? 4 : 0;
         const poluicao = chkPoluicao?.checked === true ? -1 : 0;
-        input.value = baseSeguro + lefou + feraCoral + semideus + poluicao;
+        const ocular = chkOcular?.checked === true ? 1 : 0;
+        input.value = baseSeguro + lefou + feraCoral + semideus + poluicao + ocular;
     }
     function renderizarVantagemUnicaHabilidades() {
         const container = document.getElementById('vantagemUnicaHabilidades');
@@ -9566,7 +9606,7 @@ window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!f
             pontosBase: 0, xp: 0, dinheiro: 0, gastosManuais: null,
             vantagemRegionalNome: '', vantagemRegionalCusto: 0, vantagemRegionalDesc: '',
             vantagemUnicaNome: '', vantagemUnicaCusto: 0, vantagemUnicaDesc: '',
-            vantagemUnicaLefou: false, vantagemUnicaFeraCoral: false, vantagemUnicaSemideus: false, vantagemUnicaHabilidades: [],
+            vantagemUnicaLefou: false, vantagemUnicaFeraCoral: false, vantagemUnicaSemideus: false, vantagemUnicaCriaturaPoluicao: false, vantagemUnicaCriaturaOcular: false, vantagemUnicaHabilidades: [],
             avatarSrc: '',
             listas: { vantagens: [], desvantagens: [], pericias: [], especializacoes: [], itens: [], equipamentos: [], tiposDano: [], magias: [], kits: [] },
             subFichas: [], testes: {}, statusFicha: { ...statusInicial },
@@ -9661,6 +9701,7 @@ window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!f
             vantagemUnicaFeraCoral: (document.getElementById('vantagemUnicaFeraCoral')?.checked === true),
             vantagemUnicaSemideus: (document.getElementById('vantagemUnicaSemideus')?.checked === true),
             vantagemUnicaCriaturaPoluicao: (document.getElementById('vantagemUnicaCriaturaPoluicao')?.checked === true),
+            vantagemUnicaCriaturaOcular: (document.getElementById('vantagemUnicaCriaturaOcular')?.checked === true),
             vantagemUnicaHabilidades: JSON.parse(JSON.stringify(vantagemUnicaHabilidades || [])),
             avatarSrc: (document.getElementById('avatarBtn').querySelector('img')?.src) || '',
             listas: fichaListas,
@@ -9736,8 +9777,9 @@ window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!f
             const fera = f.vantagemUnicaFeraCoral === true ? 1 : 0;
             const semi = f.vantagemUnicaSemideus === true ? 4 : 0;
             const poluicao = f.vantagemUnicaCriaturaPoluicao === true ? -1 : 0;
-            vuCustoEl.value = base + lefou + fera + semi + poluicao;
-            vuCustoEl.dataset.valorAnterior = String(base + lefou + fera + semi + poluicao);
+            const ocular = f.vantagemUnicaCriaturaOcular === true ? 1 : 0;
+            vuCustoEl.value = base + lefou + fera + semi + poluicao + ocular;
+            vuCustoEl.dataset.valorAnterior = String(base + lefou + fera + semi + poluicao + ocular);
         }
         document.getElementById('vantagemUnicaDesc').value = f.vantagemUnicaDesc || '';
                 // Lefou
@@ -9755,6 +9797,10 @@ window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!f
         // Criatura da Poluição
         const vuCriaturaPoluicaoInject = document.getElementById('vantagemUnicaCriaturaPoluicao');
         if (vuCriaturaPoluicaoInject) vuCriaturaPoluicaoInject.checked = f.vantagemUnicaCriaturaPoluicao === true;
+
+        // Criatura Ocular
+        const vuCriaturaOcularInject = document.getElementById('vantagemUnicaCriaturaOcular');
+        if (vuCriaturaOcularInject) vuCriaturaOcularInject.checked = f.vantagemUnicaCriaturaOcular === true;
 
         // Habilidades da Vantagem Única
         vantagemUnicaHabilidades = Array.isArray(f.vantagemUnicaHabilidades)
@@ -9858,6 +9904,7 @@ window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!f
                 if (subCopy.vantagemUnicaFeraCoral === undefined) subCopy.vantagemUnicaFeraCoral = false;
                 if (subCopy.vantagemUnicaSemideus === undefined) subCopy.vantagemUnicaSemideus = false;
                 if (subCopy.vantagemUnicaCriaturaPoluicao === undefined) subCopy.vantagemUnicaCriaturaPoluicao = false;
+                if (subCopy.vantagemUnicaCriaturaOcular === undefined) subCopy.vantagemUnicaCriaturaOcular = false;
                 if (!Array.isArray(subCopy.vantagemUnicaHabilidades)) subCopy.vantagemUnicaHabilidades = [];
                 if (!Number.isFinite(subCopy.pontosBase)) subCopy.pontosBase = 0;
                 if (!Number.isFinite(subCopy._basePura)) subCopy._basePura = subCopy.pontosBase;
@@ -10273,6 +10320,8 @@ listaJogadoresUnsubscribe = () => {};
                     vantagemUnicaLefou: dados.vantagemUnicaLefou === true,
                     vantagemUnicaFeraCoral: dados.vantagemUnicaFeraCoral === true,
                     vantagemUnicaSemideus: dados.vantagemUnicaSemideus === true,
+                    vantagemUnicaCriaturaPoluicao: dados.vantagemUnicaCriaturaPoluicao === true,
+                    vantagemUnicaCriaturaOcular: dados.vantagemUnicaCriaturaOcular === true,
                     vantagemUnicaHabilidades: dados.vantagemUnicaHabilidades || [],
                     avatarSrc: dados.avatarSrc || '',
                     listas: { vantagens: dados.listas?.vantagens || [], desvantagens: dados.listas?.desvantagens || [], pericias: dados.listas?.pericias || [], especializacoes: dados.listas?.especializacoes || [], itens: dados.listas?.itens || [], equipamentos: dados.listas?.equipamentos || [], tiposDano: dados.listas?.tiposDano || [], magias: dados.listas?.magias || [], kits: dados.listas?.kits || [] },
@@ -10375,18 +10424,20 @@ listaJogadoresUnsubscribe = () => {};
             carregarListaJogadores(); iniciarLimpezaAutomatica();
             document.getElementById('viewingText').style.display = 'none';
             document.getElementById('btnMigrarCodigos').style.display = 'inline-block';
-            document.getElementById('btnVoltarLista').style.display = 'inline-block';
+            // O botão "Voltar para Lista" começa escondido; só aparece quando uma ficha é aberta
+            document.getElementById('btnVoltarLista').style.display = 'none';
             document.getElementById('btnVoltarLista').onclick = voltarParaLista;
             document.getElementById('btnUpdateAll').onclick = atualizarTodasFichas;
             document.getElementById('btnUpdateSelected').onclick = atualizarFichasSelecionadas;
             escutarStatusGlobais();
             document.getElementById('btnAbrirRegras').style.display = 'inline-flex';
 
-            // Botões de colapsar do painel do mestre
+            // Botões de colapsar do painel do mestre (iniciam FECHADOS)
             document.querySelectorAll('.gm-collapse-btn').forEach(btn => {
-                // Define estado inicial como aberto
-                btn.dataset.open = 'true';
-                btn.classList.add('aberto');
+                btn.dataset.open = 'false';
+                btn.classList.remove('aberto');
+                const wrapInicial = document.getElementById(btn.dataset.target);
+                if (wrapInicial) wrapInicial.classList.add('fechado');
                 if (!btn.querySelector('.seta')) {
                     const seta = document.createElement('span');
                     seta.className = 'seta';
@@ -10590,6 +10641,13 @@ listaJogadoresUnsubscribe = () => {};
     });
     const vuCriaturaPoluicaoEl = document.getElementById('vantagemUnicaCriaturaPoluicao');
     if (vuCriaturaPoluicaoEl) vuCriaturaPoluicaoEl.addEventListener('change', () => {
+        atualizarCustoVisualVantagemUnica();
+        liberarRecalculoPrincipal();
+        atualizarPontos();
+        debounceSave();
+    });
+    const vuCriaturaOcularEl = document.getElementById('vantagemUnicaCriaturaOcular');
+    if (vuCriaturaOcularEl) vuCriaturaOcularEl.addEventListener('change', () => {
         atualizarCustoVisualVantagemUnica();
         liberarRecalculoPrincipal();
         atualizarPontos();
