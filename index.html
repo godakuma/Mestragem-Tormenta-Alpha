@@ -4071,10 +4071,17 @@
                 updates = { 'ficha': comprimirDados(dadosSemCartas) };
             }
             // Sempre atualiza o nome e o timestamp (baratos)
-            updates['personagemNome'] = dados.nome || 'Personagem';
+            const nomeAtual = dados.nome || 'Personagem';
+            const nomeAnterior = ultimoEstadoFicha?.nome || '';
+            if (nomeAtual !== nomeAnterior || !ultimoEstadoFicha) {
+                updates['personagemNome'] = nomeAtual;
+                if (isMaster && typeof visualizandoId === 'string' && visualizandoId.startsWith('npc_')) {
+                    updates['nome'] = `NPC - ${nomeAtual}`;
+                }
+            }
             updates['ultimaAtualizacao'] = serverTimestamp();
             // Se não houve mudança real, não faz request
-            const soMeta = Object.keys(updates).every(k => k === 'personagemNome' || k === 'ultimaAtualizacao');
+            const soMeta = Object.keys(updates).every(k => k === 'ultimaAtualizacao');
             if (soMeta && ultimoEstadoFicha) return;
             update(jogadorRef, updates).catch(console.error);
             ultimoEstadoFicha = JSON.parse(JSON.stringify(dados));
@@ -9998,7 +10005,14 @@ window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!f
             let updates = ultimoEstadoFicha
                 ? diffFicha(ultimoEstadoFicha, comprimirDados(dados))
                 : { 'ficha': comprimirDados(dados) };
-            updates['personagemNome'] = dados.nome || 'Personagem';
+            const nomeAtual = dados.nome || 'Personagem';
+            const nomeAnterior = ultimoEstadoFicha?.nome || '';
+            if (nomeAtual !== nomeAnterior || !ultimoEstadoFicha) {
+                updates['personagemNome'] = nomeAtual;
+                if (isMaster && typeof visualizandoId === 'string' && visualizandoId.startsWith('npc_')) {
+                    updates['nome'] = `NPC - ${nomeAtual}`;
+                }
+            }
             updates['ultimaAtualizacao'] = serverTimestamp();
             await update(jogadorRef, updates);
             ultimoEstadoFicha = JSON.parse(JSON.stringify(dados));
@@ -10149,6 +10163,14 @@ window.atualizarHabilidade = function(kitIndex, habIndex, campo, valor) { if (!f
                 };
                 if (data.isNPC) npcsList.push(item); else jogadoresList.push(item);
             }
+            // Ordena as duas grids em ordem alfabética por nome do personagem (fallback: nome do jogador)
+            const compararPorPersonagem = (a, b) => {
+                const nomeA = (a.personagemNome && a.personagemNome !== 'Sem ficha') ? a.personagemNome : a.nome;
+                const nomeB = (b.personagemNome && b.personagemNome !== 'Sem ficha') ? b.personagemNome : b.nome;
+                return nomeA.localeCompare(nomeB, 'pt-BR', { sensitivity: 'base' });
+            };
+            jogadoresList.sort(compararPorPersonagem);
+            npcsList.sort(compararPorPersonagem);
 
             // Jogadores
             let htmlJogadores = '';
@@ -10403,7 +10425,7 @@ listaJogadoresUnsubscribe = () => {};
             const dados = jogadorSnapshot.val();
             const updatePayload = { nome, conectado: true, ultima_atualizacao: new Date().toISOString() };
             if (dados.isNPC === true) {
-                updatePayload.isNPC = false;
+                updatePayload.is_npc = false;
                 mostrarToast(`🎲 Ficha "${dados.personagemNome}" é sua agora!`, '#4a8a4a');
             }
             const { error } = await supabase.from('jogadores').update(updatePayload).eq('id', currentUserId);
