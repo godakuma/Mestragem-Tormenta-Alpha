@@ -8891,6 +8891,17 @@ function custoAtributo(valor) {
         container.querySelectorAll('textarea[data-kit-sub-field="descricao"]').forEach(textarea => { textarea.oninput = () => { const kitIdx = parseInt(textarea.dataset.kitSubIdx); const sIdx = parseInt(textarea.dataset.subIdx); if (subFichas[sIdx]?.listas?.kits?.[kitIdx]) { subFichas[sIdx].listas.kits[kitIdx].descricao = textarea.value; debounceSaveSubFicha(); } }; });
         container.querySelectorAll('[data-kit-sub-desc-idx]').forEach(btn => { btn.onclick = () => { const kitIdx = parseInt(btn.dataset.kitSubDescIdx); const sIdx = parseInt(btn.dataset.subIdx); if (subFichas[sIdx]?.listas?.kits?.[kitIdx]) { subFichas[sIdx].listas.kits[kitIdx].visivel = !subFichas[sIdx].listas.kits[kitIdx].visivel; const el = document.getElementById(`kitsub-desc-${sIdx}-${kitIdx}`); if (el) el.style.display = subFichas[sIdx].listas.kits[kitIdx].visivel ? 'block' : 'none'; debounceSaveSubFicha(); } }; });
         container.querySelectorAll('.btn-remove-kit[data-kit-sub-idx]').forEach(btn => { btn.onclick = () => { const kitIdx = parseInt(btn.dataset.kitSubIdx); const sIdx = parseInt(btn.dataset.subIdx); if (subFichas[sIdx]?.listas?.kits) { const kit = subFichas[sIdx].listas.kits[kitIdx]; if (kit) { let valorKit = parseInt(kit.custo) || 0; if (kit.habilidades) kit.habilidades.forEach(h => { valorKit += parseInt(h.custo) || 0; }); if (valorKit !== 0) registrarGasto(-valorKit, true, sIdx); } subFichas[sIdx].listas.kits.splice(kitIdx, 1); renderizarKitsSubFicha(subFichas[sIdx], container, sIdx); liberarRecalculoSub(sIdx); atualizarPontosSub(sIdx); debounceSaveSubFicha(); } }; });
+                container.querySelectorAll('input[data-hab-sub-field="possuida"]').forEach(input => {
+            input.onchange = () => {
+                const kitIdx = parseInt(input.dataset.kitIdx);
+                const habIdx = parseInt(input.dataset.habIdx);
+                const sIdx = parseInt(input.dataset.subIdx);
+                if (subFichas[sIdx]?.listas?.kits?.[kitIdx]?.habilidades?.[habIdx]) {
+                    subFichas[sIdx].listas.kits[kitIdx].habilidades[habIdx].possuida = input.checked === true;
+                    debounceSaveSubFicha();
+                }
+            };
+        });
         container.querySelectorAll('input[data-hab-sub-field="nome"]').forEach(input => { input.oninput = () => { const kitIdx = parseInt(input.dataset.kitIdx); const habIdx = parseInt(input.dataset.habIdx); const sIdx = parseInt(input.dataset.subIdx); if (subFichas[sIdx]?.listas?.kits?.[kitIdx]?.habilidades?.[habIdx]) { subFichas[sIdx].listas.kits[kitIdx].habilidades[habIdx].nome = input.value; debounceSaveSubFicha(); } }; });
         container.querySelectorAll('input[data-hab-sub-field="custo"]').forEach(input => {
             input.addEventListener('focus', () => { input.dataset.valorAnterior = String(parseInt(input.value) || 0); });
