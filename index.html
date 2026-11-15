@@ -2214,8 +2214,6 @@
                         <button class="aba-btn" data-aba="kits">📦 Kits</button>
                         <button class="aba-btn" data-aba="subfichas">👥 Mais Fichas</button>
                         <button class="aba-btn" data-aba="status">⚠️ Status</button>
-                        <button class="aba-btn" data-aba="anotacoes">📝 Anotações</button>
-
                     </div>
                     
                     <div id="aba-principal" class="aba-conteudo ativa">
@@ -2573,24 +2571,8 @@
                         </div>
                         <div id="subfichasContainer"></div>
                     </div>
-                    <div id="aba-anotacoes" class="aba-conteudo">
-    <div class="card-full">
-         <h3>📝 Anotações do Personagem</h3>
-         <div style="margin-bottom: 10px; font-size: 12px; color: var(--texto-suave);">
-            Use este espaço para histórico, pistas, nomes de NPCs, objetivos ou qualquer outra informação.
-         </div>
-         <textarea 
-          id="anotacoesPersonagem" 
-          rows="20" 
-          maxlength="500"
-          placeholder="Escreva aqui suas anotações..."
-          style="width: 100%; min-height: 400px; background: var(--fundo-input); color: var(--texto); border: 1px solid var(--borda-clara); border-radius: 8px; padding: 12px; font-size: 14px; font-family: 'Segoe UI', Verdana, sans-serif; resize: vertical; line-height: 1.5;"
-          ></textarea>
-          <div id="anotacoesContador" style="text-align: right; font-size: 11px; color: var(--texto-medio); margin-top: 4px;">
-          0 / 500
-        </div>
-    </div>
-</div>
+                    
+                    <div id="aba-status" class="aba-conteudo">
                         <div class="card-full">
                             <h3>⚠️ Condições de Status</h3>
                             <div style="margin-bottom: 10px; font-size: 12px; color: var(--texto-suave);">
@@ -14840,7 +14822,6 @@ const VANTAGENS_REGIONAIS = {
         STATUS_LISTA.forEach(s => { statusInicial[s.id] = false; });
         return {
             nome, escala: '',
-            anotacoes: '',
             forca: 0, habilidade: 0, bonusHabilidade: 0, bonusHabilidade2: 0,
             resistencia: 0, bonusResistencia: 0, bonusResistencia2: 0,
             armadura: 0, bonusArmadura: 0, bonusArmadura2: 0, bonusArmaduraDefesa: 0,
@@ -14962,7 +14943,6 @@ const VANTAGENS_REGIONAIS = {
             atributosCustom: JSON.parse(JSON.stringify(getAtributosCustom())),
             baralhoEstado: JSON.parse(JSON.stringify(baralhoEstado)),
             baralhosCombate: JSON.parse(JSON.stringify(baralhosCombate)),
-            anotacoes: document.getElementById('anotacoesPersonagem')?.value || '',
             pontosEspeciais: (() => {
                 const pe = JSON.parse(JSON.stringify(window._pontosEspeciais || {}));
                 // Mácula/Reputação (convertidos, módulo Pontos) → salvam o concedido do dataset
@@ -14986,14 +14966,6 @@ const VANTAGENS_REGIONAIS = {
             ? JSON.parse(JSON.stringify(f.pontosEspeciais))
             : {};
         document.getElementById('nomePersonagem').value = f.nome || '';
-        const _anotEl = document.getElementById('anotacoesPersonagem');
-if (_anotEl) {
-    _anotEl.value = f.anotacoes || '';
-    // Atualiza o contador de caracteres após carregar a ficha
-    if (typeof window._atualizarContadorAnotacoes === 'function') {
-        window._atualizarContadorAnotacoes();
-    }
-}
         const escalaField = document.getElementById('escalaPersonagem');
         if (escalaField) escalaField.value = f.escala || '';
         document.getElementById('forca').value = f.forca ?? 0;
@@ -16537,24 +16509,8 @@ function popularSeletorPericias(selectId, btnId) {
             });
         }
     })();
-    const _anotInput = document.getElementById('anotacoesPersonagem');
-if (_anotInput) {
-    const _anotContador = document.getElementById('anotacoesContador');
-    const _atualizarContadorAnotacoes = () => {
-        if (_anotContador) {
-            _anotContador.textContent = `${_anotInput.value.length} / 500`;
-        }
-    };
-    _anotInput.addEventListener('input', () => {
-        _atualizarContadorAnotacoes();
-        debounceSave();
-    });
-    // Atualiza o contador ao carregar a ficha também
-    window._atualizarContadorAnotacoes = _atualizarContadorAnotacoes;
-    _atualizarContadorAnotacoes();
-}
-    const _anotInput = document.getElementById('anotacoesPersonagem');
-    if (_anotInput) _anotInput.addEventListener('input', debounceSave);
+    document.getElementById('nomePersonagem').addEventListener('input', salvarForcado);
+    document.getElementById('escalaPersonagem').addEventListener('input', salvarForcado);
     document.querySelectorAll('.aba-btn').forEach(btn => {
         btn.onclick = () => {
             const aba = btn.dataset.aba;
