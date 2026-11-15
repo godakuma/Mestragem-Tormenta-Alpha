@@ -2214,6 +2214,7 @@
                         <button class="aba-btn" data-aba="kits">📦 Kits</button>
                         <button class="aba-btn" data-aba="subfichas">👥 Mais Fichas</button>
                         <button class="aba-btn" data-aba="status">⚠️ Status</button>
+                        <button class="aba-btn" data-aba="anotacoes">📝 Anotações</button>
                     </div>
                     
                     <div id="aba-principal" class="aba-conteudo ativa">
@@ -2571,7 +2572,22 @@
                         </div>
                         <div id="subfichasContainer"></div>
                     </div>
-                    
+                    <div id="aba-anotacoes" class="aba-conteudo">
+    <div class="card-full">
+        <h3>📝 Anotações do Personagem</h3>
+        <div style="margin-bottom: 10px; font-size: 12px; color: var(--texto-suave);">
+            Use este espaço para histórico, pistas, nomes de NPCs, objetivos ou qualquer outra informação.
+        </div>
+        <textarea 
+            id="anotacoesPersonagem" 
+            rows="6" 
+            maxlength="500"
+            placeholder="Escreva aqui suas anotações..."
+            style="width: 100%; min-height: 120px; background: var(--fundo-input); color: var(--texto); border: 1px solid var(--borda-clara); border-radius: 8px; padding: 12px; font-size: 14px; font-family: 'Segoe UI', Verdana, sans-serif; resize: vertical; line-height: 1.5;"
+        ></textarea>
+        <div id="anotacoesContador" style="text-align: right; font-size: 11px; color: var(--texto-medio); margin-top: 4px;">0 / 20000</div>
+    </div>
+</div>
                     <div id="aba-status" class="aba-conteudo">
                         <div class="card-full">
                             <h3>⚠️ Condições de Status</h3>
@@ -14822,6 +14838,7 @@ const VANTAGENS_REGIONAIS = {
         STATUS_LISTA.forEach(s => { statusInicial[s.id] = false; });
         return {
             nome, escala: '',
+            anotacoes: '',
             forca: 0, habilidade: 0, bonusHabilidade: 0, bonusHabilidade2: 0,
             resistencia: 0, bonusResistencia: 0, bonusResistencia2: 0,
             armadura: 0, bonusArmadura: 0, bonusArmadura2: 0, bonusArmaduraDefesa: 0,
@@ -14943,6 +14960,7 @@ const VANTAGENS_REGIONAIS = {
             atributosCustom: JSON.parse(JSON.stringify(getAtributosCustom())),
             baralhoEstado: JSON.parse(JSON.stringify(baralhoEstado)),
             baralhosCombate: JSON.parse(JSON.stringify(baralhosCombate)),
+            anotacoes: document.getElementById('anotacoesPersonagem')?.value || '',
             pontosEspeciais: (() => {
                 const pe = JSON.parse(JSON.stringify(window._pontosEspeciais || {}));
                 // Mácula/Reputação (convertidos, módulo Pontos) → salvam o concedido do dataset
@@ -14966,6 +14984,9 @@ const VANTAGENS_REGIONAIS = {
             ? JSON.parse(JSON.stringify(f.pontosEspeciais))
             : {};
         document.getElementById('nomePersonagem').value = f.nome || '';
+        const _anotEl = document.getElementById('anotacoesPersonagem');
+        if (_anotEl) _anotEl.value = f.anotacoes || '';
+        if (typeof window._atualizarContadorAnot === 'function') window._atualizarContadorAnot();
         const escalaField = document.getElementById('escalaPersonagem');
         if (escalaField) escalaField.value = f.escala || '';
         document.getElementById('forca').value = f.forca ?? 0;
@@ -16511,6 +16532,32 @@ function popularSeletorPericias(selectId, btnId) {
     })();
     document.getElementById('nomePersonagem').addEventListener('input', salvarForcado);
     document.getElementById('escalaPersonagem').addEventListener('input', salvarForcado);
+        // ===== ANOTAÇÕES - Listener + contador =====
+    const _anotInput = document.getElementById('anotacoesPersonagem');
+    const _anotContador = document.getElementById('anotacoesContador');
+    const _ANOT_MAX = 500;
+    if (_anotInput) {
+        const atualizarContadorAnot = () => {
+            if (!_anotContador) return;
+            const len = _anotInput.value.length;
+            _anotContador.textContent = `${len} / ${_ANOT_MAX}`;
+            _anotContador.style.color = len >= _ANOT_MAX ? 'var(--perigo-forte)'
+                                    : len >= _ANOT_MAX * 0.9 ? 'var(--dourado)'
+                                    : 'var(--texto-medio)';
+            _anotContador.style.fontWeight = len >= _ANOT_MAX * 0.9 ? 'bold' : 'normal';
+        };
+        _anotInput.addEventListener('input', () => {
+            if (_anotInput.value.length > _ANOT_MAX) {
+                _anotInput.value = _anotInput.value.slice(0, _ANOT_MAX);
+                mostrarToast(`⚠️ Limite de ${_ANOT_MAX} caracteres atingido.`, '#c0392b');
+            }
+            atualizarContadorAnot();
+            debounceSave();
+        });
+        window._atualizarContadorAnot = atualizarContadorAnot;
+        atualizarContadorAnot();
+    }
+    // ===== FIM ANOTAÇÕES =====
     document.querySelectorAll('.aba-btn').forEach(btn => {
         btn.onclick = () => {
             const aba = btn.dataset.aba;
