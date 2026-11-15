@@ -14987,7 +14987,13 @@ const VANTAGENS_REGIONAIS = {
             : {};
         document.getElementById('nomePersonagem').value = f.nome || '';
         const _anotEl = document.getElementById('anotacoesPersonagem');
-        if (_anotEl) _anotEl.value = f.anotacoes || '';
+if (_anotEl) {
+    _anotEl.value = f.anotacoes || '';
+    // Atualiza o contador de caracteres após carregar a ficha
+    if (typeof window._atualizarContadorAnotacoes === 'function') {
+        window._atualizarContadorAnotacoes();
+    }
+}
         const escalaField = document.getElementById('escalaPersonagem');
         if (escalaField) escalaField.value = f.escala || '';
         document.getElementById('forca').value = f.forca ?? 0;
@@ -16531,8 +16537,22 @@ function popularSeletorPericias(selectId, btnId) {
             });
         }
     })();
-    document.getElementById('nomePersonagem').addEventListener('input', salvarForcado);
-    document.getElementById('escalaPersonagem').addEventListener('input', salvarForcado);
+    const _anotInput = document.getElementById('anotacoesPersonagem');
+if (_anotInput) {
+    const _anotContador = document.getElementById('anotacoesContador');
+    const _atualizarContadorAnotacoes = () => {
+        if (_anotContador) {
+            _anotContador.textContent = `${_anotInput.value.length} / 500`;
+        }
+    };
+    _anotInput.addEventListener('input', () => {
+        _atualizarContadorAnotacoes();
+        debounceSave();
+    });
+    // Atualiza o contador ao carregar a ficha também
+    window._atualizarContadorAnotacoes = _atualizarContadorAnotacoes;
+    _atualizarContadorAnotacoes();
+}
     const _anotInput = document.getElementById('anotacoesPersonagem');
     if (_anotInput) _anotInput.addEventListener('input', debounceSave);
     document.querySelectorAll('.aba-btn').forEach(btn => {
