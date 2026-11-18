@@ -8453,7 +8453,6 @@ function custoAtributo(valor) {
                 if (!dados) return;
                 document.getElementById(`subficha-vantagemRegionalNome-${index}`).value = dados.nome;
                 let texto = `📍 ${reino}\n\n${dados.descricao}`;
-                if (dados.patrono && dados.patrono !== 'Não possui Patrono listado.') texto += `\n\n${dados.patrono}`;
                 document.getElementById(`subficha-vantagemRegionalDesc-${index}`).value = texto;
                 document.getElementById(`subficha-vantagemRegionalDescEditor-${index}`).style.display = 'block';
                 sub.vantagemRegionalNome = dados.nome;
@@ -14833,6 +14832,15 @@ const VANTAGENS_REGIONAIS = {
         patrono: 'Patrono: Tamu-ra. Benefícios: Espada Olímpica (uma arma lendária que permite que, uma vez por combate, você realize um ataque com acerto crítico automático. Se o oponente estiver Perto da Morte, a Espada Olímpica dá direito a um segundo ataque crítico no mesmo turno); Gigante Guerreiro (seu Patrono lhe confiou a posse de um karakuri, um construto Aliado feito de madeira, cordas e magia que pode ser invocado uma vez por combate para lutar ao seu lado por R turnos); Meu Objetivo É a Conquista! (um objeto qualquer fornecido pelo Patrono lhe permite receber os mesmos benefícios de um Sacrifício Heroico (Manual 3D&T Alpha, pág. 74) sem morrer uma única vez na vida! Dali em diante, cada nova utilização desse benefício exige um Teste de Morte cuja dificuldade aumenta em um nível).'
     }
 };
+    // ===== PATRONOS DAS VANTAGENS REGIONAIS =====
+Object.entries(VANTAGENS_REGIONAIS).forEach(([reino, dados]) => {
+    if (dados.patrono && dados.patrono !== 'Não possui Patrono listado.') {
+        VANTAGENS_3DET_TORMENTA_ALPHA[`Patrono de ${reino}`] = {
+            grupo: 'Tormenta Alpha',
+            desc: dados.patrono
+        };
+    }
+});
     function getFichaVazia(nome = 'Novo Personagem') {
         const statusInicial = {};
         STATUS_LISTA.forEach(s => { statusInicial[s.id] = false; });
@@ -16203,7 +16211,6 @@ popularSeletorVantagens();
             if (!dados) return;
             document.getElementById('vantagemRegionalNome').value = dados.nome;
             let texto = `📍 ${reino}\n\n${dados.descricao}`;
-            if (dados.patrono && dados.patrono !== 'Não possui Patrono listado.') texto += `\n\n${dados.patrono}`;
             document.getElementById('vantagemRegionalDesc').value = texto;
             document.getElementById('vantagemRegionalDescEditor').style.display = 'block';
             liberarRecalculoPrincipal();
