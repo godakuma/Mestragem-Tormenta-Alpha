@@ -4297,7 +4297,7 @@
             if (nomeAtual !== nomeAnterior || !ultimoEstadoFicha) {
                 updates['personagemNome'] = nomeAtual;
                 if (isMaster && typeof visualizandoId === 'string' && visualizandoId.startsWith('npc_')) {
-                    updates['nome'] = `NPC - ${nomeAtual}`;
+                    updates['nome'] = nomeAtual;
                 }
             }
             updates['ultimaAtualizacao'] = serverTimestamp();
@@ -15420,7 +15420,7 @@ fichaListas.especializacoes = (fichaListas.especializacoes || []).map(item => {
                 const online = estaOnline(data.ultimaAtualizacao);
                 const item = {
                     id,
-                    nome: data.nome || 'Anônimo',
+                    nome: (data.personagemNome || data.nome || 'Anônimo').replace(/^NPC\s*-\s*/i, ''),
                     personagemNome: data.personagemNome || 'Sem ficha',
                     isNPC: data.isNPC === true,
                     codigo: data.codigoPersonagem || '---',
@@ -15453,7 +15453,7 @@ fichaListas.especializacoes = (fichaListas.especializacoes || []).map(item => {
             let htmlNPCs = '';
             if (npcsList.length > 0) {
                 npcsList.forEach(n => {
-                    htmlNPCs += `<div class="gm-player-card"><input type="checkbox" class="player-checkbox" data-id="${n.id}"><div class="player-info"><div class="player-name">${escapeHtml(n.nome)} <span class="player-badge npc">📦 NPC</span></div><div class="player-character">🎭 ${escapeHtml(n.personagemNome)}</div><div class="player-code">🔑 ${n.codigo}</div></div><div><button class="btn-gm-copy-code" onclick="window.copiarCodigoFicha('${n.codigo}')">📋</button><button class="btn-gm-regenerate" onclick="window.atualizarCodigoFicha('${n.id}')">🔄</button><button class="btn-gm-view" onclick="selecionarFicha('${n.id}')">👁️</button><button class="btn-gm-duplicate" onclick="duplicarFicha('${n.id}', '${escapeHtml(n.personagemNome)}')">📄</button><button class="btn-gm-delete" onclick="excluirFicha('${n.id}')">❌</button></div></div>`;
+                    htmlNPCs += `<div class="gm-player-card"><input type="checkbox" class="player-checkbox" data-id="${n.id}"><div class="player-info"><div class="player-name">${escapeHtml(n.nome)}</div><div class="player-character">🎭 ${escapeHtml(n.personagemNome)}</div><div class="player-code">🔑 ${n.codigo}</div></div><div><button class="btn-gm-copy-code" onclick="window.copiarCodigoFicha('${n.codigo}')">📋</button><button class="btn-gm-regenerate" onclick="window.atualizarCodigoFicha('${n.id}')">🔄</button><button class="btn-gm-view" onclick="selecionarFicha('${n.id}')">👁️</button><button class="btn-gm-duplicate" onclick="duplicarFicha('${n.id}', '${escapeHtml(n.personagemNome)}')">📄</button><button class="btn-gm-delete" onclick="excluirFicha('${n.id}')">❌</button></div></div>`;
                 });
                 gridNPCs.innerHTML = htmlNPCs;
             } else {
@@ -15502,7 +15502,7 @@ listaJogadoresUnsubscribe = () => {};
             fichaCopia.nome = novoNome; fichaCopia.baralhoEstado = null; fichaCopia.baralhosCombate = null;
             const codigo = await gerarCodigoUnicoParaFicha(currentPin);
             const novoId = 'npc_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
-            await supabase.from('jogadores').insert({ id: novoId, pin: currentPin, nome: `NPC - ${novoNome}`, personagem_nome: novoNome, ficha: fichaCopia, is_master: false, is_npc: true, codigo_personagem: codigo, criado_por: currentUserId, ultima_atualizacao: new Date().toISOString() });
+            await supabase.from('jogadores').insert({ id: novoId, pin: currentPin, nome: novoNome, personagem_nome: novoNome, ficha: fichaCopia, is_master: false, is_npc: true, codigo_personagem: codigo, criado_por: currentUserId, ultima_atualizacao: new Date().toISOString() });
             mostrarToast(`✅ Ficha "${novoNome}" duplicada! Código: ${codigo}`, '#4a8a4a');
             carregarListaJogadores();
         } catch (err) { console.error(err); mostrarToast('❌ Erro: ' + err.message, '#c0392b'); }
@@ -15687,10 +15687,9 @@ listaJogadoresUnsubscribe = () => {};
         const jogadorSnapshot = await get(jogadorRef);
         if (jogadorSnapshot.exists()) {
             const dados = jogadorSnapshot.val();
-            const updatePayload = { nome, conectado: true, ultima_atualizacao: new Date().toISOString() };
+            const updatePayload = { nome, conectado: true, is_npc: false, ultima_atualizacao: new Date().toISOString() };
             if (dados.isNPC === true) {
-                updatePayload.is_npc = false;
-                mostrarToast(`🎲 Ficha "${dados.personagemNome}" é sua agora!`, '#4a8a4a');
+            mostrarToast(`🎲 Ficha "${dados.personagemNome}" é sua agora!`, '#4a8a4a');
             }
             const { error } = await supabase.from('jogadores').update(updatePayload).eq('id', currentUserId);
             if (error) console.error('❌ Erro ao marcar online:', error);
