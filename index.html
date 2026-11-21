@@ -7303,12 +7303,63 @@ function custoAtributo(valor) {
     }
 
     function abrirPopupIniciativa() {
+    const popup = document.getElementById('iniciativaPopup');
+if (popup && popup.style.display === 'flex') {
+    renderizarPopupIniciativa();
+}
+    if (!popup) return;
+
+    popup.style.display = 'flex';
+
+    try {
         renderizarPopupIniciativa();
-        document.getElementById('iniciativaPopup').style.display = 'flex';
+    } catch (erro) {
+        console.error('Erro ao renderizar o popup de iniciativa:', erro);
+        mostrarToast('Erro ao carregar a ordem de iniciativa.', '#c0392b');
     }
+}
     function fecharPopupIniciativa() {
-        document.getElementById('iniciativaPopup').style.display = 'none';
+    document.getElementById('iniciativaPopup').style.display = 'none';
+}
+
+async function rolarDesempateMestre() {
+    if (!isMaster) return;
+
+    const empatados = listaIniciativas.filter(i => i.empatado);
+
+    if (empatados.length < 2) {
+        mostrarToast('⚠️ Não há personagens suficientes para desempatar.', '#c0392b');
+        return;
     }
+
+    empatados.forEach(p => {
+        const dado = Math.floor(Math.random() * 6) + 1;
+        const hTotal = parseInt(p.hTotal) || 0;
+
+        p.valor = dado + hTotal;
+        p.desempatado = true;
+
+        const texto = `[Mestre] ⚔️ DESEMPATE de ${p.nome}: 🎲 ${dado} + ${hTotal}(H) = ${p.valor}`;
+        addMensagem(texto, false);
+        enviarRolagemFirebase(texto, false);
+    });
+
+    calcularEmpates();
+    await salvarIniciativasMesa();
+
+    atualizarBadgeIniciativa();
+    atualizarBotaoIniciativaFixo();
+    renderizarPopupIniciativa();
+
+    if (!listaIniciativas.some(i => i.empatado)) {
+        const ordem = getOrdemIniciativas();
+        const nomes = ordem.map((o, idx) => `${idx + 1}º ${o.nome}`).join(' → ');
+        const texto = `✅ Ordem final definida: ${nomes}`;
+
+        addMensagem(texto, false);
+        enviarRolagemFirebase(texto, false);
+    }
+}
 
     function renderizarPopupIniciativa() {
         const container = document.getElementById('iniciativaListaContainer');
@@ -7328,15 +7379,18 @@ function custoAtributo(valor) {
             const empatados = listaIniciativas.filter(i => i.empatado);
             html += `<div style="background: var(--fundo-pen); border-left: 4px solid var(--dourado); padding: 10px 14px; border-radius: 8px; margin-bottom: 12px;">
                 <div style="font-weight: bold; color: var(--dourado); margin-bottom: 6px;">⏳ Aguardando desempate</div>
+                ${isMaster ? `<button id="btnRolarDesempate" style="background: var(--primaria); color: white; border: none; border-radius: 6px; padding: 8px 14px; cursor: pointer; font-weight: bold; margin-top: 8px;">🎲 Rolar desempate</button>` : ''}
                 <div style="font-size: 12px; color: var(--texto-suave);">Os seguintes personagens precisam rerrolar a iniciativa:</div>
             </div>`;
             empatados.forEach(p => {
-                const btnRem = isMaster ? `<button class="btn-remover-inic" data-remover-inic="${p.id}">❌</button>` : '';
-                html += `<div class="iniciativa-item empatado">
-                    <span class="nome">${escapeHtml(p.nome)} <span class="tag-empatado">⚔️ EMPATADO</span></span>
-                    <div style="display: flex; gap: 4px;">${btnRem}</div>
-                </div>`;
-            });
+    const btnIr = isMaster ? `<button type="button" class="btn-ir-ficha" data-ir-ficha="${p.jogadorId}">👁️ Ir</button>` : '';
+    const btnRem = isMaster ? `<button class="btn-remover-inic" data-remover-inic="${p.id}">❌</button>` : '';
+
+    html += `<div class="iniciativa-item empatado">
+        <span class="nome">${escapeHtml(p.nome)} <span class="tag-empatado">⚔️ EMPATADO</span></span>
+        <div style="display: flex; gap: 4px;">${btnIr}${btnRem}</div>
+    </div>`;
+});
         } else {
             // Ordem completa, só posição + nome (SEM valores)
             const atual = getTurnoAtual();
@@ -7345,7 +7399,7 @@ function custoAtributo(valor) {
                 const classes = ['iniciativa-item'];
                 if (isAtual) classes.push('atual');
                 const tagAtual = isAtual ? '<span class="tag-atual">▶️ AGINDO</span>' : '';
-                const btnIr = isMaster ? `<button class="btn-ir-ficha" data-ir-ficha="${item.jogadorId}">👁️ Ir</button>` : '';
+                const btnIr = isMaster ? `<button type="button" class="btn-ir-ficha" data-ir-ficha="${item.jogadorId}">👁️ Ir</button>` : '';
                 const btnRem = isMaster ? `<button class="btn-remover-inic" data-remover-inic="${item.id}">❌</button>` : '';
                 html += `<div class="${classes.join(' ')}">
                     <span class="pos">${idx + 1}º</span>
@@ -7356,15 +7410,47 @@ function custoAtributo(valor) {
         }
 
         container.innerHTML = html;
-        container.querySelectorAll('[data-ir-ficha]').forEach(b => {
-            b.onclick = async () => {
-                await carregarFichaPorId(b.dataset.irFicha);
-                fecharPopupIniciativa();
-            };
-        });
-        container.querySelectorAll('[data-remover-inic]').forEach(b => {
-            b.onclick = () => removerIniciativaPorId(b.dataset.removerInic);
-        });
+        const btnDesempate = container.querySelector('#btnRolarDesempate');
+        if (btnDesempate) {
+         btnDesempate.onclick = rolarDesempateMestre;
+        }
+container.querySelectorAll('[data-ir-ficha]').forEach(b => {
+    b.onclick = async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const fichaId = b.dataset.irFicha;
+
+        if (!fichaId || fichaId === 'undefined' || fichaId === 'null') {
+            mostrarToast('⚠️ Não foi possível identificar a ficha deste personagem.', '#c0392b');
+            console.error('ID da ficha ausente:', b.dataset);
+            return;
+        }
+
+        try {
+            await carregarFichaPorId(fichaId);
+            fecharPopupIniciativa();
+        } catch (erro) {
+            console.error('Erro ao abrir ficha pelo popup de iniciativa:', erro);
+            mostrarToast('Erro ao abrir a ficha.', '#c0392b');
+        }
+    };
+});
+container.querySelectorAll('[data-remover-inic]').forEach(b => {
+    b.onclick = async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const iniciativaId = b.dataset.removerInic;
+
+        if (!iniciativaId) {
+            mostrarToast('⚠️ Não foi possível identificar esta iniciativa.', '#c0392b');
+            return;
+        }
+
+        await removerIniciativaPorId(iniciativaId);
+    };
+});
     }
     // ============================================================
     // BLOQUEIO DE FICHA (Mestre editando)
