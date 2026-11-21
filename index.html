@@ -2633,6 +2633,7 @@
 </button>
 <button class="sustentados-badge badge-flutuante badge-inf-dir" id="btnAbrirSustentados" title="Ver itens sustentados">
     🪄 Sustentados
+    <span class="contador" id="sustentadosNumero" style="display:none;">0</span>
 </button>
 <!-- POPUP DE BLOQUEIO (Mestre editando a ficha) -->
 <div id="bloqueioOverlay" class="bloqueio-overlay">
@@ -7831,19 +7832,29 @@ container.querySelectorAll('[data-remover-inic]').forEach(b => {
     }
     
     function atualizarBadgeSustentados() {
-        // Brilho local: reflete apenas a ficha atual (sem SELECT, sem número)
-        const badge = document.getElementById('btnAbrirSustentados');
-        if (!badge) return;
-        let temAlgo = false;
-        const checarLista = (lista) => (lista || []).some(item => item.sustentado === true);
-        if (checarLista(fichaListas.magias) || checarLista(fichaListas.vantagens)) temAlgo = true;
-        if (!temAlgo) {
-            for (const sub of subFichas) {
-                if (checarLista(sub.listas?.magias) || checarLista(sub.listas?.vantagens)) { temAlgo = true; break; }
-            }
-        }
-        badge.classList.toggle('ativo', temAlgo);
-    }
+    const badge = document.getElementById('btnAbrirSustentados');
+    const contador = document.getElementById('sustentadosNumero');
+    if (!badge || !contador) return;
+
+    let total = 0;
+
+    const contarLista = (lista) => {
+        return (lista || []).filter(item => item.sustentado === true).length;
+    };
+
+    total += contarLista(fichaListas.magias);
+    total += contarLista(fichaListas.vantagens);
+
+    subFichas.forEach(sub => {
+        total += contarLista(sub.listas?.magias);
+        total += contarLista(sub.listas?.vantagens);
+    });
+
+    contador.textContent = total;
+    contador.style.display = total > 0 ? 'inline-flex' : 'none';
+
+    badge.classList.toggle('ativo', total > 0);
+}
     
     function buscarTodosItensSustentados() {
         const resultados = [];
