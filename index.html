@@ -10194,7 +10194,80 @@ if (especializacoesContainer) {
         if (!ehSecreta) enviarRolagemFirebase(texto, false);
         if (resultadoElement) { resultadoElement.textContent = `🃏 ${cartaStr} (${valorRolagem}) → ${sucesso ? '✅' : '❌'} (Alvo: ${alvo})`; resultadoElement.className = 'teste-resultado'; if (sucesso) resultadoElement.classList.add('sucesso'); else resultadoElement.classList.add('falha'); }
     }
+    window.maioresTestesMorte = window.maioresTestesMorte || {};
+
+function chaveTesteMorte(isSub, subIndex) {
+    const fichaId = visualizandoId || currentUserId;
+    return `${fichaId}-${isSub ? `sub-${subIndex}` : 'principal'}`;
+}
+
+function atualizarMarcadorTesteMorte(dado, isSub, subIndex) {
+    const chave = chaveTesteMorte(isSub, subIndex);
+    const atual = window.maioresTestesMorte[chave] || 0;
+
+    if (dado > atual) {
+        window.maioresTestesMorte[chave] = dado;
+    }
+
+    const id = isSub
+        ? `subficha-teste-morte-marcador-${subIndex}`
+        : 'teste-morte-marcador';
+
+    const elemento = document.getElementById(id);
+
+    if (elemento) {
+        elemento.textContent = `Maior resultado: ${window.maioresTestesMorte[chave] || '—'}`;
+    }
+}
+
+function informarTesteMorte(isSub, subIndex) {
+    const chave = chaveTesteMorte(isSub, subIndex);
+    const dado = window.maioresTestesMorte[chave] || 0;
+
+    if (!dado) {
+        addMensagem('Teste de morte ainda não realizado.', false);
+        return;
+    }
+
+    const descricoes = {
+        1: '1) Muito Fraco: você ainda está consciente. Pode falar, ver e ouvir o que acontece à sua volta, mas só isso. Você está fraco demais para se mexer, lutar, usar magia ou fazer qualquer coisa que gaste PMs (mas, se tiver a vantagem Energia Extra, pode usá-la). Você pode recuperar 1 PV imediatamente com um teste bem-sucedido da perícia Medicina (realizado por outra pessoa, é claro!).',
+
+        2: '2-3) Inconsciente: você está inconsciente, mas não muito ferido. Pode recuperar 1 PV e despertar com uma hora de descanso, ou com um teste bem-sucedido de Medicina.',
+
+        3: '2-3) Inconsciente: você está inconsciente, mas não muito ferido. Pode recuperar 1 PV e despertar com uma hora de descanso, ou com um teste bem-sucedido de Medicina.',
+
+        4: '4-5) Quase Morto: você está tão ferido que vai morrer em 2d turnos. Um teste de Medicina pode prolongar sua vida por mais 1d horas, mas depois disso não são permitidos novos testes. A única forma de realmente salvá-lo é com magia.',
+
+        5: '4-5) Quase Morto: você está tão ferido que vai morrer em 2d turnos. Um teste de Medicina pode prolongar sua vida por mais 1d horas, mas depois disso não são permitidos novos testes. A única forma de realmente salvá-lo é com magia.',
+
+        6: '6) Morto: não tem mais jeito. Agora, só mesmo com ressurreição.'
+    };
+
+    const observacao = 'Observação: Em caso de falha em um teste de Medicina, o médico deve esperar o tempo indicado para tentar de novo (supondo que a vítima sobreviva tanto tempo). Vale lembrar que itens e magias de cura restauram PVs imediatamente, sem a necessidade de esperar pela recuperação.';
+
+    const mensagem = descricoes[dado] + '\n\n' + observacao;
+
+    addMensagem(mensagem, false);
+    enviarRolagemFirebase(mensagem, false);
+}
+
+function resetarTesteMorte(isSub, subIndex) {
+    const chave = chaveTesteMorte(isSub, subIndex);
+
+    delete window.maioresTestesMorte[chave];
+
+    const id = isSub
+        ? `subficha-teste-morte-marcador-${subIndex}`
+        : 'teste-morte-marcador';
+
+    const elemento = document.getElementById(id);
+
+    if (elemento) {
+        elemento.textContent = 'Maior resultado: —';
+    }
+}
     function rolarTesteMorteSub(subIndex) {
+    atualizarMarcadorTesteMorte(dado, true, subIndex);
     animarDado();
     const sub = subFichas[subIndex];
     const nome = sub ? sub.nome : 'Sub-ficha';
@@ -10212,6 +10285,7 @@ if (especializacoesContainer) {
     function rolarTesteMorte() {
         animarDado();
         const dado = Math.floor(Math.random() * 6) + 1;
+        atualizarMarcadorTesteMorte(dado, false, null);
         let mensagem = '', resultadoHtml = '';
         if (dado === 1) { mensagem = `💀 TESTE DE MORTE - Resultado: ${dado} → MUITO FRACO`; resultadoHtml = `<span style="color:#e67e22;font-weight:bold;">MUITO FRACO</span>`; }
         else if (dado === 2 || dado === 3) { mensagem = `💀 TESTE DE MORTE - Resultado: ${dado} → INCONSCIENTE`; resultadoHtml = `<span style="color:#f39c12;font-weight:bold;">INCONSCIENTE</span>`; }
@@ -10308,7 +10382,25 @@ if (especializacoesContainer) {
         });
         html += '</div>';
         
-        html += `<div class="teste-morte-modulo"><div class="teste-morte-header"><span class="teste-morte-titulo">💀 TESTE DE MORTE</span><button class="teste-morte-btn" id="${isSub ? `subficha-btnTesteMorte-${subIndex}` : 'btnTesteMorte'}">🎲 Rolar 1d6</button></div><div class="teste-morte-resultado" id="${isSub ? `subficha-teste-morte-resultado-${subIndex}` : 'teste-morte-resultado'}">Clique no botão para rolar.</div></div>`;
+        html += `
+<div class="teste-morte-modulo">
+    <div class="teste-morte-header">
+        <span class="teste-morte-titulo">💀 TESTE DE MORTE</span>
+        <button class="teste-morte-btn" id="${isSub ? `subficha-btnTesteMorte-${subIndex}` : 'btnTesteMorte'}">🎲 Rolar 1d6</button>
+    </div>
+
+    <div class="teste-morte-resultado" id="${isSub ? `subficha-teste-morte-resultado-${subIndex}` : 'teste-morte-resultado'}">Clique no botão para rolar.</div>
+
+    <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-top:10px; flex-wrap:wrap;">
+        <span id="${isSub ? `subficha-teste-morte-marcador-${subIndex}` : 'teste-morte-marcador'}">
+            Maior resultado: ${window.maioresTestesMorte[chaveTesteMorte(isSub, subIndex)] || '—'}
+        </span>
+
+        <button type="button" class="btn-info-item" data-sub="${isSub ? subIndex : ''}" data-is-sub="${isSub}" title="Ver descrição do resultado">i</button>
+
+        <button type="button" class="teste-morte-reset" data-sub="${isSub ? subIndex : ''}" data-is-sub="${isSub}" title="Zerar marcador">↻</button>
+    </div>
+</div>`;
         container.innerHTML = html;
         
         container.querySelectorAll('.teste-btn-roll').forEach(btn => {
@@ -10336,7 +10428,21 @@ if (especializacoesContainer) {
         });
         if (!isSub) { const btnMorte = document.getElementById('btnTesteMorte'); if (btnMorte) btnMorte.onclick = rolarTesteMorte; }
 else if (isSub && subIndex !== null) { const btnMorte = document.getElementById(`subficha-btnTesteMorte-${subIndex}`); if (btnMorte) btnMorte.onclick = () => rolarTesteMorteSub(subIndex); }
-        
+        container.querySelectorAll('.btn-info-item').forEach(btn => {
+    btn.onclick = () => {
+        const sub = btn.dataset.isSub === 'true';
+        const idx = sub ? parseInt(btn.dataset.sub) : null;
+        informarTesteMorte(sub, idx);
+    };
+});
+
+container.querySelectorAll('.teste-morte-reset').forEach(btn => {
+    btn.onclick = () => {
+        const sub = btn.dataset.isSub === 'true';
+        const idx = sub ? parseInt(btn.dataset.sub) : null;
+        resetarTesteMorte(sub, idx);
+    };
+});
         container.querySelectorAll('.teste-radio-carta').forEach(radio => {
             radio.onchange = () => {
                 if (!radio.checked) return;
