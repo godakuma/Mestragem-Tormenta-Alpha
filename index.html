@@ -7168,18 +7168,17 @@ function custoAtributo(valor) {
             }
         });
 
-        for (const membros of Object.values(gruposAntigos)) {
-            const todosDesempataram = membros.every(m => m.desempatado === true);
-            if (todosDesempataram) {
-                membros.forEach(m => {
-                    m.empatado = false;
-                    m.desempatado = false;
-                    m.grupoEmpateId = null;
-                });
-            } else {
-                membros.forEach(m => { m.empatado = true; });
-            }
-        }
+    for (const membros of Object.values(gruposAntigos)) {
+    const todosDesempataram = membros.every(m => m.desempatado === true);
+    if (todosDesempataram) {
+        membros.forEach(m => {
+            m.empatado = false;
+            m.grupoEmpateId = null;
+        });
+    } else {
+        membros.forEach(m => { m.empatado = true; });
+    }
+}
     }
 
     function getOrdemIniciativas() {
