@@ -1064,6 +1064,31 @@
     .teste-morte-modulo .teste-morte-btn { background: var(--perigo-forte); color: #fff; border: none; border-radius: 4px; padding: 6px 16px; cursor: pointer; font-size: 12px; font-weight: bold; }
     .teste-morte-modulo .teste-morte-btn:hover { background: var(--perigo-hover); }
     .teste-morte-modulo .teste-morte-resultado { margin-top: 8px; padding: 8px; background: var(--fundo-input); border-radius: 4px; border-left: 4px solid var(--primaria); font-size: 12px; min-height: 30px; color: var(--texto); }
+        .teste-morte-modulo .teste-morte-reset {
+        background: var(--primaria);
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        padding: 5px 12px;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: bold;
+    }
+
+    .teste-morte-modulo .teste-morte-reset:hover {
+        background: var(--primaria-hover);
+    }
+
+    .teste-morte-modulo .teste-morte-resultado span {
+        font-size: 16px;
+    }
+
+    .teste-morte-modulo #teste-morte-marcador,
+    .teste-morte-modulo [id^="subficha-teste-morte-marcador-"] {
+        font-size: 13px;
+        font-weight: bold;
+        color: var(--primaria-escura);
+    }
 
     .pontos-gastos { font-size: 9px; color: var(--primaria-escura); font-weight: bold; background: var(--fundo-painel-claro); padding: 2px 4px; border-radius: 3px; border: 1px solid var(--borda-clara); display: inline-block; margin-top: 2px; }
     .pontos-gastos .input-gasto { width: 45px; background: var(--fundo-input); color: var(--texto); border: 1px solid var(--borda-clara); border-radius: 3px; padding: 2px 3px; text-align: center; font-size: 10px; font-weight: bold; -moz-appearance: textfield; appearance: textfield; }
@@ -10280,46 +10305,110 @@ function resetarTesteMorte(isSub, subIndex) {
 
     delete window.maioresTestesMorte[chave];
 
-    const id = isSub
+    const idMarcador = isSub
         ? `subficha-teste-morte-marcador-${subIndex}`
         : 'teste-morte-marcador';
 
-    const elemento = document.getElementById(id);
+    const idResultado = isSub
+        ? `subficha-teste-morte-resultado-${subIndex}`
+        : 'teste-morte-resultado';
 
-    if (elemento) {
-        elemento.textContent = 'Maior resultado: —';
+    const marcador = document.getElementById(idMarcador);
+    const resultado = document.getElementById(idResultado);
+
+    if (marcador) {
+        marcador.textContent = 'Maior resultado: —';
+    }
+
+    if (resultado) {
+        resultado.textContent = 'Clique no botão para rolar.';
+    }
+
+    if (isSub && subFichas[subIndex]) {
+        delete subFichas[subIndex].testeMorteResultado;
+        debounceSaveSubFicha();
+    } else {
+        debounceSave();
     }
 }
     function rolarTesteMorteSub(subIndex) {
-    atualizarMarcadorTesteMorte(dado, true, subIndex);
     animarDado();
+
     const sub = subFichas[subIndex];
     const nome = sub ? sub.nome : 'Sub-ficha';
     const dado = Math.floor(Math.random() * 6) + 1;
-    let mensagem = '', resultadoHtml = '';
-    if (dado === 1) { mensagem = `[${nome}] 💀 TESTE DE MORTE - Resultado: ${dado} → MUITO FRACO`; resultadoHtml = `<span style="color:#e67e22;font-weight:bold;">MUITO FRACO</span>`; }
-    else if (dado === 2 || dado === 3) { mensagem = `[${nome}] 💀 TESTE DE MORTE - Resultado: ${dado} → INCONSCIENTE`; resultadoHtml = `<span style="color:#f39c12;font-weight:bold;">INCONSCIENTE</span>`; }
-    else if (dado === 4 || dado === 5) { mensagem = `[${nome}] 💀 TESTE DE MORTE - Resultado: ${dado} → QUASE MORTO`; resultadoHtml = `<span style="color:#e74c3c;font-weight:bold;">QUASE MORTO</span>`; }
-    else { mensagem = `[${nome}] 💀 TESTE DE MORTE - Resultado: ${dado} → MORTO`; resultadoHtml = `<span style="color:#c0392b;font-weight:bold;">MORTO</span>`; }
-    addMensagem(mensagem, false); enviarRolagemFirebase(mensagem, false);
+    const chave = chaveTesteMorte(true, subIndex);
+    const maiorAnterior = window.maioresTestesMorte[chave] || 0;
+
+    atualizarMarcadorTesteMorte(dado, true, subIndex);
+
     const r = document.getElementById(`subficha-teste-morte-resultado-${subIndex}`);
-    if (r) r.innerHTML = resultadoHtml;
+
+    if (dado <= maiorAnterior) {
+        if (r) r.textContent = 'Resultado menor que o maior resultado anterior.';
+    } else {
+        let mensagem = '', resultadoHtml = '';
+
+        if (dado === 1) {
+            mensagem = `[${nome}] 💀 TESTE DE MORTE - Resultado: ${dado} → MUITO FRACO`;
+            resultadoHtml = `<span style="color:#e67e22;font-weight:bold;">${dado} — MUITO FRACO</span>`;
+        } else if (dado === 2 || dado === 3) {
+            mensagem = `[${nome}] 💀 TESTE DE MORTE - Resultado: ${dado} → INCONSCIENTE`;
+            resultadoHtml = `<span style="color:#f39c12;font-weight:bold;">${dado} — INCONSCIENTE</span>`;
+        } else if (dado === 4 || dado === 5) {
+            mensagem = `[${nome}] 💀 TESTE DE MORTE - Resultado: ${dado} → QUASE MORTO`;
+            resultadoHtml = `<span style="color:#e74c3c;font-weight:bold;">${dado} — QUASE MORTO</span>`;
+        } else {
+            mensagem = `[${nome}] 💀 TESTE DE MORTE - Resultado: ${dado} → MORTO`;
+            resultadoHtml = `<span style="color:#c0392b;font-weight:bold;">${dado} — MORTO</span>`;
+        }
+
+        addMensagem(mensagem, false);
+        enviarRolagemFirebase(mensagem, false);
+
+        if (r) r.innerHTML = resultadoHtml;
+    }
+
     debounceSaveSubFicha();
 }
     function rolarTesteMorte() {
-        animarDado();
-        const dado = Math.floor(Math.random() * 6) + 1;
-        atualizarMarcadorTesteMorte(dado, false, null);
+    animarDado();
+
+    const dado = Math.floor(Math.random() * 6) + 1;
+    const chave = chaveTesteMorte(false, null);
+    const maiorAnterior = window.maioresTestesMorte[chave] || 0;
+
+    atualizarMarcadorTesteMorte(dado, false, null);
+
+    const r = document.getElementById('teste-morte-resultado');
+
+    if (dado <= maiorAnterior) {
+        if (r) r.textContent = 'Resultado menor que o maior resultado anterior.';
+    } else {
         let mensagem = '', resultadoHtml = '';
-        if (dado === 1) { mensagem = `💀 TESTE DE MORTE - Resultado: ${dado} → MUITO FRACO`; resultadoHtml = `<span style="color:#e67e22;font-weight:bold;">MUITO FRACO</span>`; }
-        else if (dado === 2 || dado === 3) { mensagem = `💀 TESTE DE MORTE - Resultado: ${dado} → INCONSCIENTE`; resultadoHtml = `<span style="color:#f39c12;font-weight:bold;">INCONSCIENTE</span>`; }
-        else if (dado === 4 || dado === 5) { mensagem = `💀 TESTE DE MORTE - Resultado: ${dado} → QUASE MORTO`; resultadoHtml = `<span style="color:#e74c3c;font-weight:bold;">QUASE MORTO</span>`; }
-        else { mensagem = `💀 TESTE DE MORTE - Resultado: ${dado} → MORTO`; resultadoHtml = `<span style="color:#c0392b;font-weight:bold;">MORTO</span>`; }
-        addMensagem(mensagem, false); enviarRolagemFirebase(mensagem, false);
-        const r = document.getElementById('teste-morte-resultado');
+
+        if (dado === 1) {
+            mensagem = `💀 TESTE DE MORTE - Resultado: ${dado} → MUITO FRACO`;
+            resultadoHtml = `<span style="color:#e67e22;font-weight:bold;">${dado} — MUITO FRACO</span>`;
+        } else if (dado === 2 || dado === 3) {
+            mensagem = `💀 TESTE DE MORTE - Resultado: ${dado} → INCONSCIENTE`;
+            resultadoHtml = `<span style="color:#f39c12;font-weight:bold;">${dado} — INCONSCIENTE</span>`;
+        } else if (dado === 4 || dado === 5) {
+            mensagem = `💀 TESTE DE MORTE - Resultado: ${dado} → QUASE MORTO`;
+            resultadoHtml = `<span style="color:#e74c3c;font-weight:bold;">${dado} — QUASE MORTO</span>`;
+        } else {
+            mensagem = `💀 TESTE DE MORTE - Resultado: ${dado} → MORTO`;
+            resultadoHtml = `<span style="color:#c0392b;font-weight:bold;">${dado} — MORTO</span>`;
+        }
+
+        addMensagem(mensagem, false);
+        enviarRolagemFirebase(mensagem, false);
+
         if (r) r.innerHTML = resultadoHtml;
-        debounceSave();
     }
+
+    debounceSave();
+}
     
     function renderizarTestes(containerId, isSub = false, subIndex = null) {
         const container = document.getElementById(containerId);
@@ -10422,7 +10511,7 @@ function resetarTesteMorte(isSub, subIndex) {
 
         <button type="button" class="btn-info-item" data-sub="${isSub ? subIndex : ''}" data-is-sub="${isSub}" title="Ver descrição do resultado">i</button>
 
-        <button type="button" class="teste-morte-reset" data-sub="${isSub ? subIndex : ''}" data-is-sub="${isSub}" title="Zerar marcador">↻</button>
+        <button type="button" class="teste-morte-reset" data-sub="${isSub ? subIndex : ''}" data-is-sub="${isSub}" title="Resetar teste de morte">Resetar</button>
     </div>
 </div>`;
         container.innerHTML = html;
@@ -15110,6 +15199,7 @@ Object.entries(VANTAGENS_REGIONAIS).forEach(([reino, dados]) => {
         if (pontosGastosInput && (isGM || isMaster)) gastosManuaisLocal = parseInt(pontosGastosInput.value) || 0;
         const subFichasSalvar = subFichas.map((sub, idx) => {
             const subCopy = JSON.parse(JSON.stringify(sub));
+            subCopy.testeMorteResultado = window.maioresTestesMorte[chaveTesteMorte(true, idx)] || 0;
             if (baralhosSubFichas[idx]) subCopy.baralhoSubEstado = JSON.parse(JSON.stringify(baralhosSubFichas[idx]));
             if (atributosCustomSub[idx]) subCopy.atributosCustom = JSON.parse(JSON.stringify(atributosCustomSub[idx]));
             // Mácula/Reputação convertidos da sub-ficha → salvam o concedido do dataset
@@ -15161,6 +15251,7 @@ Object.entries(VANTAGENS_REGIONAIS).forEach(([reino, dados]) => {
             pmAtual: parseInt(document.getElementById('pmAtual').value) || 0,
             bonusPm: parseInt(document.getElementById('bonusPm').value) || 0,
             pontosBase,
+                        testeMorteResultado: window.maioresTestesMorte[chaveTesteMorte(false, null)] || 0,
             pontosGastos: pontosGastosVal,
             maculaAtributo: parseInt(document.getElementById('maculaAtributo')?.value) || 0,
             reputacaoAtributo: parseInt(document.getElementById('reputacaoAtributo')?.value) || 0,
@@ -15422,6 +15513,13 @@ fichaListas.especializacoes = (fichaListas.especializacoes || []).map(item => {
                 return subCopy;
             });
         } else subFichas = [];
+                window.maioresTestesMorte = window.maioresTestesMorte || {};
+
+        window.maioresTestesMorte[chaveTesteMorte(false, null)] = f.testeMorteResultado || 0;
+
+        subFichas.forEach((sub, idx) => {
+            window.maioresTestesMorte[chaveTesteMorte(true, idx)] = sub.testeMorteResultado || 0;
+        });
         oficiosSub = {};
         if (f.subFichas && Array.isArray(f.subFichas)) f.subFichas.forEach((sub, idx) => { if (sub.oficios && Array.isArray(sub.oficios)) oficiosSub[idx] = sub.oficios.map(o => ({ ...o, bonus: parseInt(o.bonus) || 0, pen: parseInt(o.pen) || 0, pe: parseInt(o.pe) || 0, treinado: o.treinado === true })); });
         atributosCustomSub = {};
